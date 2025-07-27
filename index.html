@@ -1,23 +1,163 @@
-
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8" />
-  <title>世界围棋超级联赛</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="style.css" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <title>全球围棋超级联赛</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    .site-header {
+      background-color: #f8f8f8;
+      padding: 20px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      gap: 15px;
+    }
+
+    .site-logo {
+      height: 60px;
+      width: auto;
+    }
+
+    .site-title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #222;
+    }
+
+    nav {
+      background-color: #222;
+    }
+
+    .menu {
+      display: flex;
+      list-style: none;
+      padding-left: 20px;
+    }
+
+    .menu > li {
+      position: relative;
+    }
+
+    .menu > li > a {
+      display: block;
+      color: #fff;
+      padding: 16px 20px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .menu > li:hover {
+      background-color: #333;
+    }
+
+    .submenu {
+      display: none;
+      position: absolute;
+      background-color: #333;
+      top: 100%;
+      left: 0;
+      min-width: 180px;
+      z-index: 100;
+    }
+
+    .menu li:hover > .submenu {
+      display: block;
+    }
+
+    .submenu li {
+      position: relative;
+    }
+
+    .submenu li a {
+      display: block;
+      color: white;
+      padding: 12px 16px;
+      text-decoration: none;
+    }
+
+    .submenu li a:hover {
+      background-color: #444;
+    }
+
+    /* 三级菜单 */
+    .submenu-3 {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 100%;
+      background-color: #444;
+      min-width: 180px;
+      z-index: 200;
+    }
+
+    .has-submenu:hover > .submenu-3 {
+      display: block;
+    }
+
+    iframe {
+      width: 100%;
+      height: calc(100vh - 140px); /* 调整高度：顶部 header + nav */
+      border: none;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>世界围棋超级联赛</h1>
-    <nav>
-      <a href="results.html">比赛成绩</a> |
-      <a href="ratings.html">等级分查询</a>
-    </nav>
+
+  <!-- 顶部 Logo 和标题 -->
+  <header class="site-header">
+    <a href="index.html" class="logo-link">
+      <img src="./images/GlobalWeiqi.png" alt="Global Weiqi Logo" class="site-logo">
+      <span class="site-title">全球围棋超级联赛 Global Weiqi Super League</span>
+    </a>
   </header>
-  <main>
-    <p>欢迎访问世界围棋超级联赛官网！</p>
-    <p>查看最新比赛成绩、等级分变化和选手信息。</p>
-  </main>
+
+  <!-- 主导航菜单 -->
+  <nav>
+    <ul class="menu">
+      <li>
+        <a href="#">比赛信息</a>
+        <ul class="submenu">
+          <li><a href="standingsS1R5.html" target="content-frame">第1期（已结束）</a></li>
+          <li class="has-submenu">
+            <a href="#">第2期（进行中）</a>
+            <ul class="submenu-3">
+              <li><a href="standingsS2R4.html" target="content-frame">排行榜</a></li>
+              <li><a href="GamesListS2R4.html" target="content-frame">第4轮对局</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#">重要说明</a>
+        <ul class="submenu">
+          <li><a href="deposit.html" target="content-frame">保证金</a></li>
+          <li><a href="Review.html" target="content-frame">复盘讲解</a></li>
+          <li><a href="Mcmahon.html" target="content-frame">麦克马洪编排</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="register.html"target="content-frame" style="color: red; font-weight: bold;">马上报名</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- 主内容 iframe 区域 -->
+  <iframe src="home.html" name="content-frame"></iframe>
+
 </body>
 </html>
