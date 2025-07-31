@@ -2,16 +2,24 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>全球围棋超级联赛</title>
+    <title>全球围棋超级联赛</title>
 
-    <!-- 【重要】请将下面的URL替换为您网站的最终域名 -->
-    <meta property="og:url" content="http://globalweiqi.com/" />
+    <!-- --- 为社交媒体分享添加的Meta标签 (已更新为动态URL) --- -->
+    <meta property="og:title" content="全球围棋超级联赛" />
+    <meta property="og:description" content="一个专业的在线围棋联赛平台。" />
+    <meta property="og:type" content="website" />
+    <!-- 
+      【重要更新】
+      我们不再写死域名，而是使用Django的request对象动态生成当前网站的完整URL。
+      这使得代码无论是在PythonAnywhere、Vercel还是您最终的域名上都能正确工作。
+    -->
+    <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}" />
     <!-- 
       【最关键的一步】
-      请将下面的图片地址，替换为您logo图片的、可公开访问的、完整的URL地址。
-      根据我们之前的配置，它应该是下面这个样子。
+      同样，我们动态地构建logo图片的完整、绝对URL地址。
+      这是确保微信、Facebook等平台能找到并显示分享图片的最可靠方法。
     -->
-    <meta property="og:image" content="https://www.globalweiqi.com/images/GlobalWeiqi.png" />
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'images/GlobalWeiqi.png' %}" />
     <meta property="og:image:width" content="200" />
     <meta property="og:image:height" content="200" />
     <!-- --- ----------------------------------------- --- -->
