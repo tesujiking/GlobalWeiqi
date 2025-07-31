@@ -2,18 +2,20 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  
-  <!-- 微信分享预览图和信息 -->
-  <meta property="og:title" content="全球围棋超级联赛 Global Weiqi Super League" />
-  <meta property="og:description" content="全民参与，高手云集，真正涨棋的围棋超级联赛。" />
-  <meta property="og:image" content="https://globalweiqi.com/images/GlobalWeiqi.png" />
-  <meta property="og:url" content="https://globalweiqi.com/index.html" />
-
-  <!-- 其他已有样式或引入 -->
-  <link rel="stylesheet" href="styles.css">
-  
-  
   <title>全球围棋超级联赛</title>
+
+    <!-- 【重要】请将下面的URL替换为您网站的最终域名 -->
+    <meta property="og:url" content="http://globalweiqi.com/" />
+    <!-- 
+      【最关键的一步】
+      请将下面的图片地址，替换为您logo图片的、可公开访问的、完整的URL地址。
+      根据我们之前的配置，它应该是下面这个样子。
+    -->
+    <meta property="og:image" content="https://www.globalweiqi.com/images/GlobalWeiqi.png" />
+    <meta property="og:image:width" content="200" />
+    <meta property="og:image:height" content="200" />
+    <!-- --- ----------------------------------------- --- -->
+
   <style>
     * {
       margin: 0;
@@ -126,6 +128,24 @@
       border: none;
     }
   </style>
+<style>
+    #nav-user-status {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 16px;
+    }
+    #nav-user-status a {
+        cursor: pointer;
+        color: #007bff;
+        text-decoration: none;
+        margin-left: 15px;
+    }
+    #nav-user-status a:hover {
+        text-decoration: underline;
+    }
+</style>
+
 </head>
 <body>
 
@@ -135,6 +155,7 @@
       <img src="./images/GlobalWeiqi.png" alt="Global Weiqi Logo" class="site-logo">
       <span class="site-title">全球围棋超级联赛 Global Weiqi Super League</span>
     </a>
+    <div id="nav-user-status"></div>
   </header>
 
   <!-- 主导航菜单 -->
@@ -148,7 +169,7 @@
             <a href="#">第2期（进行中）</a>
             <ul class="submenu-3">
               <li><a href="standingsS2R4.html" target="content-frame">排行榜</a></li>
-              <li><a href="GamesListS2R4.html" target="content-frame">第4轮结果</a></li>
+              <li><a href="GamesListS2R4.html" target="content-frame">第4轮对局</a></li>
             </ul>
           </li>
         </ul>
@@ -156,11 +177,17 @@
       <li>
         <a href="#">重要说明</a>
         <ul class="submenu">
+          <li><a href="regulations.html" target="content-frame">比赛章程</a></li>
           <li><a href="deposit.html" target="content-frame">保证金</a></li>
-          <li><a href="review.html" target="content-frame">复盘讲解</a></li>
+          <li><a href="Review.html" target="content-frame">复盘讲解</a></li>
           <li><a href="Mcmahon.html" target="content-frame">麦克马洪编排</a></li>
+          <li><a href="play.html" target="content-frame">下棋</a></li>
+          <li><a href="login.html" target="content-frame">登陆</a></li>
+          <li><a href="zhuce.html" target="content-frame">注册</a></li>
         </ul>
       </li>
+      <li>
+        <a href="members.html" target="content-frame">会员名录</a>
       <li>
         <a href="register.html"target="content-frame" style="color: red; font-weight: bold;">马上报名</a>
       </li>
@@ -169,6 +196,53 @@
 
   <!-- 主内容 iframe 区域 -->
   <iframe src="home.html" name="content-frame"></iframe>
+
+  <script>
+    const API_BASE_URL = 'https://yaoshen.pythonanywhere.com/api';
+    const userStatusDiv = document.getElementById('nav-user-status');
+    const contentFrame = document.querySelector('iframe[name="content-frame"]');
+
+    function checkLoginStatus() {
+        fetch(`${API_BASE_URL}/status/`, { credentials: 'include' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.logged_in) {
+                    userStatusDiv.innerHTML = `
+                        <span>欢迎您, ${data.user.name || '会员'} (ID: ${data.user.member_id})</span>
+                        <a id="logout-link">退出登录</a>
+                    `;
+                    document.getElementById('logout-link').addEventListener('click', handleLogout);
+                } else {
+                    userStatusDiv.innerHTML = `
+                        <a href="login.html" target="content-frame">登录</a>
+                        <a href="zhuce.html" target="content-frame">注册</a>
+                    `;
+                }
+            });
+    }
+
+    function handleLogout() {
+        fetch(`${API_BASE_URL}/logout/`, { method: 'POST', credentials: 'include' })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    alert('您已成功退出。');
+                    checkLoginStatus(); // 更新UI
+                    contentFrame.src = "home.html"; // 退出后，主内容区返回首页
+                }
+            });
+    }
+
+    // 监听来自iframe的消息，在登录或注册成功后刷新状态
+    window.addEventListener("message", (event) => {
+        if (event.data === "loginSuccess" || event.data === "registrationSuccess") {
+            checkLoginStatus();
+        }
+    });
+
+    // 页面加载时立即执行
+    document.addEventListener('DOMContentLoaded', checkLoginStatus);
+</script>
 
 </body>
 </html>
