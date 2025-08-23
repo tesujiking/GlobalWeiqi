@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EGF 等级分与段位算法测试工具</title>
+    <!-- 引入 Tailwind CSS 以便快速构建美观的界面 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 简单的自定义样式，用于美化结果显示 */
+        .result-box {
+            transition: all 0.3s ease-in-out;
+        }
+        .result-box.new {
+            transform: scale(1.05);
+            background-color: #f0fdf4; /* Tailwind green-50 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen font-sans p-4">
+
+    <div class="w-full max-w-2xl bg-white rounded-lg shadow-lg p-8">
+        
+        <!-- 标题区域 -->
+        <div class="text-center border-b pb-4 mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">围棋标准等级分(Rating)与段位(Rank)计算器</h1>
+            <p class="text-gray-500 mt-2">用于独立验证包含棋份调整的等级分(Rating)与段位(Rank)</p>
+        </div>
+
+        <!-- 输入表单 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- 黑方信息 -->
+            <div>
+                <label for="black-rating" class="block text-sm font-medium text-gray-700">黑方等级分 (r1)</label>
+                <input type="number" id="black-rating" value="2100" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            <!-- 白方信息 -->
+            <div>
+                <label for="white-rating" class="block text-sm font-medium text-gray-700">白方等级分 (r2)</label>
+                <input type="number" id="white-rating" value="2100" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            <!-- 棋份 -->
+            <div>
+                <label for="handicap" class="block text-sm font-medium text-gray-700">棋份让子数 (Handicap)</label>
+                <input type="number" id="handicap" value="0" min="0" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            <!-- 比赛结果 -->
+            <div>
+                <label for="result" class="block text-sm font-medium text-gray-700">比赛结果</label>
+                <select id="result" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="黑胜">黑胜</option>
+                    <option value="白胜">白胜</option>
+                    <option value="和棋">和棋</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 计算按钮 -->
+        <div class="mb-6">
+            <button id="calculate-button" class="w-full inline-flex justify-center py-3 px-4 border border-transparent shadow-sm text-lg font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                计算新等级分与段位
+            </button>
+        </div>
+
+        <!-- 结果显示区域 -->
+        <div id="result-container" class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">计算结果</h2>
+            <div id="result-output" class="text-center text-gray-600">
+                请填写参数并点击计算按钮
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================================
+        //         核心算法引擎 (直接从设计方案V2.1移植)
+        // ==========================================================
+        
+        /**
+         * 根据EGF官方算法，并结合棋份调整，计算对局后的新等级分。
+         */
+        function calculate_egf_ratings(r1, r2, result, handicap = 0) {
+            let adjusted_r1;
+            if (handicap > 0) {
+                const handicap_adjustment = (handicap - 0.5) * 100;
+                adjusted_r1 = r1 + handicap_adjustment;
+            } else {
+                adjusted_r1 = r1;
+            }
+
+            const beta = (r) => {
+                r = Math.min(r, 3299.9);
+                return -7 * Math.log(3300 - r);
+            };
+
+            const con = (r) => Math.pow(((3300 - r) / 200), 1.6);
+            const bonus = (r) => Math.log(1 + Math.exp((2300 - r) / 80)) / 5;
+
+            const Se1 = 1 / (1 + Math.exp(beta(r2) - beta(adjusted_r1)));
+            const Se2 = 1 - Se1;
+
+            let Sa1, Sa2;
+            if (result === "黑胜") { [Sa1, Sa2] = [1.0, 0.0]; } 
+            else if (result === "白胜") { [Sa1, Sa2] = [0.0, 1.0]; } 
+            else { [Sa1, Sa2] = [0.5, 0.5]; }
+
+            const new_r1 = r1 + con(r1) * (Sa1 - Se1) + bonus(r1);
+            const new_r2 = r2 + con(r2) * (Sa2 - Se2) + bonus(r2);
+
+            return {
+                new_r1: parseFloat(new_r1.toFixed(2)),
+                new_r2: parseFloat(new_r2.toFixed(2)),
+                Se1: Se1,
+                Se2: Se2
+            };
+        }
+
+        /**
+         * 根据等级分计算带一位小数的段/级位。
+         */
+        function get_rank_from_rating(rating) {
+            // ▼▼▼【核心修正】▼▼▼
+            // 将 > 修改为 >=，确保 2050 本身被划入段位计算
+            if (rating >= 2050) {
+            // ▲▲▲ 修正结束 ▲▲▲
+                
+                // 段位(D)的计算逻辑 (保持不变)
+                const base_level = Math.floor((rating - 2050) / 100);
+                const integer_rank = base_level + 1;
+                const rating_in_block = (rating - 2050) % 100;
+                const decimal_part = Math.floor(rating_in_block / 10);
+                return `${integer_rank}.${decimal_part}D`;
+
+            } else {
+                
+                // 级位(K)的计算逻辑 (保持我们上一轮确认的倒序逻辑)
+                const integer_rank = Math.floor((2050 - rating) / 100) + 1;
+                const top_of_band = 2050 - (integer_rank - 1) * 100;
+                const distance_from_top = top_of_band - rating;
+                const decimal_part = Math.floor(distance_from_top / 10);
+                return `${integer_rank}.${decimal_part}K`;
+            }
+        }
+
+        // ==========================================================
+        //         页面交互逻辑
+        // ==========================================================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateButton = document.getElementById('calculate-button');
+            const resultOutput = document.getElementById('result-output');
+            const resultContainer = document.getElementById('result-container');
+
+            calculateButton.addEventListener('click', function() {
+                const r1_old = parseFloat(document.getElementById('black-rating').value);
+                const r2_old = parseFloat(document.getElementById('white-rating').value);
+                const handicap = parseInt(document.getElementById('handicap').value, 10);
+                const result = document.getElementById('result').value;
+
+                if (isNaN(r1_old) || isNaN(r2_old) || isNaN(handicap)) {
+                    resultOutput.innerHTML = '<p class="text-red-500 font-bold">请输入有效的数字等级分和让子数。</p>';
+                    return;
+                }
+
+                const { new_r1, new_r2, Se1, Se2 } = calculate_egf_ratings(r1_old, r2_old, result, handicap);
+                
+                const change1 = (new_r1 - r1_old).toFixed(2);
+                const change2 = (new_r2 - r2_old).toFixed(2);
+
+                const rank1_old = get_rank_from_rating(r1_old);
+                const rank2_old = get_rank_from_rating(r2_old);
+                const rank1_new = get_rank_from_rating(new_r1);
+                const rank2_new = get_rank_from_rating(new_r2);
+                
+                const se1_percent = (Se1 * 100).toFixed(2);
+                const se2_percent = (Se2 * 100).toFixed(2);
+
+                // 【核心修改】更新结果显示区域的HTML，增加胜率对比条
+                resultOutput.innerHTML = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+                        <div class="p-4 bg-gray-200 rounded-lg">
+                            <p class="font-bold text-lg text-gray-800">黑方 (Player 1)</p>
+                            <p>原: ${r1_old} (<span class="font-semibold">${rank1_old}</span>)</p>
+                            <p class="font-bold text-indigo-600">新: ${new_r1} (<span class="font-semibold">${rank1_new}</span>)</p>
+                            <p>变化: <span class="${change1 >= 0 ? 'text-green-600' : 'text-red-600'}">${change1 > 0 ? '+' : ''}${change1}</span></p>
+                        </div>
+                        <div class="p-4 bg-gray-200 rounded-lg">
+                            <p class="font-bold text-lg text-gray-800">白方 (Player 2)</p>
+                            <p>原: ${r2_old} (<span class="font-semibold">${rank2_old}</span>)</p>
+                            <p class="font-bold text-indigo-600">新: ${new_r2} (<span class="font-semibold">${rank2_new}</span>)</p>
+                            <p>变化: <span class="${change2 >= 0 ? 'text-green-600' : 'text-red-600'}">${change2 > 0 ? '+' : ''}${change2}</span></p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t text-center">
+                        <h3 class="font-bold text-lg text-gray-800">预期胜率对比 (Se)</h3>
+                        <!-- 胜率对比条 -->
+                        <div class="w-full bg-slate-200 rounded-full h-8 flex overflow-hidden border border-slate-300 my-2" title="黑方胜率: ${se1_percent}% | 白方胜率: ${se2_percent}%">
+                            <div class="bg-slate-700 h-full flex items-center justify-center text-white text-sm font-bold" style="width: ${se1_percent}%; transition: width 0.5s ease-in-out;">
+                                ${se1_percent}%
+                            </div>
+                            <div class="bg-slate-200 h-full flex items-center justify-center text-slate-800 text-sm font-bold" style="width: ${se2_percent}%; transition: width 0.5s ease-in-out;">
+                                ${se2_percent}%
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm">
+                            (鼠标悬停在胜率条上查看精确数值)            
+                        </p>
+                    </div>
+                `;
+
+                resultContainer.classList.remove('new');
+                void resultContainer.offsetWidth;
+                resultContainer.classList.add('new');
+            });
+        });
+    </script>
+
+</body>
+</html>
