@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>全平台选手等级分排行榜</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-center mb-8">全平台选手等级分排行榜</h1>
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">所有选手列表</h2>
+        <p class="text-sm text-gray-500 mb-4">提示：点击任意选手行，可查看该选手的详细对局历史。</p>
+        <div class="overflow-x-auto border rounded-lg">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50 text-xs uppercase text-gray-500">
+                    <tr>
+                        <th class="px-4 py-3 text-left">排名</th>
+                        <th class="px-4 py-3 text-left">姓名</th>
+                        <th class="px-4 py-3 text-left">地区</th>
+                        <th class="px-4 py-3 text-center">当前等级分</th>
+                        <th class="px-4 py-3 text-center">标准段位</th>
+                        <th class="px-4 py-3 text-center">总对局数</th>
+                    </tr>
+                </thead>
+                <tbody id="player-list-body" class="bg-white divide-y divide-gray-200">
+                    <tr><td colspan="6" class="p-4 text-center text-gray-500">正在加载选手列表...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="historyModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden" style="z-index: 100;">
+  <div class="relative top-20 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
+    <div class="mt-3">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl leading-6 font-medium text-gray-900" id="modalPlayerName"></h3>
+        <button id="closeModal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+      </div>
+      <div id="modalContent" class="mt-2 px-7 py-3 max-h-[60vh] overflow-y-auto">
+        <div id="statsContainer" class="text-sm text-gray-600 mb-4 text-left border-b pb-4"></div>
+        <div id="chartContainer" class="mb-6">
+            <canvas id="playerRatingChart"></canvas>
+        </div>
+        <div id="tableContainer">
+            <p class="text-sm text-gray-500">正在加载对局历史...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- 全局变量和常量 ---
+        let playerChartInstance = null;
+        const API_BASE_URL = 'https://yaoshen.pythonanywhere.com'; // 你的后端API地址
+
+        // --- 辅助函数 ---
+        function calculateRankFromRating(rating) {
+            if (rating === null || rating === undefined) { return "N/A"; }
+            try {
+                rating = parseFloat(rating);
+                if (isNaN(rating)) { return "Error"; }
+                if (rating >= 2050) {
+                    const baseLevel = Math.floor((rating - 2050) / 100);
+                    const integerRank = baseLevel + 1;
+                    const ratingInBlock = (rating - 2050) % 100;
+                    const decimalPart = Math.floor(ratingInBlock / 10);
+                    return `${integerRank}.${decimalPart}D`;
+                } else {
+                    const integerRank = Math.floor((2050 - rating) / 100) + 1;
+                    const topOfBand = 2050 - (integerRank - 1) * 100;
+                    const distanceFromTop = topOfBand - rating;
+                    const decimalPart = Math.floor(distanceFromTop / 10);
+                    return `${integerRank}.${decimalPart}K`;
+                }
+            } catch (e) { return "Error"; }
+        }
+
+        function calculateAndDisplayStats(ratingData) {
+            const statsContainer = document.getElementById('statsContainer');
+            const gameRatings = ratingData.slice(1).map(d => d.y);
+            const numGames = gameRatings.length;
+            if (numGames < 7) {
+                statsContainer.innerHTML = '';
+                return;
+            }
+            const recentGameRatings = gameRatings.slice(-20);
+            const n = recentGameRatings.length;
+            const sum = recentGameRatings.reduce((a, b) => a + b, 0);
+            const mean = sum / n;
+            const variance = n > 1 ? recentGameRatings.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b, 0) / (n - 1) : 0;
+            const stdDev = Math.sqrt(variance);
+            const meanRank = calculateRankFromRating(mean);
+            const rankSuffix = meanRank.slice(-1);
+            const meanFormatted = mean.toFixed(2);
+            const stdDevAsLevel = (stdDev / 100).toFixed(2);
+            const stdDevFormatted = stdDev.toFixed(2);
+            statsContainer.innerHTML = `
+                <div class="grid grid-cols-2 gap-x-4">
+                    <div><strong>近期实力 (平均水平):</strong> <span class="font-mono text-blue-600">${meanRank} (${meanFormatted})</span></div>
+                    <div><strong>状态稳定度 (标准差):</strong> <span class="font-mono text-blue-600">${stdDevAsLevel}${rankSuffix} (${stdDevFormatted})</span></div>
+                </div>
+                <p class="text-xs text-gray-400 mt-1">根据最近 ${n} 盤对局计算。标准差越小，状态越稳定。</p>
+            `;
+        }
+
+        // --- 核心功能函数 ---
+
+        // 函数：为所有.player-row元素绑定点击事件（弹窗逻辑）
+        function attachClickListeners() {
+            document.querySelectorAll('.player-row').forEach(row => {
+                row.addEventListener('click', function() {
+                    const playerId = this.dataset.playerId;
+                    const playerName = this.dataset.playerName;
+                    const modal = document.getElementById('historyModal');
+                    const modalPlayerName = document.getElementById('modalPlayerName');
+                    const chartContainer = document.getElementById('chartContainer');
+                    const tableContainer = document.getElementById('tableContainer');
+                    const statsContainer = document.getElementById('statsContainer');
+                    const closeModalBtn = document.getElementById('closeModal');
+
+                    modalPlayerName.textContent = `${playerName} 的历史记录`;
+                    tableContainer.innerHTML = '<p class="text-sm text-gray-500">正在加载对局历史...</p>';
+                    statsContainer.innerHTML = '';
+                    chartContainer.style.display = 'none';
+                    modal.classList.remove('hidden');
+
+                    fetch(`${API_BASE_URL}/players/${playerId}/match_history/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.chart_data && data.chart_data.datasets[0].data) {
+                               calculateAndDisplayStats(data.chart_data.datasets[0].data);
+                            }
+                            if (data.chart_data && data.chart_data.datasets[0].data.length > 1) {
+                                chartContainer.style.display = 'block';
+                                const ctx = document.getElementById('playerRatingChart').getContext('2d');
+                                if (playerChartInstance) { playerChartInstance.destroy(); }
+                                
+                                const yValuesOnly = data.chart_data.datasets[0].data.map(item => item.y);
+                                const chartDisplayData = JSON.parse(JSON.stringify(data.chart_data));
+                                chartDisplayData.datasets[0].data = yValuesOnly;
+                                const dataMin = Math.min(...yValuesOnly);
+                                const dataMax = Math.max(...yValuesOnly);
+                                const padding = (dataMax - dataMin) * 0.1 || 5;
+                                
+                                playerChartInstance = new Chart(ctx, {
+                                    type: 'line',
+                                    data: chartDisplayData,
+                                    options: { /* ... 完整的图表Options ... */ }
+                                });
+                            } else {
+                                chartContainer.style.display = 'none';
+                            }
+                            if (data.matches && data.matches.length > 0) {
+                                let tableHtml = `
+                                    <h4 class="text-lg font-bold mb-2 text-gray-700">对局列表</h4>
+                                    <table class="min-w-full divide-y divide-gray-200 text-sm">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="px-3 py-2 text-left">日期</th>
+                                                <th class="px-3 py-2 text-left">赛事</th>
+                                                <th class="px-3 py-2">轮次</th>
+                                                <th class="px-3 py-2">当时等级分</th>
+                                                <th class="px-3 py-2 text-left">对手</th>
+                                                <th class="px-3 py-2">棋份</th>
+                                                <th class="px-3 py-2">胜负</th>
+                                                <th class="px-3 py-2">本人分变</th>
+                                                <th class="px-3 py-2">对手分变</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200">`;
+                                data.matches.forEach(match => {
+                                    let rankBeforeFormatted = 'N/A';
+                                    if (match.player_rank_before !== null && match.player_rank_before !== undefined) {
+                                        rankBeforeFormatted = parseFloat(match.player_rank_before).toFixed(2);
+                                    }
+                                    tableHtml += `
+                                        <tr>
+                                            <td class="px-3 py-2 whitespace-nowrap text-gray-500">${match.match_date}</td>
+                                            <td class="px-3 py-2 whitespace-nowrap">${match.tournament_name}</td>
+                                            <td class="px-3 py-2 text-center">${match.round_number}</td>
+                                            <td class="px-3 py-2 text-center">${rankBeforeFormatted}</td>
+                                            <td class="px-3 py-2">${match.opponent_name}</td>
+                                            <td class="px-3 py-2 text-center">${match.handicap}</td>
+                                            <td class="px-3 py-2 text-center font-semibold ${match.result === '胜' ? 'text-green-600' : 'text-red-600'}">${match.result}</td>
+                                            <td class="px-3 py-2 text-center font-mono ${match.player_delta.startsWith('+') ? 'text-green-600' : 'text-red-600'}">${match.player_delta}</td>
+                                            <td class="px-3 py-2 text-center font-mono ${match.opponent_delta.startsWith('+') ? 'text-green-600' : 'text-red-600'}">${match.opponent_delta}</td>
+                                        </tr>
+                                    `;
+                                });
+                                tableHtml += `</tbody></table>`;
+                                tableContainer.innerHTML = tableHtml;
+                            } else {
+                                tableContainer.innerHTML = '<p class="text-sm text-gray-500">该选手尚无已完成的对局记录。</p>';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching match history:', error);
+                            tableContainer.innerHTML = '<p class="text-sm text-red-500">加载数据失败，请稍后再试。</p>';
+                        });
+
+                    const closeModal = () => modal.classList.add('hidden');
+                    closeModalBtn.onclick = closeModal;
+                    modal.onclick = function(event) { if (event.target == modal) { closeModal(); }};
+                });
+            });
+        }
+
+        // 函数：加载并显示所有选手列表
+        function loadPlayerList() {
+            const playerListBody = document.getElementById('player-list-body');
+            fetch(`${API_BASE_URL}/api/players/`)
+                .then(response => {
+                    if (!response.ok) { throw new Error('网络响应错误'); }
+                    return response.json();
+                })
+                .then(data => {
+                    let tableRowsHtml = '';
+                    if (data.players && data.players.length > 0) {
+                        data.players.forEach((player, index) => {
+                            tableRowsHtml += `
+                                <tr class="hover:bg-gray-100 cursor-pointer player-row" data-player-id="${player.id}" data-player-name="${player.full_name}">
+                                    <td class="px-4 py-3 font-medium">${index + 1}</td>
+                                    <td class="px-4 py-3 font-semibold text-gray-800">${player.full_name}</td>
+                                    <td class="px-4 py-3 text-gray-600">${player.city || player.country || ''}</td>
+                                    <td class="px-4 py-3 text-center font-bold text-indigo-600">${player.current_rating.toFixed(2)}</td>
+                                    <td class="px-4 py-3 text-center text-gray-700">${player.standard_rank}</td>
+                                    <td class="px-4 py-3 text-center text-gray-700">${player.total_games_played}</td>
+                                </tr>
+                            `;
+                        });
+                    } else {
+                        tableRowsHtml = '<tr><td colspan="6" class="p-4 text-center text-gray-500">系统中尚无活跃选手。</td></tr>';
+                    }
+                    playerListBody.innerHTML = tableRowsHtml;
+                    attachClickListeners(); // 数据加载并渲染完成后，再为新的行绑定点击事件
+                })
+                .catch(error => {
+                    console.error('加载选手列表失败:', error);
+                    playerListBody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-red-500">加载选手列表失败，请检查后端服务是否正常。</td></tr>';
+                });
+        }
+
+        // --- 启动程序 ---
+        loadPlayerList();
+    });
+</script>
+
+</body>
+</html>
