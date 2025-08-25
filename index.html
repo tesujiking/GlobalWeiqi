@@ -9,16 +9,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        /* --- ▼▼▼ 核心修正区域：更新了几乎所有样式 ▼▼▼ --- */
-
         /* --- 基础和颜色变量 --- */
         :root {
-            --sidebar-width: 220px; /* 宽度减小 */
-            --sidebar-bg: #2c2a27; /* 更柔和的深木炭色 */
-            --sidebar-text: #e0e0e0; /* 更亮的文字颜色 */
-            --sidebar-text-hover: #ffffff; /* 悬停时纯白 */
+            --sidebar-width: 100px; /* <-- 【核心修正】将宽度从 220px 改为 100px */
+            --sidebar-bg: #2c2a27;
+            --sidebar-text: #e0e0e0;
+            --sidebar-text-hover: #ffffff;
             --sidebar-bg-hover: #3c3a37;
-            --sidebar-border: #4a4846;
+            --sidebar-border: #403d39;
             --main-bg: #f0f2f5;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,15 +38,15 @@
             flex-shrink: 0;
         }
         .sidebar-header {
-            padding: 1rem; /* 调整内边距 */
+            padding: 1rem;
             display: flex;
             align-items: center;
-            justify-content: center; /* Logo 居中 */
+            justify-content: center;
             border-bottom: 1px solid var(--sidebar-border);
         }
-        .sidebar-logo { height: 48px; } /* Logo 稍大一些 */
+        .sidebar-logo { height: 48px; }
 
-        /* --- 主内容区 (无变化) --- */
+        /* --- 主内容区 --- */
         .main-content-wrapper {
             flex-grow: 1;
             transition: transform 0.3s ease-in-out, margin-left 0.3s ease-in-out;
@@ -68,57 +66,57 @@
         }
         #content-container { padding: 1.5rem; }
         
-        /* --- 汉堡菜单按钮 (无变化) --- */
+        /* --- 汉堡菜单按钮 --- */
         .hamburger-button { display: none; padding: 0.5rem; }
         .hamburger-button .bar { display: block; width: 22px; height: 2px; margin: 5px 0; background-color: #374151; }
         
-        /* --- 导航菜单样式 (核心修改) --- */
+        /* --- 导航菜单样式 --- */
         .menu { list-style: none; padding: 0.5rem 0; }
         .menu a { text-decoration: none; color: var(--sidebar-text); font-weight: 500; font-size: 15px; }
+        .menu > li { position: relative; }
         .menu > li > a {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.6rem 1.25rem; /* 减小了垂直间距 */
+            padding: 0.6rem 1rem; /* 调整了左右边距以适应新宽度 */
             transition: all 0.2s;
+            white-space: nowrap; /* 防止文字换行 */
         }
-        .menu > li > a:hover {
-            color: var(--sidebar-text-hover);
-            background-color: var(--sidebar-bg-hover);
-        }
+        .menu > li > a:hover { color: var(--sidebar-text-hover); background-color: var(--sidebar-bg-hover); }
 
-        /* 新增：视觉分隔线样式 */
         .menu-separator {
             border-top: 1px solid var(--sidebar-border);
             margin-top: 0.5rem;
             padding-top: 0.5rem;
         }
 
-        /* --- 子菜单通用样式 (无变化) --- */
+        /* --- 子菜单通用样式 --- */
         .submenu, .submenu-3 { list-style: none; padding-left: 0; }
-        .submenu a { font-size: 0.9rem; padding-top: 0.5rem; padding-bottom: 0.5rem; }
-        .submenu-3 a { font-size: 0.85rem; padding-top: 0.4rem; padding-bottom: 0.4rem; }
+        .submenu a, .submenu-3 a { padding: 0.6rem 1rem; }
+        .submenu a { font-size: 0.9rem; }
+        .submenu-3 a { font-size: 0.85rem; }
         
-        /* --- 电脑端：向右滑出子菜单 (无变化) --- */
+        /* --- 电脑端：向右滑出子菜单 --- */
         @media (min-width: 1024px) {
             .main-content-wrapper { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); }
             .submenu, .submenu-3 {
                 position: absolute; top: 0; left: 100%;
                 background-color: var(--sidebar-bg);
-                min-width: 200px; /* 子菜单宽度减小 */
+                min-width: 200px;
                 box-shadow: 2px 0 5px rgba(0,0,0,0.2);
                 border-left: 1px solid var(--sidebar-border);
-                visibility: hidden; opacity: 0;
-                transition: opacity 0.2s linear;
+                display: none;
             }
             .menu > li:hover > .submenu,
             .submenu > li:hover > .submenu-3 {
-                visibility: visible; opacity: 1;
+                display: block;
             }
         }
         
-        /* --- 手机/平板端 (无变化) --- */
+        /* --- 手机/平板端 --- */
         @media (max-width: 1023px) {
+            /* 在手机端，让侧边栏恢复到更舒适的宽度 */
+            .sidebar { width: 240px; } 
             .hamburger-button { display: block; }
             .sidebar { transform: translateX(-100%); }
             body.sidebar-open .sidebar { transform: translateX(0); }
@@ -133,18 +131,16 @@
             .has-submenu.active > a::after { transform: rotate(90deg); }
             .submenu, .submenu-3 { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
             .submenu.active, .submenu-3.active { max-height: 1000px; }
-            .submenu a { padding-left: 2.5rem; background-color: rgba(0,0,0,0.1); }
-            .submenu-3 a { padding-left: 3.75rem; background-color: rgba(0,0,0,0.2); }
+            .submenu a { padding-left: 2rem; background-color: rgba(0,0,0,0.1); }
+            .submenu-3 a { padding-left: 3rem; background-color: rgba(0,0,0,0.2); }
         }
         
-        /* --- Iframe (无变化) --- */
+        /* --- Iframe --- */
         iframe {
             width: 100%;
-            height: calc(100vh - 64px - 3rem);
+            height: calc(100vh - 64px);
             border: none;
         }
-
-        /* --- ▲▲▲ 样式修正结束 ▲▲▲ --- */
     </style>
 </head>
 <body>
@@ -190,6 +186,7 @@
                 </button>
                 <div class="flex items-center gap-3 lg:hidden">
                     <img src="./images/GlobalWeiqi.png" alt="Logo" class="h-8">
+                    <span class="text-lg font-bold">全球围棋超级联赛</span>
                 </div>
             </div>
             
@@ -208,20 +205,12 @@
 </div>
 
 <script>
-    // JavaScript 部分无需修改，保持原样即可
     document.addEventListener('DOMContentLoaded', function() {
         const hamburgerButton = document.getElementById('hamburger-button');
         const contentOverlay = document.getElementById('content-overlay');
-
         function toggleMenu() { document.body.classList.toggle('sidebar-open'); }
-
-        hamburgerButton.addEventListener('click', function(e) {
-            e.stopPropagation();
-            toggleMenu();
-        });
-        
+        hamburgerButton.addEventListener('click', function(e) { e.stopPropagation(); toggleMenu(); });
         contentOverlay.addEventListener('click', toggleMenu);
-
         document.querySelectorAll('.sidebar .has-submenu > a').forEach(link => {
             link.addEventListener('click', function(e) {
                 if (window.innerWidth >= 1024) return;
@@ -238,9 +227,7 @@
                 }
                 parentLi.classList.toggle('active');
                 const submenu = parentLi.querySelector('.submenu, .submenu-3');
-                if (submenu) {
-                    submenu.classList.toggle('active');
-                }
+                if (submenu) { submenu.classList.toggle('active'); }
             });
         });
     });
