@@ -88,8 +88,19 @@
       z-index: 100;
     }
 
-    .menu li:hover > .submenu {
-      display: block;
+    /* 桌面端鼠标悬停显示子菜单 */
+    @media (hover: hover) and (pointer: fine) {
+      .menu li:hover > .submenu {
+        display: block;
+      }
+      .has-submenu:hover > .submenu-3 {
+        display: block;
+      }
+    }
+
+    /* 移动端点击显示子菜单 */
+    .submenu.active {
+      display: block !important;
     }
 
     .submenu li {
@@ -118,8 +129,43 @@
       z-index: 200;
     }
 
-    .has-submenu:hover > .submenu-3 {
-      display: block;
+    .submenu-3.active {
+      display: block !important;
+    }
+
+    /* 移动端适配 */
+    @media (max-width: 768px) {
+      .menu {
+        flex-direction: column;
+        padding-left: 0;
+      }
+      
+      .menu > li {
+        border-bottom: 1px solid #444;
+      }
+      
+      .submenu {
+        position: static;
+        background-color: #444;
+        min-width: auto;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+      }
+      
+      .submenu-3 {
+        position: static;
+        background-color: #555;
+        margin-left: 20px;
+      }
+      
+      .has-submenu > a::after {
+        content: ' ▼';
+        font-size: 12px;
+        transition: transform 0.3s;
+      }
+      
+      .has-submenu.active > a::after {
+        transform: rotate(180deg);
+      }
     }
 
     iframe {
@@ -182,6 +228,11 @@
           <li><a href="Review.html" target="content-frame">复盘讲解</a></li>
           <li><a href="Mcmahon.html" target="content-frame">麦克马洪编排</a></li>
           <li><a href="play.html" target="content-frame">下棋</a></li>
+          <li><a href="board.html" target="content-frame">对弈棋盘</a></li>
+          <li><a href="pairing_flow.html" target="content-frame">分区流动</a></li>
+          <li><a href="flow_test.html" target="content-frame">流动测试</a></li>
+          <li><a href="api_debug.html" target="content-frame">API调试</a></li>
+          <li><a href="mobile_menu_test.html" target="content-frame">菜单测试</a></li>
           <li><a href="login.html" target="content-frame">登陆</a></li>
           <li><a href="zhuce.html" target="content-frame">注册</a></li>
         </ul>
@@ -208,6 +259,94 @@
     const API_BASE_URL = 'https://yaoshen.pythonanywhere.com/api';
     const userStatusDiv = document.getElementById('nav-user-status');
     const contentFrame = document.querySelector('iframe[name="content-frame"]');
+
+    // 移动端菜单管理
+    function initMobileMenu() {
+        // 检测是否为移动设备
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+        
+        if (isMobile) {
+            // 为有子菜单的项目添加点击事件
+            const menuItems = document.querySelectorAll('.menu > li');
+            
+            menuItems.forEach(item => {
+                const submenu = item.querySelector('.submenu');
+                if (submenu) {
+                    const mainLink = item.querySelector('> a');
+                    
+                    mainLink.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // 关闭其他所有子菜单
+                        document.querySelectorAll('.submenu.active').forEach(activeSubmenu => {
+                            if (activeSubmenu !== submenu) {
+                                activeSubmenu.classList.remove('active');
+                                activeSubmenu.parentElement.classList.remove('active');
+                            }
+                        });
+                        
+                        // 切换当前子菜单
+                        submenu.classList.toggle('active');
+                        item.classList.toggle('active');
+                    });
+                    
+                    // 处理三级菜单
+                    const hasSubmenuItems = submenu.querySelectorAll('.has-submenu');
+                    hasSubmenuItems.forEach(hasSubmenuItem => {
+                        const submenu3 = hasSubmenuItem.querySelector('.submenu-3');
+                        if (submenu3) {
+                            const submenuLink = hasSubmenuItem.querySelector('> a');
+                            
+                            submenuLink.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                
+                                // 关闭其他三级菜单
+                                document.querySelectorAll('.submenu-3.active').forEach(activeSubmenu3 => {
+                                    if (activeSubmenu3 !== submenu3) {
+                                        activeSubmenu3.classList.remove('active');
+                                        activeSubmenu3.parentElement.classList.remove('active');
+                                    }
+                                });
+                                
+                                // 切换当前三级菜单
+                                submenu3.classList.toggle('active');
+                                hasSubmenuItem.classList.toggle('active');
+                            });
+                        }
+                    });
+                }
+            });
+            
+            // 点击子菜单项目后自动关闭菜单
+            document.querySelectorAll('.submenu a[target="content-frame"], .submenu-3 a[target="content-frame"]').forEach(link => {
+                link.addEventListener('click', function() {
+                    // 延迟关闭菜单，给用户一个视觉反馈
+                    setTimeout(() => {
+                        document.querySelectorAll('.submenu.active, .submenu-3.active').forEach(activeSubmenu => {
+                            activeSubmenu.classList.remove('active');
+                        });
+                        document.querySelectorAll('.menu li.active').forEach(activeItem => {
+                            activeItem.classList.remove('active');
+                        });
+                    }, 150);
+                });
+            });
+            
+            // 点击外部区域关闭菜单
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('nav')) {
+                    document.querySelectorAll('.submenu.active, .submenu-3.active').forEach(activeSubmenu => {
+                        activeSubmenu.classList.remove('active');
+                    });
+                    document.querySelectorAll('.menu li.active').forEach(activeItem => {
+                        activeItem.classList.remove('active');
+                    });
+                }
+            });
+        }
+    }
 
     function checkLoginStatus() {
         fetch(`${API_BASE_URL}/status/`, { credentials: 'include' })
@@ -248,7 +387,24 @@
     });
 
     // 页面加载时立即执行
-    document.addEventListener('DOMContentLoaded', checkLoginStatus);
+    document.addEventListener('DOMContentLoaded', function() {
+        checkLoginStatus();
+        initMobileMenu();
+    });
+    
+    // 窗口大小改变时重新初始化菜单
+    window.addEventListener('resize', function() {
+        // 清除所有活动状态
+        document.querySelectorAll('.submenu.active, .submenu-3.active').forEach(activeSubmenu => {
+            activeSubmenu.classList.remove('active');
+        });
+        document.querySelectorAll('.menu li.active').forEach(activeItem => {
+            activeItem.classList.remove('active');
+        });
+        
+        // 重新初始化
+        setTimeout(initMobileMenu, 100);
+    });
 </script>
 
 </body>
