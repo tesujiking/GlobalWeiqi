@@ -1,407 +1,118 @@
-<!-- 计算器内容页面 - 适合在index.html中嵌入 -->
-<style>
-    /* 计算器专用样式 - 避免与index.html冲突 */
-    .calculator-container {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 40px;
-    }
-
-    .calculator-title {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    .calculator-title h1 {
-        font-size: 32px;
-        font-weight: 700;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 10px;
-    }
-
-    .calculator-title p {
-        color: #7f8c8d;
-        font-size: 16px;
-    }
-
-    /* 输入表单样式 */
-    .calc-form-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 25px;
-        margin-bottom: 30px;
-    }
-
-    .calc-form-group {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .calc-form-group label {
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 8px;
-        font-size: 14px;
-    }
-
-    .calc-form-group input,
-    .calc-form-group select {
-        padding: 12px 16px;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        font-size: 16px;
-        transition: all 0.3s ease;
-        background: white;
-    }
-
-    .calc-form-group input:focus,
-    .calc-form-group select:focus {
-        outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    /* 计算按钮 */
-    .calc-calculate-button {
-        width: 100%;
-        padding: 15px 30px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        font-size: 18px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        margin-bottom: 30px;
-    }
-
-    .calc-calculate-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
-    }
-
-    /* 结果显示区域 */
-    .calc-result-container {
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        border-radius: 12px;
-        padding: 30px;
-        border: 2px solid rgba(102, 126, 234, 0.1);
-        transition: all 0.3s ease;
-    }
-
-    .calc-result-container.new {
-        transform: scale(1.02);
-        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
-    }
-
-    .calc-result-title {
-        text-align: center;
-        font-size: 24px;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 20px;
-    }
-
-    .calc-result-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 20px;
-        margin-bottom: 25px;
-    }
-
-    .calc-player-result {
-        background: white;
-        padding: 20px;
-        border-radius: 12px;
-        border-left: 5px solid #667eea;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .calc-player-title {
-        font-size: 18px;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 10px;
-    }
-
-    .calc-rating-info {
-        margin-bottom: 8px;
-        font-size: 15px;
-    }
-
-    .calc-new-rating {
-        font-weight: 700;
-        color: #667eea;
-    }
-
-    .calc-rating-change {
-        font-weight: 600;
-    }
-
-    .calc-positive {
-        color: #27ae60;
-    }
-
-    .calc-negative {
-        color: #e74c3c;
-    }
-
-    /* 胜率对比区域 */
-    .calc-probability-section {
-        margin-top: 25px;
-        padding-top: 25px;
-        border-top: 2px solid rgba(102, 126, 234, 0.1);
-        text-align: center;
-    }
-
-    .calc-probability-title {
-        font-size: 20px;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 15px;
-    }
-
-    .calc-probability-bar {
-        width: 100%;
-        height: 40px;
-        background: #e9ecef;
-        border-radius: 20px;
-        overflow: hidden;
-        display: flex;
-        border: 2px solid rgba(102, 126, 234, 0.2);
-        margin: 15px 0;
-    }
-
-    .calc-black-prob {
-        background: linear-gradient(135deg, #2c3e50, #34495e);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        transition: width 0.5s ease;
-    }
-
-    .calc-white-prob {
-        background: linear-gradient(135deg, #bdc3c7, #95a5a6);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        transition: width 0.5s ease;
-    }
-
-    .calc-probability-note {
-        color: #7f8c8d;
-        font-size: 14px;
-        margin-top: 10px;
-    }
-
-    .calc-error-message {
-        color: #e74c3c;
-        font-weight: 600;
-        text-align: center;
-        padding: 20px;
-        background: #fdf2f2;
-        border: 2px solid #e74c3c;
-        border-radius: 8px;
-    }
-
-    .calc-placeholder-message {
-        color: #7f8c8d;
-        text-align: center;
-        padding: 30px;
-        font-size: 16px;
-    }
-
-    @media (max-width: 768px) {
-        .calculator-container {
-            padding: 20px;
-        }
-        
-        .calc-form-grid {
-            grid-template-columns: 1fr;
-        }
-        
-        .calculator-title h1 {
-            font-size: 24px;
-        }
-    }
-</style>
-
-<div class="calculator-container">
-    <div class="calculator-title">
-        <h1>🔢 围棋等级分计算器</h1>
-        <p>用于独立验证包含棋份调整的等级分(Rating)与段位(Rank)</p>
+<!-- 围棋等级分计算器 -->
+<div style="padding: 20px; max-width: 800px; margin: 0 auto;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h2 style="color: #2c3e50; margin-bottom: 10px;">围棋等级分计算器</h2>
+        <p style="color: #666;">EGF官方算法，支持棋份调整</p>
     </div>
-
+    
     <!-- 输入表单 -->
-    <div class="calc-form-grid">
-        <!-- 黑方信息 -->
-        <div class="calc-form-group">
-            <label for="calc-black-rating">⚫ 黑方等级分 (r1)</label>
-            <input type="number" id="calc-black-rating" value="2100" step="0.01">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px;">
+        <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: 600;">黑方等级分:</label>
+            <input type="number" id="blackRating" value="2100" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
         </div>
-        
-        <!-- 白方信息 -->
-        <div class="calc-form-group">
-            <label for="calc-white-rating">⚪ 白方等级分 (r2)</label>
-            <input type="number" id="calc-white-rating" value="2100" step="0.01">
+        <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: 600;">白方等级分:</label>
+            <input type="number" id="whiteRating" value="2100" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
         </div>
-        
-        <!-- 棋份 -->
-        <div class="calc-form-group">
-            <label for="calc-handicap">🎯 棋份让子数 (Handicap)</label>
-            <input type="number" id="calc-handicap" value="0" min="0" max="9">
+        <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: 600;">让子数:</label>
+            <input type="number" id="handicap" value="0" min="0" max="9" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
         </div>
-        
-        <!-- 比赛结果 -->
-        <div class="calc-form-group">
-            <label for="calc-result">🏆 比赛结果</label>
-            <select id="calc-result">
-                <option value="黑胜">⚫ 黑胜</option>
-                <option value="白胜">⚪ 白胜</option>
-                <option value="和棋">🤝 和棋</option>
+        <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: 600;">比赛结果:</label>
+            <select id="gameResult" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <option value="黑胜">黑胜</option>
+                <option value="白胜">白胜</option>
+                <option value="和棋">和棋</option>
             </select>
         </div>
     </div>
-
-    <!-- 计算按钮 -->
-    <button id="calc-calculate-button" class="calc-calculate-button">
-        🚀 计算新等级分与段位
+    
+    <button onclick="calculateRating()" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 20px;">
+        计算新等级分
     </button>
-
-    <!-- 结果显示区域 -->
-    <div id="calc-result-container" class="calc-result-container">
-        <h2 class="calc-result-title">📊 计算结果</h2>
-        <div id="calc-result-output" class="calc-placeholder-message">
-            请填写参数并点击计算按钮
-        </div>
+    
+    <!-- 结果显示 -->
+    <div id="result" style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #e9ecef;">
+        <div style="text-align: center; color: #666;">请输入参数并点击计算</div>
     </div>
 </div>
 
 <script>
-    // 核心算法引擎
-    function calculate_egf_ratings(r1, r2, result, handicap = 0) {
-        let adjusted_r1;
-        if (handicap > 0) {
-            const handicap_adjustment = (handicap - 0.5) * 100;
-            adjusted_r1 = r1 + handicap_adjustment;
-        } else {
-            adjusted_r1 = r1;
-        }
-
-        const beta = (r) => {
-            r = Math.min(r, 3299.9);
-            return -7 * Math.log(3300 - r);
-        };
-
-        const con = (r) => Math.pow(((3300 - r) / 200), 1.6);
-        const bonus = (r) => Math.log(1 + Math.exp((2300 - r) / 80)) / 5;
-
-        const Se1 = 1 / (1 + Math.exp(beta(r2) - beta(adjusted_r1)));
-        const Se2 = 1 - Se1;
-
-        let Sa1, Sa2;
-        if (result === "黑胜") { [Sa1, Sa2] = [1.0, 0.0]; } 
-        else if (result === "白胜") { [Sa1, Sa2] = [0.0, 1.0]; } 
-        else { [Sa1, Sa2] = [0.5, 0.5]; }
-
-        const new_r1 = r1 + con(r1) * (Sa1 - Se1) + bonus(r1);
-        const new_r2 = r2 + con(r2) * (Sa2 - Se2) + bonus(r2);
-
-        return {
-            new_r1: parseFloat(new_r1.toFixed(2)),
-            new_r2: parseFloat(new_r2.toFixed(2)),
-            Se1: Se1,
-            Se2: Se2
-        };
+function calculateRating() {
+    const r1 = parseFloat(document.getElementById('blackRating').value);
+    const r2 = parseFloat(document.getElementById('whiteRating').value);
+    const handicap = parseInt(document.getElementById('handicap').value);
+    const result = document.getElementById('gameResult').value;
+    
+    if (isNaN(r1) || isNaN(r2) || isNaN(handicap)) {
+        document.getElementById('result').innerHTML = '<div style="color: #e74c3c; text-align: center;">请输入有效数字</div>';
+        return;
     }
-
-    function get_rank_from_rating(rating) {
+    
+    // EGF算法
+    let adjusted_r1 = handicap > 0 ? r1 + (handicap - 0.5) * 100 : r1;
+    
+    const beta = (r) => -7 * Math.log(Math.min(3300, 3299.9) - Math.min(r, 3299.9));
+    const con = (r) => Math.pow((3300 - r) / 200, 1.6);
+    const bonus = (r) => Math.log(1 + Math.exp((2300 - r) / 80)) / 5;
+    
+    const Se1 = 1 / (1 + Math.exp(beta(r2) - beta(adjusted_r1)));
+    const Se2 = 1 - Se1;
+    
+    let Sa1, Sa2;
+    if (result === '黑胜') [Sa1, Sa2] = [1.0, 0.0];
+    else if (result === '白胜') [Sa1, Sa2] = [0.0, 1.0];
+    else [Sa1, Sa2] = [0.5, 0.5];
+    
+    const new_r1 = r1 + con(r1) * (Sa1 - Se1) + bonus(r1);
+    const new_r2 = r2 + con(r2) * (Sa2 - Se2) + bonus(r2);
+    
+    const change1 = (new_r1 - r1).toFixed(2);
+    const change2 = (new_r2 - r2).toFixed(2);
+    
+    function getRank(rating) {
         if (rating >= 2050) {
-            const base_level = Math.floor((rating - 2050) / 100);
-            const integer_rank = base_level + 1;
-            const rating_in_block = (rating - 2050) % 100;
-            const decimal_part = Math.floor(rating_in_block / 10);
-            return `${integer_rank}.${decimal_part}D`;
+            const level = Math.floor((rating - 2050) / 100) + 1;
+            const decimal = Math.floor(((rating - 2050) % 100) / 10);
+            return `${level}.${decimal}D`;
         } else {
-            const integer_rank = Math.floor((2050 - rating) / 100) + 1;
-            const top_of_band = 2050 - (integer_rank - 1) * 100;
-            const distance_from_top = top_of_band - rating;
-            const decimal_part = Math.floor(distance_from_top / 10);
-            return `${integer_rank}.${decimal_part}K`;
+            const level = Math.floor((2050 - rating) / 100) + 1;
+            const decimal = Math.floor((2050 - (level - 1) * 100 - rating) / 10);
+            return `${level}.${decimal}K`;
         }
     }
     
-    // 页面交互逻辑
-    const calculateButton = document.getElementById('calc-calculate-button');
-    const resultOutput = document.getElementById('calc-result-output');
-    const resultContainer = document.getElementById('calc-result-container');
-
-    calculateButton.addEventListener('click', function() {
-        const r1_old = parseFloat(document.getElementById('calc-black-rating').value);
-        const r2_old = parseFloat(document.getElementById('calc-white-rating').value);
-        const handicap = parseInt(document.getElementById('calc-handicap').value, 10);
-        const result = document.getElementById('calc-result').value;
-
-        if (isNaN(r1_old) || isNaN(r2_old) || isNaN(handicap)) {
-            resultOutput.innerHTML = '<div class="calc-error-message">❌ 请输入有效的数字等级分和让子数。</div>';
-            return;
-        }
-
-        const { new_r1, new_r2, Se1, Se2 } = calculate_egf_ratings(r1_old, r2_old, result, handicap);
-        
-        const change1 = (new_r1 - r1_old).toFixed(2);
-        const change2 = (new_r2 - r2_old).toFixed(2);
-
-        const rank1_old = get_rank_from_rating(r1_old);
-        const rank2_old = get_rank_from_rating(r2_old);
-        const rank1_new = get_rank_from_rating(new_r1);
-        const rank2_new = get_rank_from_rating(new_r2);
-        
-        const se1_percent = (Se1 * 100).toFixed(2);
-        const se2_percent = (Se2 * 100).toFixed(2);
-
-        resultOutput.innerHTML = `
-            <div class="calc-result-grid">
-                <div class="calc-player-result">
-                    <div class="calc-player-title">⚫ 黑方 (Player 1)</div>
-                    <div class="calc-rating-info">原: ${r1_old} (<strong>${rank1_old}</strong>)</div>
-                    <div class="calc-rating-info calc-new-rating">新: ${new_r1} (<strong>${rank1_new}</strong>)</div>
-                    <div class="calc-rating-info">变化: <span class="calc-rating-change ${change1 >= 0 ? 'calc-positive' : 'calc-negative'}">${change1 > 0 ? '+' : ''}${change1}</span></div>
+    const se1_percent = (Se1 * 100).toFixed(1);
+    const se2_percent = (Se2 * 100).toFixed(1);
+    
+    document.getElementById('result').innerHTML = `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #2c3e50;">
+                <h4 style="margin: 0 0 10px 0; color: #2c3e50;">黑方</h4>
+                <div>原: ${r1} (${getRank(r1)})</div>
+                <div style="font-weight: bold; color: #667eea;">新: ${new_r1.toFixed(2)} (${getRank(new_r1)})</div>
+                <div>变化: <span style="color: ${change1 >= 0 ? '#27ae60' : '#e74c3c'}">${change1 > 0 ? '+' : ''}${change1}</span></div>
+            </div>
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #95a5a6;">
+                <h4 style="margin: 0 0 10px 0; color: #2c3e50;">白方</h4>
+                <div>原: ${r2} (${getRank(r2)})</div>
+                <div style="font-weight: bold; color: #667eea;">新: ${new_r2.toFixed(2)} (${getRank(new_r2)})</div>
+                <div>变化: <span style="color: ${change2 >= 0 ? '#27ae60' : '#e74c3c'}">${change2 > 0 ? '+' : ''}${change2}</span></div>
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <h4 style="color: #2c3e50; margin-bottom: 10px;">预期胜率</h4>
+            <div style="display: flex; height: 30px; border-radius: 15px; overflow: hidden; border: 1px solid #ddd;">
+                <div style="background: #2c3e50; color: white; width: ${se1_percent}%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                    黑 ${se1_percent}%
                 </div>
-                <div class="calc-player-result">
-                    <div class="calc-player-title">⚪ 白方 (Player 2)</div>
-                    <div class="calc-rating-info">原: ${r2_old} (<strong>${rank2_old}</strong>)</div>
-                    <div class="calc-rating-info calc-new-rating">新: ${new_r2} (<strong>${rank2_new}</strong>)</div>
-                    <div class="calc-rating-info">变化: <span class="calc-rating-change ${change2 >= 0 ? 'calc-positive' : 'calc-negative'}">${change2 > 0 ? '+' : ''}${change2}</span></div>
+                <div style="background: #95a5a6; color: white; width: ${se2_percent}%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                    白 ${se2_percent}%
                 </div>
             </div>
-            <div class="calc-probability-section">
-                <div class="calc-probability-title">📈 预期胜率对比 (Se)</div>
-                <div class="calc-probability-bar" title="黑方胜率: ${se1_percent}% | 白方胜率: ${se2_percent}%">
-                    <div class="calc-black-prob" style="width: ${se1_percent}%;">
-                        ${se1_percent}%
-                    </div>
-                    <div class="calc-white-prob" style="width: ${se2_percent}%;">
-                        ${se2_percent}%
-                    </div>
-                </div>
-                <div class="calc-probability-note">
-                    鼠标悬停在胜率条上查看精确数值
-                </div>
-            </div>
-        `;
-
-        resultContainer.classList.remove('new');
-        void resultContainer.offsetWidth;
-        resultContainer.classList.add('new');
-    });
+        </div>
+    `;
+}
 </script>
