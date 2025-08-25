@@ -1,267 +1,1043 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
+  <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全球围棋超级联赛</title>
-    <meta name="description" content="全球围棋超级联赛">
     
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="description" content="全球围棋超级联赛">
 
-    <style>
-        /* --- 基础和颜色变量 --- */
-        :root {
-            --sidebar-width: 220px; 
-            --sidebar-bg: #2c2a27;
-            --sidebar-text: #e0e0e0;
-            --sidebar-text-hover: #ffffff;
-            --sidebar-bg-hover: #3c3a37;
-            --sidebar-border: #4a4846;
-            --main-bg: #f0f2f5;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--main-bg); overflow-x: hidden; }
-        .layout-wrapper { display: flex; }
+    <title>全球围棋超级联赛 - Global Weiqi Super League</title>
+    <meta property="og:title" content="全球围棋超级联赛" />
+    <meta property="og:description" content="全名参与，高手云集，新手友好，真正涨棋的全球围棋超级联赛" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.globalweiqi.com/index.html" />
+    <meta property="og:image" content="https://www.globalweiqi.com/images/GlobalWeiqi.png" />
+    <link rel="stylesheet" href="style.css">
 
-        /* --- 左侧边栏导航 --- */
-        .sidebar {
-            width: var(--sidebar-width);
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background-color: var(--sidebar-bg);
-            color: var(--sidebar-text);
-            z-index: 1000;
-            transition: transform 0.3s ease-in-out;
-            flex-shrink: 0;
-            display: flex; /* 使用flex布局让页脚按钮固定在底部 */
-            flex-direction: column; /* 垂直排列 */
-        }
-        .sidebar-header {
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem; /* Logo和文字的间距 */
-            border-bottom: 1px solid var(--sidebar-border);
-            flex-shrink: 0; /* 防止头部被压缩 */
-        }
-        /* ▼▼▼【Logo 修正】▼▼▼ */
-        .sidebar-logo {
-            height: 36px; /* 高度与菜单项一致 */
-            width: auto;  /* 宽度自动，防止变形 */
-        }
-        .sidebar-title {
-             font-size: 1.1rem; font-weight: bold; color: white;
-        }
-        .sidebar-scroll-area {
-            overflow-y: auto; /* 菜单项可滚动 */
-            flex-grow: 1; /* 占据所有剩余空间 */
-        }
 
-        /* --- 主内容区 --- */
-        .main-content-wrapper {
-            flex-grow: 1;
-            transition: transform 0.3s ease-in-out, margin-left 0.3s ease-in-out;
-            width: 100%;
-        }
-        .top-bar {
-            background-color: white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 1.5rem;
-            position: sticky;
-            top: 0;
-            z-index: 900;
-        }
-        #content-container { padding: 1.5rem; }
-        
-        /* --- 汉堡菜单按钮 --- */
-        .hamburger-button { display: none; padding: 0.5rem; }
-        .hamburger-button .bar { display: block; width: 22px; height: 2px; margin: 5px 0; background-color: #374151; }
-        
-        /* --- 导航菜单样式 --- */
-        .menu { list-style: none; padding: 0.5rem 0; }
-        .menu a { text-decoration: none; color: var(--sidebar-text); font-weight: 500; font-size: 15px; }
-        .menu > li { position: relative; }
-        .menu > li > a {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.55rem 1.25rem; /* ▼▼▼【高度修正】减小了垂直间距 ▼▼▼ */
-            transition: all 0.2s;
-        }
-        .menu > li > a:hover { color: var(--sidebar-text-hover); background-color: var(--sidebar-bg-hover); }
-        .submenu, .submenu-3 { list-style: none; padding-left: 0; }
-        .submenu a { font-size: 0.9rem; padding: 0.5rem 1.25rem; }
-        .submenu-3 a { font-size: 0.85rem; padding: 0.4rem 1.25rem; }
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        /* --- ▼▼▼【新增】侧边栏底部按钮样式 ▼▼▼ --- */
-        .sidebar-footer {
-            padding: 1rem;
-            flex-shrink: 0; /* 防止页脚被压缩 */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+    }
+
+    /* 现代化头部设计 */
+    .site-header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 15px 30px;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      gap: 15px;
+      transition: transform 0.2s ease;
+    }
+
+    .logo-link:hover {
+      transform: translateY(-2px);
+    }
+
+    .site-logo {
+      height: 50px;
+      width: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .site-title {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .site-subtitle {
+      font-size: 12px;
+      color: #666;
+      margin-top: 2px;
+      font-weight: 400;
+    }
+
+    /* 现代化导航设计 */
+    nav {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 30px;
+    }
+
+    .menu {
+      display: flex;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      align-items: center;
+    }
+
+    .menu > li {
+      position: relative;
+    }
+
+    .menu > li > a {
+      display: block;
+      color: #333;
+      padding: 18px 20px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      border-radius: 8px;
+      margin: 0 5px;
+    }
+
+    .menu > li > a:hover {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    /* 特殊按钮样式 */
+    .menu > li > a[style*="color: red"] {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24) !important;
+      color: white !important;
+      font-weight: 700;
+      padding: 12px 25px;
+      border-radius: 25px;
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4); }
+      50% { box-shadow: 0 4px 25px rgba(255, 107, 107, 0.6); }
+      100% { box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4); }
+    }
+
+    .menu > li > a[style*="color: red"]:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 25px rgba(255, 107, 107, 0.5);
+    }
+
+    /* 现代化子菜单设计 */
+    .submenu {
+      display: none;
+      position: absolute;
+      background: white;
+      top: 100%;
+      left: 0;
+      min-width: 220px;
+      z-index: 100;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 8px 0;
+      margin-top: 10px;
+    }
+
+    /* 桌面端鼠标悬停显示子菜单 */
+    .menu li:hover > .submenu {
+      display: block;
+      animation: fadeInUp 0.3s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 移动端和桌面端都使用的激活状态 */
+    .submenu.active {
+      display: block !important;
+      animation: fadeInUp 0.3s ease;
+    }
+
+    .submenu li {
+      position: relative;
+      margin: 2px 8px;
+    }
+
+    .submenu li a {
+      display: block;
+      color: #333;
+      padding: 12px 16px;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+
+    .submenu li a:hover {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      transform: translateX(5px);
+    }
+
+    /* 三级菜单现代化设计 */
+    .submenu-3 {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 100%;
+      background: white;
+      min-width: 200px;
+      z-index: 200;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 8px 0;
+      margin-left: 10px;
+    }
+
+    .has-submenu:hover > .submenu-3 {
+      display: block;
+      animation: fadeInRight 0.3s ease;
+    }
+
+    @keyframes fadeInRight {
+      from {
+        opacity: 0;
+        transform: translateX(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .submenu-3.active {
+      display: block !important;
+      animation: fadeInRight 0.3s ease;
+    }
+
+    .submenu-3 li {
+      margin: 2px 8px;
+    }
+
+    .submenu-3 li a {
+      display: block;
+      color: #333;
+      padding: 10px 16px;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .submenu-3 li a:hover {
+      background: linear-gradient(135deg, #764ba2, #667eea);
+      color: white;
+      transform: translateX(5px);
+    }
+
+    /* 移动端现代化适配 */
+    @media (max-width: 768px) {
+      .header-container {
+        padding: 0 15px;
+      }
+      
+      .site-title {
+        font-size: 18px;
+      }
+      
+      .nav-container {
+        padding: 0 15px;
+      }
+      
+      .menu {
+        flex-direction: column;
+        padding: 0;
+      }
+      
+      .menu > li {
+        width: 100%;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .menu > li > a {
+        padding: 18px 20px;
+        font-size: 16px;
+        margin: 0;
+        border-radius: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .menu > li > a:hover {
+        transform: none;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+      }
+      
+      /* 移动端子菜单 */
+      .submenu {
+        position: static !important;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        min-width: auto;
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+        margin: 0;
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+      
+      .submenu.active {
+        max-height: 500px;
+        display: block !important;
+        animation: none;
+      }
+      
+      .submenu li {
+        margin: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .submenu li a {
+        padding: 15px 40px;
+        font-size: 14px;
+        color: #333;
+        border-radius: 0;
+      }
+      
+      .submenu li a:hover {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        transform: none;
+      }
+      
+      /* 移动端三级菜单 */
+      .submenu-3 {
+        position: static !important;
+        background: rgba(240, 240, 240, 0.95);
+        margin-left: 0;
+        border-radius: 0;
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+      
+      .submenu-3.active {
+        max-height: 200px;
+        display: block !important;
+        animation: none;
+      }
+      
+      .submenu-3 li {
+        margin: 0;
+      }
+      
+      .submenu-3 li a {
+        padding: 12px 60px;
+        font-size: 13px;
+        color: #555;
+        border-radius: 0;
+      }
+      
+      .submenu-3 li a:hover {
+        background: linear-gradient(135deg, #764ba2, #667eea);
+        color: white;
+        transform: none;
+      }
+      
+      /* 移动端箭头样式 */
+      .menu > li.has-submenu > a::after {
+        content: '\25BC';
+        font-size: 12px;
+        transition: transform 0.3s ease;
+        color: #666;
+      }
+      
+      .menu > li.has-submenu.active > a::after {
+        transform: rotate(180deg);
+        color: white;
+      }
+      
+      .submenu li.has-submenu > a::after {
+        content: '\25B6';
+        font-size: 10px;
+        color: #666;
+      }
+      
+      .submenu li.has-submenu.active > a::after {
+        content: '\25BC';
+        transform: none;
+        color: #333;
+      }
+    }
+
+    /* 主内容区域现代化设计 */
+    .main-content {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 30px;
+    }
+
+    .content-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      min-height: calc(100vh - 200px);
+    }
+
+    /* 英雄区域设计 */
+    .hero-section {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+      padding: 80px 60px;
+      text-align: center;
+    }
+
+    .hero-title {
+      font-size: 48px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+    }
+
+    .hero-subtitle {
+      font-size: 20px;
+      color: #666;
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 15px 30px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+      color: white;
+      box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(255, 107, 107, 0.5);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      border: 2px solid rgba(102, 126, 234, 0.3);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-secondary:hover {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+    }
+
+    /* 功能区域设计 */
+    .features-section {
+      padding: 60px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 16px;
+      padding: 40px 30px;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .feature-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .feature-card p {
+      color: #666;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 0 15px;
+        margin: 15px auto;
+      }
+    }
+  </style>
+<style>
+    /* 用户状态现代化设计 */
+    #nav-user-status {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    
+    #nav-user-status span {
+        color: #333;
+        padding: 8px 15px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    #nav-user-status a {
+        cursor: pointer;
+        color: white;
+        text-decoration: none;
+        padding: 8px 15px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    #nav-user-status a:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        text-decoration: none;
+    }
+    
+    @media (max-width: 768px) {
+        #nav-user-status {
+            flex-direction: column;
+            gap: 8px;
+            font-size: 12px;
         }
-        .sidebar-btn {
-            display: block;
-            width: 100%;
-            padding: 0.75rem;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: bold;
-            text-align: center;
-            text-decoration: none;
-            transition: background-color 0.2s;
-        }
-        .btn-signup {
-            background-color: #81b64c; /* chess.com 绿色 */
-            color: white;
-            margin-bottom: 0.5rem;
-        }
-        .btn-signup:hover { background-color: #95c85e; }
-        .btn-login {
-            background-color: #4a4846; /* chess.com 深灰色 */
-            color: var(--sidebar-text-hover);
-        }
-        .btn-login:hover { background-color: #5a5856; }
         
-        /* --- 电脑端响应式 --- */
-        @media (min-width: 1024px) {
-            .main-content-wrapper { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); }
-            .submenu, .submenu-3 {
-                position: absolute; top: 0; left: 100%;
-                background-color: var(--sidebar-bg);
-                min-width: 200px;
-                box-shadow: 2px 0 5px rgba(0,0,0,0.2);
-                border-left: 1px solid var(--sidebar-border);
-                display: none;
-            }
-            .menu > li:hover > .submenu,
-            .submenu > li:hover > .submenu-3 {
-                display: block;
-            }
+        #nav-user-status span,
+        #nav-user-status a {
+            padding: 6px 12px;
+            font-size: 12px;
         }
-        
-        /* --- 手机/平板端响应式 --- */
-        @media (max-width: 1023px) {
-            .hamburger-button { display: block; }
-            .sidebar { transform: translateX(-100%); }
-            body.sidebar-open .sidebar { transform: translateX(0); }
-            .content-overlay {
-                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                background: rgba(0,0,0,0.5); z-index: 950;
-                opacity: 0; visibility: hidden;
-                transition: opacity 0.3s ease-in-out;
-            }
-            body.sidebar-open .content-overlay { opacity: 1; visibility: visible; }
-            .has-submenu > a::after { content: '›'; font-size: 1.2rem; transition: transform 0.3s; }
-            .has-submenu.active > a::after { transform: rotate(90deg); }
-            .submenu, .submenu-3 { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-            .submenu.active, .submenu-3.active { max-height: 1000px; }
-            .submenu a { padding-left: 2.5rem; background-color: rgba(0,0,0,0.1); }
-            .submenu-3 a { padding-left: 3.75rem; background-color: rgba(0,0,0,0.2); }
-        }
-        
-        iframe {
-            width: 100%;
-            height: calc(100vh - 64px);
-            border: none;
-        }
-    </style>
+    }
+</style>
+
 </head>
 <body>
 
-<div class="layout-wrapper">
-    <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-header hidden lg:flex justify-center p-4"> {# 增加了 justify-center 和一些内边距 p-4 #}
-            <img src="./images/GlobalWeiqi.png" alt="Logo" class="sidebar-logo">
-
+  <!-- 现代化头部设计 -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="index.html" class="logo-link">
+        <img src="./images/GlobalWeiqi.png" alt="Global Weiqi Logo" class="site-logo">
+        <div>
+          <div class="site-title">全球围棋超级联赛</div>
+          <div class="site-subtitle">Global Weiqi Super League</div>
         </div>
-        
-        <div class="sidebar-scroll-area">
-            <ul class="menu" id="main-menu">
-              <li class="has-submenu">
-                <a href="#">比赛信息</a>
-                <ul class="submenu">
-                  <li><a href="standingsS1R5.html" target="content-frame">第1期（已结束）</a></li>
-                  <li class="has-submenu">
-                    <a href="#">第2期（进行中）</a>
-                    <ul class="submenu-3">
-                      <li><a href="standingsS2R4.html" target="content-frame">排行榜</a></li>
-                      <li><a href="GamesListS2R4.html" target="content-frame">第4轮对局</a></li>
-                    </ul>
-                  </li>
-                </ul>
-              </li>
-              <li><a href="ratinghistory.html" target="content-frame">会员名录</a></li>
-              <li class="has-submenu">
-                <a href="#">重要说明</a>
-                <ul class="submenu">
-                  <li><a href="regulations.html" target="content-frame">比赛章程</a></li>
-                  <li><a href="deposit.html" target="content-frame">保证金</a></li>
-                </ul>
-              </li>
-              <li><a href="calculator.html" target="content-frame">计算器</a></li>
+      </a>
+      <div id="nav-user-status"></div>
+    </div>
+  </header>
+
+  <!-- 现代化导航菜单 -->
+<nav>
+  <div class="nav-container">
+    <ul class="menu">
+      <li class="has-submenu">
+        <a href="#">🏆 比赛信息</a>
+        <ul class="submenu">
+          <li><a href="standingsS1R5.html" data-page="standingsS1R5">🏁 第1期（已结束）</a></li>
+          <li class="has-submenu">
+            <a href="#">🔥 第2期（进行中）</a>
+            <ul class="submenu-3">
+              <li><a href="standingsS2R4.html" data-page="standingsS2R4">📈 排行榜</a></li>
+              <li><a href="GamesListS2R4.html" data-page="GamesListS2R4">⚔️ 第4轮对局</a></li>
             </ul>
-        </div>
+          </li>
+        </ul>
+      </li>
+      <li class="has-submenu">
+        <a href="#">📜 重要说明</a>
+        <ul class="submenu">
+          <li><a href="regulations.html" data-page="regulations">📋 比赛章程</a></li>
+          <li><a href="deposit.html" data-page="deposit">💰 保证金</a></li>
+          <li><a href="Review.html" data-page="Review">📚 复盘讲解</a></li>
+          <li><a href="Mcmahon.html" data-page="Mcmahon">🎲 麦克马洪编排</a></li>
+          <li><a href="play.html" data-page="play">♟️ 下棋</a></li>
+          <li><a href="board.html" data-page="board">🎨 对弈棋盘</a></li>
+          <li><a href="pairing_flow.html" data-page="pairing_flow">🔄 分区流动</a></li>
+          <li><a href="flow_test.html" data-page="flow_test">🧪 流动测试</a></li>
+          <li><a href="api_debug.html" data-page="api_debug">🔧 API调试</a></li>
+          <li><a href="mobile_menu_test.html" data-page="mobile_menu_test">📱 菜单测试</a></li>
+          <li><a href="menu_debug.html" data-page="menu_debug">🐛 菜单调试</a></li>
+          <li><a href="simple_menu_test.html" data-page="simple_menu_test">⚙️ 简单测试</a></li>
+          <li><a href="login.html" data-page="login">🔑 登陆</a></li>
+          <li><a href="zhuce.html" data-page="zhuce">📝 注册</a></li>
+        </ul>
+      </li>
+      
+      <li>
+        <a href="ratinghistory.html" data-page="ratinghistory">👥 会员名录</a>
+      </li>
+      
+      <li>
+        <a href="register.html" data-page="register" style="color: red; font-weight: bold;">🎆 马上报名</a>
+      </li>
 
-        <div class="sidebar-footer">
-            <a href="register.html" target="content-frame" class="sidebar-btn btn-signup">马上报名</a>
-            <a href="login.html" target="content-frame" class="sidebar-btn btn-login">登录</a>
+      <li>
+        <a href="calculator.html" data-page="calculator">📊 计算器</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+  <!-- 主内容区域 -->
+  <div class="main-content">
+    <div class="content-container" id="main-content">
+      <!-- 默认首页内容 -->
+      <div class="hero-section">
+        <div class="hero-content">
+          <h1 class="hero-title">全球围棋超级联赛</h1>
+          <p class="hero-subtitle">全名参与，高手云集，新手友好，真正涨棋的全球围棋超级联赛</p>
+          <div class="hero-buttons">
+            <a href="#" class="btn btn-primary" data-page="register">🎆 马上报名</a>
+            <a href="#" class="btn btn-secondary" data-page="standings">📈 查看排名</a>
+          </div>
         </div>
-    </nav>
-    
-    <div class="main-content-wrapper" id="main-content-wrapper">
-        <header class="top-bar">
-            <div class="flex items-center">
-                <button class="hamburger-button" id="hamburger-button">
-                    <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-                </button>
-                <div class="flex items-center gap-3 lg:hidden">
-                    <img src="./images/GlobalWeiqi.png" alt="Logo" class="h-8">
+      </div>
+      
+      <div class="features-section">
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🏆</div>
+            <h3>比赛信息</h3>
+            <p>实时更新的比赛进度和排名信息</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">♟️</div>
+            <h3>在线对弈</h3>
+            <p>支持在线下棋和复盘分析</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📚</div>
+            <h3>学习资源</h3>
+            <p>丰富的学习材料和技巧分享</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">👥</div>
+            <h3>社区交流</h3>
+            <p>与全球围棋爱好者交流学习</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE_URL = 'https://yaoshen.pythonanywhere.com/api';
+    const userStatusDiv = document.getElementById('nav-user-status');
+
+    // 页面内容管理
+    function showHomePage() {
+        const mainContent = document.getElementById('main-content');
+        mainContent.innerHTML = `
+            <!-- 默认首页内容 -->
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">全球围棋超级联赛</h1>
+                    <p class="hero-subtitle">全名参与，高手云集，新手友好，真正涨棋的全球围棋超级联赛</p>
+                    <div class="hero-buttons">
+                        <a href="#" class="btn btn-primary" data-page="register">🎆 马上报名</a>
+                        <a href="#" class="btn btn-secondary" data-page="standingsS2R4">📈 查看排名</a>
+                    </div>
                 </div>
             </div>
             
-            </header>
-
-        <main id="content-container">
-             <iframe src="home.html" name="content-frame"></iframe>
-        </main>
-    </div>
-    
-    <div class="content-overlay" id="content-overlay"></div>
-</div>
-
-<script>
-    // JavaScript 部分无需修改，保持原样即可
-    document.addEventListener('DOMContentLoaded', function() {
-        const hamburgerButton = document.getElementById('hamburger-button');
-        const contentOverlay = document.getElementById('content-overlay');
-        function toggleMenu() { document.body.classList.toggle('sidebar-open'); }
-        hamburgerButton.addEventListener('click', function(e) { e.stopPropagation(); toggleMenu(); });
-        contentOverlay.addEventListener('click', toggleMenu);
-        document.querySelectorAll('.sidebar .has-submenu > a').forEach(link => {
-            link.addEventListener('click', function(e) {
-                if (window.innerWidth >= 1024) return;
+            <div class="features-section">
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🏆</div>
+                        <h3>比赛信息</h3>
+                        <p>实时更新的比赛进度和排名信息</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">♟️</div>
+                        <h3>在线对弈</h3>
+                        <p>支持在线下棋和复盘分析</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📚</div>
+                        <h3>学习资源</h3>
+                        <p>丰富的学习材料和技巧分享</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">👥</div>
+                        <h3>社区交流</h3>
+                        <p>与全球围棋爱好者交流学习</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // 为首页按钮添加事件监听器
+        const heroButtons = mainContent.querySelectorAll('[data-page]');
+        heroButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
                 e.preventDefault();
-                const parentLi = this.parentElement;
-                const isSubSubMenu = parentLi.parentElement.classList.contains('submenu');
-                if (!isSubSubMenu) {
-                    parentLi.parentElement.querySelectorAll('.has-submenu.active').forEach(openLi => {
-                        if (openLi !== parentLi) {
-                            openLi.classList.remove('active');
-                            openLi.querySelector('.submenu, .submenu-3').classList.remove('active');
-                        }
-                    });
+                const page = e.target.getAttribute('data-page');
+                if (page === 'register') {
+                    loadPage('register.html');
+                } else if (page === 'standingsS2R4') {
+                    loadPage('standingsS2R4.html');
                 }
-                parentLi.classList.toggle('active');
-                const submenu = parentLi.querySelector('.submenu, .submenu-3');
-                if (submenu) { submenu.classList.toggle('active'); }
             });
         });
+    }
+    
+    function loadPage(pageUrl) {
+        console.log('加载页面:', pageUrl);
+        const mainContent = document.getElementById('main-content');
+        
+        // 显示加载状态
+        mainContent.innerHTML = `
+            <div style="text-align: center; padding: 50px; color: #666;">
+                <div style="font-size: 24px; margin-bottom: 20px;">⏳</div>
+                <div>正在加载页面...</div>
+            </div>
+        `;
+        
+        // 加载外部HTML文件
+        fetch(pageUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.text();
+            })
+            .then(html => {
+                // 提取body内容或完整HTML
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const bodyContent = doc.body;
+                
+                if (bodyContent) {
+                    mainContent.innerHTML = bodyContent.innerHTML;
+                } else {
+                    mainContent.innerHTML = html;
+                }
+                
+                // 执行页面中的脚本
+                const scripts = mainContent.querySelectorAll('script');
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    if (script.src) {
+                        newScript.src = script.src;
+                    } else {
+                        newScript.textContent = script.textContent;
+                    }
+                    document.head.appendChild(newScript);
+                });
+                
+                console.log('页面加载完成:', pageUrl);
+            })
+            .catch(error => {
+                console.error('页面加载失败:', error);
+                mainContent.innerHTML = `
+                    <div style="text-align: center; padding: 50px; color: #e74c3c;">
+                        <div style="font-size: 24px; margin-bottom: 20px;">❌</div>
+                        <div>页面加载失败</div>
+                        <div style="margin-top: 10px; font-size: 14px; color: #7f8c8d;">${error.message}</div>
+                        <button onclick="showHomePage()" style="margin-top: 20px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">返回首页</button>
+                    </div>
+                `;
+            });
+    }
+    
+    // 初始化导航事件监听器
+    function initNavigation() {
+        // 为所有带有data-page属性的链接添加事件监听器
+        document.querySelectorAll('a[data-page]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageUrl = e.target.getAttribute('href');
+                loadPage(pageUrl);
+            });
+        });
+    }
+    
+    function initMobileMenu() {
+        console.log('初始化移动端菜单...');
+        
+        // 关闭所有菜单的统一函数
+        function closeAllMenus() {
+            console.log('关闭所有菜单');
+            document.querySelectorAll('.submenu.active, .submenu-3.active').forEach(activeSubmenu => {
+                activeSubmenu.classList.remove('active');
+            });
+            document.querySelectorAll('.menu li.active').forEach(activeItem => {
+                activeItem.classList.remove('active');
+            });
+        }
+        
+        // 为所有有子菜单的一级菜单项添加点击事件
+        const menuItems = document.querySelectorAll('.menu > li.has-submenu > a');
+        console.log('找到菜单项:', menuItems.length);
+        
+        menuItems.forEach((menuLink, index) => {
+            console.log(`设置菜单项 ${index + 1}: ${menuLink.textContent.trim()}`);
+            
+            menuLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('点击了菜单:', this.textContent.trim());
+                
+                const parentLi = this.parentElement;
+                const submenu = parentLi.querySelector('.submenu');
+                
+                if (submenu) {
+                    // 检查当前菜单是否已经激活
+                    const isCurrentlyActive = submenu.classList.contains('active');
+                    
+                    // 先关闭所有菜单
+                    document.querySelectorAll('.submenu.active').forEach(activeMenu => {
+                        activeMenu.classList.remove('active');
+                        activeMenu.parentElement.classList.remove('active');
+                    });
+                    document.querySelectorAll('.submenu-3.active').forEach(activeMenu3 => {
+                        activeMenu3.classList.remove('active');
+                        activeMenu3.parentElement.classList.remove('active');
+                    });
+                    
+                    // 如果之前没有激活，则打开当前菜单；如果已激活且重复点击，则关闭所有菜单
+                    if (!isCurrentlyActive) {
+                        submenu.classList.add('active');
+                        parentLi.classList.add('active');
+                        console.log('打开子菜单');
+                    } else {
+                        console.log('重复点击同一菜单，关闭所有菜单');
+                    }
+                }
+            });
+        });
+        
+        // 为三级菜单项添加点击事件
+        const submenuItems = document.querySelectorAll('.submenu li.has-submenu > a');
+        console.log('找到三级菜单项:', submenuItems.length);
+        
+        submenuItems.forEach((submenuLink, index) => {
+            submenuLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('点击了三级菜单:', this.textContent.trim());
+                
+                const parentLi = this.parentElement;
+                const submenu3 = parentLi.querySelector('.submenu-3');
+                
+                if (submenu3) {
+                    const isActive = submenu3.classList.contains('active');
+                    if (isActive) {
+                        submenu3.classList.remove('active');
+                        parentLi.classList.remove('active');
+                    } else {
+                        submenu3.classList.add('active');
+                        parentLi.classList.add('active');
+                    }
+                }
+            });
+        });
+        
+        // 为所有子菜单和三级菜单的链接添加点击关闭功能
+        document.querySelectorAll('.submenu a, .submenu-3 a').forEach(link => {
+            // 跳过有子菜单的项目（这些项目用于展开下级菜单）
+            if (!link.parentElement.classList.contains('has-submenu')) {
+                link.addEventListener('click', function(e) {
+                    console.log('点击了菜单项:', this.textContent.trim());
+                    
+                    // 获取页面URL
+                    const pageUrl = this.getAttribute('href');
+                    if (pageUrl && pageUrl !== '#') {
+                        e.preventDefault();
+                        loadPage(pageUrl);
+                    }
+                    
+                    // 立即关闭所有菜单
+                    closeAllMenus();
+                });
+            }
+        });
+        
+        // 点击外部区域关闭菜单
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('nav')) {
+                console.log('点击外部，关闭菜单');
+                closeAllMenus();
+            }
+        });
+        
+        // ESC键关闭菜单
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                console.log('按下ESC键，关闭菜单');
+                closeAllMenus();
+            }
+        });
+
+        
+        console.log('移动端菜单初始化完成');
+    }
+
+    function checkLoginStatus() {
+        fetch(`${API_BASE_URL}/status/`, { credentials: 'include' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.logged_in) {
+                    userStatusDiv.innerHTML = `
+                        <span>欢迎您, ${data.user.name || '会员'} (ID: ${data.user.member_id})</span>
+                        <a id="logout-link">退出登录</a>
+                    `;
+                    document.getElementById('logout-link').addEventListener('click', handleLogout);
+                } else {
+                    userStatusDiv.innerHTML = `
+                        <a href="#" data-page="login">登录</a>
+                        <a href="#" data-page="zhuce">注册</a>
+                    `;
+                    // 为新创建的登录和注册链接添加事件监听器
+                    document.querySelector('a[data-page="login"]').addEventListener('click', (e) => {
+                        e.preventDefault();
+                        loadPage('login.html');
+                    });
+                    document.querySelector('a[data-page="zhuce"]').addEventListener('click', (e) => {
+                        e.preventDefault();
+                        loadPage('zhuce.html');
+                    });
+                }
+            });
+    }
+
+    function handleLogout() {
+        fetch(`${API_BASE_URL}/logout/`, { method: 'POST', credentials: 'include' })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    alert('您已成功退出。');
+                    checkLoginStatus(); // 更新UI
+                    showHomePage(); // 退出后，返回首页
+                }
+            });
+    }
+
+    // 监听来自子页面的消息，在登录或注册成功后刷新状态
+    window.addEventListener("message", (event) => {
+        if (event.data === "loginSuccess" || event.data === "registrationSuccess") {
+            checkLoginStatus();
+            showHomePage(); // 成功后返回首页
+        }
+    });
+
+    // 页面加载时立即执行
+    document.addEventListener('DOMContentLoaded', function() {
+        checkLoginStatus();
+        initMobileMenu();
+        initNavigation();
+        showHomePage(); // 默认显示首页
+    });
+    
+    // 窗口大小改变时重新初始化菜单
+    window.addEventListener('resize', function() {
+        // 清除所有活动状态
+        document.querySelectorAll('.submenu.active, .submenu-3.active').forEach(activeSubmenu => {
+            activeSubmenu.classList.remove('active');
+        });
+        document.querySelectorAll('.menu li.active').forEach(activeItem => {
+            activeItem.classList.remove('active');
+        });
+        
+        // 重新初始化
+        setTimeout(initMobileMenu, 100);
     });
 </script>
 
