@@ -89,16 +89,11 @@
     }
 
     /* 桌面端鼠标悬停显示子菜单 */
-    @media (hover: hover) and (pointer: fine) {
-      .menu li:hover > .submenu {
-        display: block;
-      }
-      .has-submenu:hover > .submenu-3 {
-        display: block;
-      }
+    .menu li:hover > .submenu {
+      display: block;
     }
 
-    /* 移动端点击显示子菜单 */
+    /* 移动端和桌面端都使用的激活状态 */
     .submenu.active {
       display: block !important;
     }
@@ -127,6 +122,10 @@
       background-color: #444;
       min-width: 180px;
       z-index: 200;
+    }
+
+    .has-submenu:hover > .submenu-3 {
+      display: block;
     }
 
     .submenu-3.active {
@@ -247,6 +246,7 @@
           <li><a href="api_debug.html" target="content-frame">API调试</a></li>
           <li><a href="mobile_menu_test.html" target="content-frame">菜单测试</a></li>
           <li><a href="menu_debug.html" target="content-frame">菜单调试</a></li>
+          <li><a href="simple_menu_test.html" target="content-frame">简单测试</a></li>
           <li><a href="login.html" target="content-frame">登陆</a></li>
           <li><a href="zhuce.html" target="content-frame">注册</a></li>
         </ul>
@@ -276,139 +276,105 @@
 
     // 移动端菜单管理
     function initMobileMenu() {
-        // 检测是否为移动设备或小屏幕
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
-                        window.innerWidth <= 768 || 
-                        ('ontouchstart' in window);
+        console.log('初始化移动端菜单...');
         
-        console.log('Is mobile device:', isMobile, 'Screen width:', window.innerWidth);
+        // 为所有有子菜单的一级菜单项添加点击事件
+        const menuItems = document.querySelectorAll('.menu > li.has-submenu > a');
+        console.log('找到菜单项:', menuItems.length);
         
-        if (isMobile) {
-            console.log('初始化移动端菜单');
+        menuItems.forEach((menuLink, index) => {
+            console.log(`设置菜单项 ${index + 1}: ${menuLink.textContent.trim()}`);
             
-            // 为一级菜单项目添加点击事件
-            const menuItems = document.querySelectorAll('.menu > li.has-submenu');
-            console.log('找到一级菜单项目:', menuItems.length);
-            
-            menuItems.forEach((item, index) => {
-                const submenu = item.querySelector('.submenu');
-                const mainLink = item.querySelector('> a');
+            menuLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 
-                if (submenu && mainLink) {
-                    console.log(`设置一级菜单 ${index + 1} 的点击事件`);
-                    
-                    // 移除可能已存在的事件监听器
-                    mainLink.removeEventListener('click', handleMenuClick);
-                    
-                    // 添加点击事件
-                    mainLink.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        console.log('点击了一级菜单:', mainLink.textContent.trim());
-                        
-                        // 关闭其他所有一级子菜单
-                        document.querySelectorAll('.menu > li.has-submenu').forEach(otherItem => {
-                            if (otherItem !== item) {
-                                const otherSubmenu = otherItem.querySelector('.submenu');
-                                if (otherSubmenu) {
-                                    otherSubmenu.classList.remove('active');
-                                    otherItem.classList.remove('active');
-                                }
-                            }
-                        });
-                        
-                        // 关闭所有三级菜单
-                        document.querySelectorAll('.submenu-3.active').forEach(submenu3 => {
-                            submenu3.classList.remove('active');
-                            submenu3.parentElement.classList.remove('active');
-                        });
-                        
-                        // 切换当前子菜单
-                        const isActive = submenu.classList.contains('active');
-                        if (isActive) {
-                            submenu.classList.remove('active');
-                            item.classList.remove('active');
-                            console.log('关闭子菜单');
-                        } else {
-                            submenu.classList.add('active');
-                            item.classList.add('active');
-                            console.log('打开子菜单');
+                console.log('点击了菜单:', this.textContent.trim());
+                
+                const parentLi = this.parentElement;
+                const submenu = parentLi.querySelector('.submenu');
+                
+                if (submenu) {
+                    // 关闭其他所有子菜单
+                    document.querySelectorAll('.submenu.active').forEach(activeMenu => {
+                        if (activeMenu !== submenu) {
+                            activeMenu.classList.remove('active');
+                            activeMenu.parentElement.classList.remove('active');
                         }
                     });
-                }
-            });
-            
-            // 为二级菜单中的三级菜单项目添加点击事件
-            const submenuItems = document.querySelectorAll('.submenu li.has-submenu');
-            console.log('找到二级菜单项目:', submenuItems.length);
-            
-            submenuItems.forEach((item, index) => {
-                const submenu3 = item.querySelector('.submenu-3');
-                const submenuLink = item.querySelector('> a');
-                
-                if (submenu3 && submenuLink) {
-                    console.log(`设置二级菜单 ${index + 1} 的点击事件`);
                     
-                    submenuLink.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        console.log('点击了二级菜单:', submenuLink.textContent.trim());
-                        
-                        // 关闭其他三级菜单
-                        document.querySelectorAll('.submenu-3.active').forEach(otherSubmenu3 => {
-                            if (otherSubmenu3 !== submenu3) {
-                                otherSubmenu3.classList.remove('active');
-                                otherSubmenu3.parentElement.classList.remove('active');
-                            }
-                        });
-                        
-                        // 切换当前三级菜单
-                        const isActive = submenu3.classList.contains('active');
-                        if (isActive) {
-                            submenu3.classList.remove('active');
-                            item.classList.remove('active');
-                            console.log('关闭三级菜单');
-                        } else {
-                            submenu3.classList.add('active');
-                            item.classList.add('active');
-                            console.log('打开三级菜单');
-                        }
-                    });
+                    // 切换当前子菜单
+                    const isActive = submenu.classList.contains('active');
+                    if (isActive) {
+                        submenu.classList.remove('active');
+                        parentLi.classList.remove('active');
+                        console.log('关闭子菜单');
+                    } else {
+                        submenu.classList.add('active');
+                        parentLi.classList.add('active');
+                        console.log('打开子菜单');
+                    }
                 }
             });
-            
-            // 点击子菜单项目后自动关闭菜单
-            document.querySelectorAll('.submenu a[target="content-frame"], .submenu-3 a[target="content-frame"]').forEach(link => {
-                link.addEventListener('click', function() {
-                    console.log('点击了菜单项目:', this.textContent.trim());
-                    // 延迟关闭菜单，给用户一个视觉反馈
-                    setTimeout(() => {
-                        document.querySelectorAll('.submenu.active, .submenu-3.active').forEach(activeSubmenu => {
-                            activeSubmenu.classList.remove('active');
-                        });
-                        document.querySelectorAll('.menu li.active').forEach(activeItem => {
-                            activeItem.classList.remove('active');
-                        });
-                        console.log('自动关闭所有菜单');
-                    }, 150);
-                });
+        });
+        
+        // 为三级菜单项添加点击事件
+        const submenuItems = document.querySelectorAll('.submenu li.has-submenu > a');
+        console.log('找到三级菜单项:', submenuItems.length);
+        
+        submenuItems.forEach((submenuLink, index) => {
+            submenuLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('点击了三级菜单:', this.textContent.trim());
+                
+                const parentLi = this.parentElement;
+                const submenu3 = parentLi.querySelector('.submenu-3');
+                
+                if (submenu3) {
+                    const isActive = submenu3.classList.contains('active');
+                    if (isActive) {
+                        submenu3.classList.remove('active');
+                        parentLi.classList.remove('active');
+                    } else {
+                        submenu3.classList.add('active');
+                        parentLi.classList.add('active');
+                    }
+                }
             });
-            
-            // 点击外部区域关闭菜单
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('nav')) {
-                    console.log('点击外部区域，关闭所有菜单');
+        });
+        
+        // 点击菜单项后自动关闭菜单
+        document.querySelectorAll('.submenu a[target="content-frame"], .submenu-3 a[target="content-frame"]').forEach(link => {
+            link.addEventListener('click', function() {
+                console.log('点击了最终菜单项:', this.textContent.trim());
+                setTimeout(() => {
                     document.querySelectorAll('.submenu.active, .submenu-3.active').forEach(activeSubmenu => {
                         activeSubmenu.classList.remove('active');
                     });
                     document.querySelectorAll('.menu li.active').forEach(activeItem => {
                         activeItem.classList.remove('active');
                     });
-                }
+                    console.log('自动关闭所有菜单');
+                }, 150);
             });
-        }
+        });
+        
+        // 点击外部区域关闭菜单
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('nav')) {
+                console.log('点击外部，关闭菜单');
+                document.querySelectorAll('.submenu.active, .submenu-3.active').forEach(activeSubmenu => {
+                    activeSubmenu.classList.remove('active');
+                });
+                document.querySelectorAll('.menu li.active').forEach(activeItem => {
+                    activeItem.classList.remove('active');
+                });
+            }
+        });
+        
+        console.log('移动端菜单初始化完成');
     }
 
     function checkLoginStatus() {
