@@ -1,41 +1,48 @@
-<!-- 围棋等级分计算器 -->
-<div style="padding: 20px; max-width: 800px; margin: 0 auto;">
-    <div style="text-align: center; margin-bottom: 30px;">
-        <h2 style="color: #2c3e50; margin-bottom: 10px;">围棋等级分计算器</h2>
-        <p style="color: #666;">EGF官方算法，支持棋份调整</p>
+<!-- 围棋等级分计算器 - 嵌入式版本 -->
+<div style="padding: 60px; background: transparent;">
+    <!-- 标题区域 -->
+    <div style="text-align: center; margin-bottom: 40px;">
+        <h1 style="font-size: 48px; font-weight: 800; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 20px;">围棋等级分计算器</h1>
+        <p style="font-size: 20px; color: #666; line-height: 1.6;">基于EGF官方算法，支持棋份调整的等级分与段位计算</p>
     </div>
     
     <!-- 输入表单 -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px;">
-        <div>
-            <label style="display: block; margin-bottom: 5px; font-weight: 600;">黑方等级分:</label>
-            <input type="number" id="blackRating" value="2100" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 40px;">
+        <div style="background: rgba(255, 255, 255, 0.8); border-radius: 16px; padding: 30px; border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)'; this.style.background='rgba(255,255,255,0.95)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.background='rgba(255,255,255,0.8)';">
+            <label style="display: block; margin-bottom: 15px; font-weight: 700; color: #2c3e50; font-size: 18px;">⚫ 黑方等级分</label>
+            <input type="number" id="blackRating" value="2100" style="width: 100%; padding: 15px; border: 2px solid #e9ecef; border-radius: 12px; font-size: 16px; transition: all 0.3s ease;" onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102,126,234,0.1)';" onblur="this.style.borderColor='#e9ecef'; this.style.boxShadow='none';">
         </div>
-        <div>
-            <label style="display: block; margin-bottom: 5px; font-weight: 600;">白方等级分:</label>
-            <input type="number" id="whiteRating" value="2100" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+        
+        <div style="background: rgba(255, 255, 255, 0.8); border-radius: 16px; padding: 30px; border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)'; this.style.background='rgba(255,255,255,0.95)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.background='rgba(255,255,255,0.8)';">
+            <label style="display: block; margin-bottom: 15px; font-weight: 700; color: #2c3e50; font-size: 18px;">⚪ 白方等级分</label>
+            <input type="number" id="whiteRating" value="2100" style="width: 100%; padding: 15px; border: 2px solid #e9ecef; border-radius: 12px; font-size: 16px; transition: all 0.3s ease;" onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102,126,234,0.1)';" onblur="this.style.borderColor='#e9ecef'; this.style.boxShadow='none';">
         </div>
-        <div>
-            <label style="display: block; margin-bottom: 5px; font-weight: 600;">让子数:</label>
-            <input type="number" id="handicap" value="0" min="0" max="9" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+        
+        <div style="background: rgba(255, 255, 255, 0.8); border-radius: 16px; padding: 30px; border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)'; this.style.background='rgba(255,255,255,0.95)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.background='rgba(255,255,255,0.8)';">
+            <label style="display: block; margin-bottom: 15px; font-weight: 700; color: #2c3e50; font-size: 18px;">🎯 让子数</label>
+            <input type="number" id="handicap" value="0" min="0" max="9" style="width: 100%; padding: 15px; border: 2px solid #e9ecef; border-radius: 12px; font-size: 16px; transition: all 0.3s ease;" onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102,126,234,0.1)';" onblur="this.style.borderColor='#e9ecef'; this.style.boxShadow='none';">
         </div>
-        <div>
-            <label style="display: block; margin-bottom: 5px; font-weight: 600;">比赛结果:</label>
-            <select id="gameResult" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
-                <option value="黑胜">黑胜</option>
-                <option value="白胜">白胜</option>
-                <option value="和棋">和棋</option>
+        
+        <div style="background: rgba(255, 255, 255, 0.8); border-radius: 16px; padding: 30px; border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)'; this.style.background='rgba(255,255,255,0.95)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.background='rgba(255,255,255,0.8)';">
+            <label style="display: block; margin-bottom: 15px; font-weight: 700; color: #2c3e50; font-size: 18px;">🏆 比赛结果</label>
+            <select id="gameResult" style="width: 100%; padding: 15px; border: 2px solid #e9ecef; border-radius: 12px; font-size: 16px; transition: all 0.3s ease; background: white;" onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102,126,234,0.1)';" onblur="this.style.borderColor='#e9ecef'; this.style.boxShadow='none';">
+                <option value="黑胜">⚫ 黑胜</option>
+                <option value="白胜">⚪ 白胜</option>
+                <option value="和棋">🤝 和棋</option>
             </select>
         </div>
     </div>
     
-    <button onclick="calculateRating()" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 20px;">
-        计算新等级分
-    </button>
+    <!-- 计算按钮 -->
+    <div style="text-align: center; margin-bottom: 40px;">
+        <button onclick="calculateRating()" style="padding: 20px 50px; background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; border: none; border-radius: 50px; font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4); display: inline-flex; align-items: center; gap: 10px;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 35px rgba(255, 107, 107, 0.5)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(255, 107, 107, 0.4)';">
+            🚀 计算新等级分与段位
+        </button>
+    </div>
     
-    <!-- 结果显示 -->
-    <div id="result" style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #e9ecef;">
-        <div style="text-align: center; color: #666;">请输入参数并点击计算</div>
+    <!-- 结果显示区域 -->
+    <div id="result" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05)); padding: 40px; border-radius: 16px; border: 1px solid rgba(102, 126, 234, 0.1); min-height: 200px;">
+        <div style="text-align: center; color: #666; font-size: 18px; padding: 40px;">📊 请输入参数并点击计算按钮</div>
     </div>
 </div>
 
@@ -47,7 +54,7 @@ function calculateRating() {
     const result = document.getElementById('gameResult').value;
     
     if (isNaN(r1) || isNaN(r2) || isNaN(handicap)) {
-        document.getElementById('result').innerHTML = '<div style="color: #e74c3c; text-align: center;">请输入有效数字</div>';
+        document.getElementById('result').innerHTML = '<div style="color: #e74c3c; text-align: center; font-size: 18px; padding: 40px;">❌ 请输入有效数字</div>';
         return;
     }
     
@@ -88,31 +95,40 @@ function calculateRating() {
     const se2_percent = (Se2 * 100).toFixed(1);
     
     document.getElementById('result').innerHTML = `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #2c3e50;">
-                <h4 style="margin: 0 0 10px 0; color: #2c3e50;">黑方</h4>
-                <div>原: ${r1} (${getRank(r1)})</div>
-                <div style="font-weight: bold; color: #667eea;">新: ${new_r1.toFixed(2)} (${getRank(new_r1)})</div>
-                <div>变化: <span style="color: ${change1 >= 0 ? '#27ae60' : '#e74c3c'}">${change1 > 0 ? '+' : ''}${change1}</span></div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 30px;">
+            <div style="background: rgba(255, 255, 255, 0.9); padding: 30px; border-radius: 16px; border-left: 5px solid #2c3e50; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 30px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.1)';">
+                <h3 style="margin: 0 0 20px 0; color: #2c3e50; font-size: 24px; font-weight: 700;">⚫ 黑方结果</h3>
+                <div style="font-size: 16px; margin-bottom: 10px;">原等级分: <strong>${r1}</strong> (${getRank(r1)})</div>
+                <div style="font-size: 18px; font-weight: bold; color: #667eea; margin-bottom: 10px;">新等级分: <strong>${new_r1.toFixed(2)}</strong> (${getRank(new_r1)})</div>
+                <div style="font-size: 16px;">变化: <span style="color: ${change1 >= 0 ? '#27ae60' : '#e74c3c'}; font-weight: bold; font-size: 18px;">${change1 > 0 ? '+' : ''}${change1}</span></div>
             </div>
-            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #95a5a6;">
-                <h4 style="margin: 0 0 10px 0; color: #2c3e50;">白方</h4>
-                <div>原: ${r2} (${getRank(r2)})</div>
-                <div style="font-weight: bold; color: #667eea;">新: ${new_r2.toFixed(2)} (${getRank(new_r2)})</div>
-                <div>变化: <span style="color: ${change2 >= 0 ? '#27ae60' : '#e74c3c'}">${change2 > 0 ? '+' : ''}${change2}</span></div>
+            <div style="background: rgba(255, 255, 255, 0.9); padding: 30px; border-radius: 16px; border-left: 5px solid #95a5a6; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 30px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.1)';">
+                <h3 style="margin: 0 0 20px 0; color: #2c3e50; font-size: 24px; font-weight: 700;">⚪ 白方结果</h3>
+                <div style="font-size: 16px; margin-bottom: 10px;">原等级分: <strong>${r2}</strong> (${getRank(r2)})</div>
+                <div style="font-size: 18px; font-weight: bold; color: #667eea; margin-bottom: 10px;">新等级分: <strong>${new_r2.toFixed(2)}</strong> (${getRank(new_r2)})</div>
+                <div style="font-size: 16px;">变化: <span style="color: ${change2 >= 0 ? '#27ae60' : '#e74c3c'}; font-weight: bold; font-size: 18px;">${change2 > 0 ? '+' : ''}${change2}</span></div>
             </div>
         </div>
-        <div style="text-align: center;">
-            <h4 style="color: #2c3e50; margin-bottom: 10px;">预期胜率</h4>
-            <div style="display: flex; height: 30px; border-radius: 15px; overflow: hidden; border: 1px solid #ddd;">
-                <div style="background: #2c3e50; color: white; width: ${se1_percent}%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
-                    黑 ${se1_percent}%
+        <div style="text-align: center; background: rgba(255, 255, 255, 0.8); padding: 30px; border-radius: 16px; backdrop-filter: blur(10px);">
+            <h3 style="color: #2c3e50; margin-bottom: 20px; font-size: 24px; font-weight: 700;">📈 预期胜率对比</h3>
+            <div style="display: flex; height: 50px; border-radius: 25px; overflow: hidden; border: 2px solid rgba(102, 126, 234, 0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <div style="background: linear-gradient(135deg, #2c3e50, #34495e); color: white; width: ${se1_percent}%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; transition: width 0.5s ease;">
+                    黑方 ${se1_percent}%
                 </div>
-                <div style="background: #95a5a6; color: white; width: ${se2_percent}%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
-                    白 ${se2_percent}%
+                <div style="background: linear-gradient(135deg, #95a5a6, #7f8c8d); color: white; width: ${se2_percent}%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; transition: width 0.5s ease;">
+                    白方 ${se2_percent}%
                 </div>
             </div>
+            <p style="margin-top: 15px; color: #666; font-size: 14px;">💡 数据基于EGF官方算法计算</p>
         </div>
     `;
+    
+    // 添加结果动画效果
+    const resultDiv = document.getElementById('result');
+    resultDiv.style.transform = 'scale(0.95)';
+    resultDiv.style.transition = 'all 0.3s ease';
+    setTimeout(() => {
+        resultDiv.style.transform = 'scale(1)';
+    }, 100);
 }
 </script>
