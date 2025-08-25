@@ -11,12 +11,12 @@
     <style>
         /* --- 基础和颜色变量 --- */
         :root {
-            --sidebar-width: 100px; /* <-- 【核心修正】将宽度从 220px 改为 100px */
+            --sidebar-width: 220px; 
             --sidebar-bg: #2c2a27;
             --sidebar-text: #e0e0e0;
             --sidebar-text-hover: #ffffff;
             --sidebar-bg-hover: #3c3a37;
-            --sidebar-border: #403d39;
+            --sidebar-border: #4a4846;
             --main-bg: #f0f2f5;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -33,18 +33,31 @@
             background-color: var(--sidebar-bg);
             color: var(--sidebar-text);
             z-index: 1000;
-            overflow-y: auto;
             transition: transform 0.3s ease-in-out;
             flex-shrink: 0;
+            display: flex; /* 使用flex布局让页脚按钮固定在底部 */
+            flex-direction: column; /* 垂直排列 */
         }
         .sidebar-header {
             padding: 1rem;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 0.75rem; /* Logo和文字的间距 */
             border-bottom: 1px solid var(--sidebar-border);
+            flex-shrink: 0; /* 防止头部被压缩 */
         }
-        .sidebar-logo { height: 48px; }
+        /* ▼▼▼【Logo 修正】▼▼▼ */
+        .sidebar-logo {
+            height: 36px; /* 高度与菜单项一致 */
+            width: auto;  /* 宽度自动，防止变形 */
+        }
+        .sidebar-title {
+             font-size: 1.1rem; font-weight: bold; color: white;
+        }
+        .sidebar-scroll-area {
+            overflow-y: auto; /* 菜单项可滚动 */
+            flex-grow: 1; /* 占据所有剩余空间 */
+        }
 
         /* --- 主内容区 --- */
         .main-content-wrapper {
@@ -78,25 +91,43 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.6rem 1rem; /* 调整了左右边距以适应新宽度 */
+            padding: 0.55rem 1.25rem; /* ▼▼▼【高度修正】减小了垂直间距 ▼▼▼ */
             transition: all 0.2s;
-            white-space: nowrap; /* 防止文字换行 */
         }
         .menu > li > a:hover { color: var(--sidebar-text-hover); background-color: var(--sidebar-bg-hover); }
-
-        .menu-separator {
-            border-top: 1px solid var(--sidebar-border);
-            margin-top: 0.5rem;
-            padding-top: 0.5rem;
-        }
-
-        /* --- 子菜单通用样式 --- */
         .submenu, .submenu-3 { list-style: none; padding-left: 0; }
-        .submenu a, .submenu-3 a { padding: 0.6rem 1rem; }
-        .submenu a { font-size: 0.9rem; }
-        .submenu-3 a { font-size: 0.85rem; }
+        .submenu a { font-size: 0.9rem; padding: 0.5rem 1.25rem; }
+        .submenu-3 a { font-size: 0.85rem; padding: 0.4rem 1.25rem; }
+
+        /* --- ▼▼▼【新增】侧边栏底部按钮样式 ▼▼▼ --- */
+        .sidebar-footer {
+            padding: 1rem;
+            flex-shrink: 0; /* 防止页脚被压缩 */
+        }
+        .sidebar-btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        .btn-signup {
+            background-color: #81b64c; /* chess.com 绿色 */
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        .btn-signup:hover { background-color: #95c85e; }
+        .btn-login {
+            background-color: #4a4846; /* chess.com 深灰色 */
+            color: var(--sidebar-text-hover);
+        }
+        .btn-login:hover { background-color: #5a5856; }
         
-        /* --- 电脑端：向右滑出子菜单 --- */
+        /* --- 电脑端响应式 --- */
         @media (min-width: 1024px) {
             .main-content-wrapper { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); }
             .submenu, .submenu-3 {
@@ -113,10 +144,8 @@
             }
         }
         
-        /* --- 手机/平板端 --- */
+        /* --- 手机/平板端响应式 --- */
         @media (max-width: 1023px) {
-            /* 在手机端，让侧边栏恢复到更舒适的宽度 */
-            .sidebar { width: 240px; } 
             .hamburger-button { display: block; }
             .sidebar { transform: translateX(-100%); }
             body.sidebar-open .sidebar { transform: translateX(0); }
@@ -131,11 +160,10 @@
             .has-submenu.active > a::after { transform: rotate(90deg); }
             .submenu, .submenu-3 { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
             .submenu.active, .submenu-3.active { max-height: 1000px; }
-            .submenu a { padding-left: 2rem; background-color: rgba(0,0,0,0.1); }
-            .submenu-3 a { padding-left: 3rem; background-color: rgba(0,0,0,0.2); }
+            .submenu a { padding-left: 2.5rem; background-color: rgba(0,0,0,0.1); }
+            .submenu-3 a { padding-left: 3.75rem; background-color: rgba(0,0,0,0.2); }
         }
         
-        /* --- Iframe --- */
         iframe {
             width: 100%;
             height: calc(100vh - 64px);
@@ -147,35 +175,43 @@
 
 <div class="layout-wrapper">
     <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header hidden lg:flex">
+        <div class="sidebar-header">
+            <div class="sidebar-header hidden lg:flex justify-center p-4"> {# 增加了 justify-center 和一些内边距 p-4 #}
             <img src="./images/GlobalWeiqi.png" alt="Logo" class="sidebar-logo">
+
         </div>
-        <ul class="menu" id="main-menu">
-          <li class="has-submenu">
-            <a href="#">比赛信息</a>
-            <ul class="submenu">
-              <li><a href="standingsS1R5.html" target="content-frame">第1期（已结束）</a></li>
+        
+        <div class="sidebar-scroll-area">
+            <ul class="menu" id="main-menu">
               <li class="has-submenu">
-                <a href="#">第2期（进行中）</a>
-                <ul class="submenu-3">
-                  <li><a href="standingsS2R4.html" target="content-frame">排行榜</a></li>
-                  <li><a href="GamesListS2R4.html" target="content-frame">第4轮对局</a></li>
+                <a href="#">比赛信息</a>
+                <ul class="submenu">
+                  <li><a href="standingsS1R5.html" target="content-frame">第1期（已结束）</a></li>
+                  <li class="has-submenu">
+                    <a href="#">第2期（进行中）</a>
+                    <ul class="submenu-3">
+                      <li><a href="standingsS2R4.html" target="content-frame">排行榜</a></li>
+                      <li><a href="GamesListS2R4.html" target="content-frame">第4轮对局</a></li>
+                    </ul>
+                  </li>
                 </ul>
               </li>
+              <li><a href="ratinghistory.html" target="content-frame">会员名录</a></li>
+              <li class="has-submenu">
+                <a href="#">重要说明</a>
+                <ul class="submenu">
+                  <li><a href="regulations.html" target="content-frame">比赛章程</a></li>
+                  <li><a href="deposit.html" target="content-frame">保证金</a></li>
+                </ul>
+              </li>
+              <li><a href="calculator.html" target="content-frame">计算器</a></li>
             </ul>
-          </li>
-          <li class="has-submenu">
-            <a href="#">重要说明</a>
-            <ul class="submenu">
-              <li><a href="regulations.html" target="content-frame">比赛章程</a></li>
-              <li><a href="deposit.html" target="content-frame">保证金</a></li>
-            </ul>
-          </li>
-          <li><a href="ratinghistory.html" target="content-frame">会员名录</a></li>
-          
-          <li class="menu-separator"><a href="register.html" target="content-frame" style="color: #63e6be;">马上报名</a></li>
-          <li><a href="calculator.html" target="content-frame">计算器</a></li>
-        </ul>
+        </div>
+
+        <div class="sidebar-footer">
+            <a href="register.html" target="content-frame" class="sidebar-btn btn-signup">马上报名</a>
+            <a href="login.html" target="content-frame" class="sidebar-btn btn-login">登录</a>
+        </div>
     </nav>
     
     <div class="main-content-wrapper" id="main-content-wrapper">
@@ -186,15 +222,10 @@
                 </button>
                 <div class="flex items-center gap-3 lg:hidden">
                     <img src="./images/GlobalWeiqi.png" alt="Logo" class="h-8">
-                    <span class="text-lg font-bold">全球围棋超级联赛</span>
                 </div>
             </div>
             
-            <div id="top-bar-user-status" class="flex items-center space-x-4">
-                <a href="login.html" target="content-frame" class="text-sm font-medium text-gray-600 hover:text-gray-900">登录</a>
-                <a href="zhuce.html" target="content-frame" class="text-sm font-medium text-white bg-indigo-600 px-4 py-2 rounded-md hover:bg-indigo-700">注册</a>
-            </div>
-        </header>
+            </header>
 
         <main id="content-container">
              <iframe src="home.html" name="content-frame"></iframe>
@@ -205,6 +236,7 @@
 </div>
 
 <script>
+    // JavaScript 部分无需修改，保持原样即可
     document.addEventListener('DOMContentLoaded', function() {
         const hamburgerButton = document.getElementById('hamburger-button');
         const contentOverlay = document.getElementById('content-overlay');
