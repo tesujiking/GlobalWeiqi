@@ -9,54 +9,176 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        /* 您之前的所有CSS样式都保持不变，这里为了简洁省略，请确保它们都在这里 */
-        :root { --sidebar-width: 240px; --sidebar-bg: #262421; /* ... 等等 */ }
+        /* --- ▼▼▼ 核心修正区域：更新了几乎所有样式 ▼▼▼ --- */
+
+        /* --- 基础和颜色变量 --- */
+        :root {
+            --sidebar-width: 220px; /* 宽度减小 */
+            --sidebar-bg: #2c2a27; /* 更柔和的深木炭色 */
+            --sidebar-text: #e0e0e0; /* 更亮的文字颜色 */
+            --sidebar-text-hover: #ffffff; /* 悬停时纯白 */
+            --sidebar-bg-hover: #3c3a37;
+            --sidebar-border: #4a4846;
+            --main-bg: #f0f2f5;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--main-bg); overflow-x: hidden; }
         .layout-wrapper { display: flex; }
-        .sidebar { width: var(--sidebar-width); height: 100vh; position: fixed; top: 0; left: 0; background-color: var(--sidebar-bg); color: var(--sidebar-text); z-index: 1000; overflow-y: auto; transition: transform 0.3s ease-in-out; flex-shrink: 0; }
-        .main-content-wrapper { flex-grow: 1; transition: transform 0.3s ease-in-out, margin-left 0.3s ease-in-out; width: 100%; }
-        .top-bar { background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; position: sticky; top: 0; z-index: 900; }
+
+        /* --- 左侧边栏导航 --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            z-index: 1000;
+            overflow-y: auto;
+            transition: transform 0.3s ease-in-out;
+            flex-shrink: 0;
+        }
+        .sidebar-header {
+            padding: 1rem; /* 调整内边距 */
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Logo 居中 */
+            border-bottom: 1px solid var(--sidebar-border);
+        }
+        .sidebar-logo { height: 48px; } /* Logo 稍大一些 */
+
+        /* --- 主内容区 (无变化) --- */
+        .main-content-wrapper {
+            flex-grow: 1;
+            transition: transform 0.3s ease-in-out, margin-left 0.3s ease-in-out;
+            width: 100%;
+        }
+        .top-bar {
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
         #content-container { padding: 1.5rem; }
-        .hamburger-button { display: none; }
-        /* ... 其他所有样式 ... */
+        
+        /* --- 汉堡菜单按钮 (无变化) --- */
+        .hamburger-button { display: none; padding: 0.5rem; }
+        .hamburger-button .bar { display: block; width: 22px; height: 2px; margin: 5px 0; background-color: #374151; }
+        
+        /* --- 导航菜单样式 (核心修改) --- */
+        .menu { list-style: none; padding: 0.5rem 0; }
+        .menu a { text-decoration: none; color: var(--sidebar-text); font-weight: 500; font-size: 15px; }
+        .menu > li > a {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 1.25rem; /* 减小了垂直间距 */
+            transition: all 0.2s;
+        }
+        .menu > li > a:hover {
+            color: var(--sidebar-text-hover);
+            background-color: var(--sidebar-bg-hover);
+        }
+
+        /* 新增：视觉分隔线样式 */
+        .menu-separator {
+            border-top: 1px solid var(--sidebar-border);
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+        }
+
+        /* --- 子菜单通用样式 (无变化) --- */
+        .submenu, .submenu-3 { list-style: none; padding-left: 0; }
+        .submenu a { font-size: 0.9rem; padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .submenu-3 a { font-size: 0.85rem; padding-top: 0.4rem; padding-bottom: 0.4rem; }
+        
+        /* --- 电脑端：向右滑出子菜单 (无变化) --- */
         @media (min-width: 1024px) {
             .main-content-wrapper { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); }
-            /* ... 其他电脑端样式 ... */
+            .submenu, .submenu-3 {
+                position: absolute; top: 0; left: 100%;
+                background-color: var(--sidebar-bg);
+                min-width: 200px; /* 子菜单宽度减小 */
+                box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+                border-left: 1px solid var(--sidebar-border);
+                visibility: hidden; opacity: 0;
+                transition: opacity 0.2s linear;
+            }
+            .menu > li:hover > .submenu,
+            .submenu > li:hover > .submenu-3 {
+                visibility: visible; opacity: 1;
+            }
         }
+        
+        /* --- 手机/平板端 (无变化) --- */
         @media (max-width: 1023px) {
             .hamburger-button { display: block; }
             .sidebar { transform: translateX(-100%); }
             body.sidebar-open .sidebar { transform: translateX(0); }
-            .content-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 950; opacity: 0; visibility: hidden; transition: opacity 0.3s ease-in-out; }
+            .content-overlay {
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.5); z-index: 950;
+                opacity: 0; visibility: hidden;
+                transition: opacity 0.3s ease-in-out;
+            }
             body.sidebar-open .content-overlay { opacity: 1; visibility: visible; }
-            /* ... 其他移动端样式 ... */
+            .has-submenu > a::after { content: '›'; font-size: 1.2rem; transition: transform 0.3s; }
+            .has-submenu.active > a::after { transform: rotate(90deg); }
+            .submenu, .submenu-3 { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+            .submenu.active, .submenu-3.active { max-height: 1000px; }
+            .submenu a { padding-left: 2.5rem; background-color: rgba(0,0,0,0.1); }
+            .submenu-3 a { padding-left: 3.75rem; background-color: rgba(0,0,0,0.2); }
         }
+        
+        /* --- Iframe (无变化) --- */
+        iframe {
+            width: 100%;
+            height: calc(100vh - 64px - 3rem);
+            border: none;
+        }
+
+        /* --- ▲▲▲ 样式修正结束 ▲▲▲ --- */
     </style>
 </head>
 <body>
 
 <div class="layout-wrapper">
     <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header hidden lg:flex justify-center p-4">
-            <img src="./images/GlobalWeiqi.png" alt="Logo" class="sidebar-logo h-10">
+        <div class="sidebar-header hidden lg:flex">
+            <img src="./images/GlobalWeiqi.png" alt="Logo" class="sidebar-logo">
         </div>
         <ul class="menu" id="main-menu">
-            <li class="has-submenu">
-                <a href="#">比赛信息</a>
-                <ul class="submenu">
-                    <li><a href="/standings/s1" data-nav-link>第1期（已结束）</a></li>
-                    <li class="has-submenu">
-                        <a href="#">第2期（进行中）</a>
-                        <ul class="submenu-3">
-                            <li><a href="/standings/s2" data-nav-link>排行榜</a></li>
-                            <li><a href="/games/s2/r4" data-nav-link>第4轮对局</a></li>
-                        </ul>
-                    </li>
+          <li class="has-submenu">
+            <a href="#">比赛信息</a>
+            <ul class="submenu">
+              <li><a href="standingsS1R5.html" target="content-frame">第1期（已结束）</a></li>
+              <li class="has-submenu">
+                <a href="#">第2期（进行中）</a>
+                <ul class="submenu-3">
+                  <li><a href="standingsS2R4.html" target="content-frame">排行榜</a></li>
+                  <li><a href="GamesListS2R4.html" target="content-frame">第4轮对局</a></li>
                 </ul>
-            </li>
-            <li><a href="/rating-history" data-nav-link>会员名录</a></li>
-            <li><a href="/register" data-nav-link style="color: #ef4444;">马上报名</a></li>
-            <li><a href="/calculator" data-nav-link>计算器</a></li>
+              </li>
+            </ul>
+          </li>
+          <li class="has-submenu">
+            <a href="#">重要说明</a>
+            <ul class="submenu">
+              <li><a href="regulations.html" target="content-frame">比赛章程</a></li>
+              <li><a href="deposit.html" target="content-frame">保证金</a></li>
+            </ul>
+          </li>
+          <li><a href="ratinghistory.html" target="content-frame">会员名录</a></li>
+          
+          <li class="menu-separator"><a href="register.html" target="content-frame" style="color: #63e6be;">马上报名</a></li>
+          <li><a href="calculator.html" target="content-frame">计算器</a></li>
         </ul>
     </nav>
     
@@ -71,97 +193,57 @@
                     <span class="text-lg font-bold">全球围棋超级联赛</span>
                 </div>
             </div>
-            <div id="top-bar-user-status"></div>
+            
+            <div id="top-bar-user-status" class="flex items-center space-x-4">
+                <a href="login.html" target="content-frame" class="text-sm font-medium text-gray-600 hover:text-gray-900">登录</a>
+                <a href="zhuce.html" target="content-frame" class="text-sm font-medium text-white bg-indigo-600 px-4 py-2 rounded-md hover:bg-indigo-700">注册</a>
+            </div>
         </header>
 
         <main id="content-container">
-            </main>
+             <iframe src="home.html" name="content-frame"></iframe>
+        </main>
     </div>
     
     <div class="content-overlay" id="content-overlay"></div>
 </div>
 
 <script>
+    // JavaScript 部分无需修改，保持原样即可
     document.addEventListener('DOMContentLoaded', function() {
-        const contentContainer = document.getElementById('content-container');
-        const mainMenu = document.getElementById('main-menu');
         const hamburgerButton = document.getElementById('hamburger-button');
         const contentOverlay = document.getElementById('content-overlay');
 
-        // --- 1. 路由配置：将URL路径映射到实际的HTML“碎片”文件 ---
-        const routes = {
-            '/': 'home.html', // 根路径
-            '/rating-history': 'ratinghistory.html',
-            '/register': 'register.html',
-            '/calculator': 'calculator.html',
-            '/standings/s2': 'standingsS2R4.html',
-            // ... 在这里为您所有的页面添加路由 ...
-        };
+        function toggleMenu() { document.body.classList.toggle('sidebar-open'); }
 
-        // --- 2. 核心函数：加载并显示内容 ---
-        async function loadContent(path) {
-            // 根据路径找到对应的文件名，如果找不到，则默认加载首页
-            const pageFile = routes[path] || routes['/'];
-            
-            if (!pageFile) {
-                contentContainer.innerHTML = '<h1>404 - 页面未找到</h1>';
-                return;
-            }
-
-            try {
-                contentContainer.innerHTML = '<p class="text-center p-10">正在加载...</p>';
-                const response = await fetch(pageFile);
-                if (!response.ok) throw new Error('页面加载失败');
-                
-                const html = await response.text();
-                contentContainer.innerHTML = html;
-            } catch (error) {
-                contentContainer.innerHTML = `<p class="text-center p-10 text-red-500">加载内容时出错: ${error.message}</p>`;
-            }
-        }
-
-        // --- 3. 事件监听 ---
-        
-        // 监听所有带 data-nav-link 属性的链接点击
-        document.body.addEventListener('click', e => {
-            const link = e.target.closest('a[data-nav-link]');
-            if (link) {
-                e.preventDefault(); // 阻止浏览器默认的跳转行为
-                const path = link.getAttribute('href');
-                
-                // 更新浏览器地址栏，但不刷新页面
-                history.pushState({ path: path }, '', path);
-                
-                // 加载新内容
-                loadContent(path);
-
-                // 如果是移动端，自动关闭菜单
-                if (document.body.classList.contains('sidebar-open')) {
-                    document.body.classList.remove('sidebar-open');
-                }
-            }
-        });
-
-        // 监听浏览器前进/后退按钮
-        window.addEventListener('popstate', e => {
-            loadContent(location.pathname);
-        });
-        
-        // 汉堡菜单的交互逻辑
-        function toggleMenu() {
-            document.body.classList.toggle('sidebar-open');
-        }
-        hamburgerButton.addEventListener('click', e => {
+        hamburgerButton.addEventListener('click', function(e) {
             e.stopPropagation();
             toggleMenu();
         });
-        contentOverlay.addEventListener('click', toggleMenu);
         
-        // (您原有的多级菜单展开JS、登录检查JS等逻辑可以保留在这里)
+        contentOverlay.addEventListener('click', toggleMenu);
 
-        // --- 4. 初始加载 ---
-        // 页面第一次打开时，加载与当前URL匹配的内容
-        loadContent(window.location.pathname);
+        document.querySelectorAll('.sidebar .has-submenu > a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (window.innerWidth >= 1024) return;
+                e.preventDefault();
+                const parentLi = this.parentElement;
+                const isSubSubMenu = parentLi.parentElement.classList.contains('submenu');
+                if (!isSubSubMenu) {
+                    parentLi.parentElement.querySelectorAll('.has-submenu.active').forEach(openLi => {
+                        if (openLi !== parentLi) {
+                            openLi.classList.remove('active');
+                            openLi.querySelector('.submenu, .submenu-3').classList.remove('active');
+                        }
+                    });
+                }
+                parentLi.classList.toggle('active');
+                const submenu = parentLi.querySelector('.submenu, .submenu-3');
+                if (submenu) {
+                    submenu.classList.toggle('active');
+                }
+            });
+        });
     });
 </script>
 
