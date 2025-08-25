@@ -202,10 +202,10 @@
         }
 
         .result-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
+            display: flex;             /* 启用 Flexbox 布局 */
+            justify-content: center;   /* 【核心】让子元素在主轴（水平）上居中 */
+            gap: 20px;                 /* 设置子元素之间的间距 */
+            flex-wrap: wrap;           /* 在屏幕较窄时允许换行，以提高响应性 */
         }
 
         .player-result {
