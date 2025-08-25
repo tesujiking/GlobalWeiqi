@@ -54,6 +54,85 @@
 
     nav {
       background-color: #222;
+      position: relative;
+    }
+
+    /* 汉堡菜单按钮（默认隐藏） */
+    .mobile-menu-toggle {
+      display: none;
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      z-index: 1001;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    .hamburger-icon {
+      display: block;
+      width: 25px;
+      height: 20px;
+      position: relative;
+    }
+
+    .hamburger-icon span {
+      display: block;
+      height: 3px;
+      width: 100%;
+      background: white;
+      border-radius: 1px;
+      opacity: 1;
+      left: 0;
+      transform: rotate(0deg);
+      transition: .25s ease-in-out;
+      position: absolute;
+    }
+
+    .hamburger-icon span:nth-child(1) {
+      top: 0px;
+    }
+
+    .hamburger-icon span:nth-child(2) {
+      top: 8px;
+    }
+
+    .hamburger-icon span:nth-child(3) {
+      top: 16px;
+    }
+
+    /* 汉堡菜单激活状态（X形） */
+    .mobile-menu-toggle.active .hamburger-icon span:nth-child(1) {
+      top: 8px;
+      transform: rotate(135deg);
+    }
+
+    .mobile-menu-toggle.active .hamburger-icon span:nth-child(2) {
+      opacity: 0;
+      left: -60px;
+    }
+
+    .mobile-menu-toggle.active .hamburger-icon span:nth-child(3) {
+      top: 8px;
+      transform: rotate(-135deg);
+    }
+
+    /* 菜单覆盖层 */
+    .menu-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .menu-overlay.active {
+      display: block;
+      opacity: 1;
     }
 
     .menu {
@@ -134,49 +213,134 @@
 
     /* 移动端适配 */
     @media (max-width: 768px) {
+      /* 显示汉堡菜单按钮 */
+      .mobile-menu-toggle {
+        display: block;
+      }
+      
+      /* 隐藏主菜单，使用侧边滑出样式 */
       .menu {
+        position: fixed;
+        top: 0;
+        right: -300px; /* 初始状态隐藏在右侧 */
+        width: 280px;
+        height: 100vh;
+        background: #222;
         flex-direction: column;
-        padding-left: 0;
+        padding: 80px 0 20px 0; /* 顶部留出空间给汉堡菜单 */
+        margin: 0;
+        z-index: 1000;
+        transition: right 0.3s ease;
+        overflow-y: auto;
+        box-shadow: -2px 0 10px rgba(0,0,0,0.3);
+      }
+      
+      /* 菜单激活状态（滑出） */
+      .menu.active {
+        right: 0;
       }
       
       .menu > li {
+        border-bottom: 1px solid #333;
+        width: 100%;
+      }
+      
+      .menu > li > a {
+        padding: 18px 20px;
+        font-size: 16px;
+        border-bottom: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      /* 二级菜单样式 */
+      .submenu {
+        position: static !important;
+        background-color: #333;
+        min-width: auto;
+        box-shadow: none;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+      
+      .submenu.active {
+        max-height: 500px; /* 足够容纳所有子菜单项 */
+      }
+      
+      .submenu li a {
+        padding: 15px 40px;
+        font-size: 14px;
+        color: #ccc;
         border-bottom: 1px solid #444;
       }
       
-      .submenu {
-        position: static !important;
+      .submenu li a:hover {
         background-color: #444;
-        min-width: auto;
-        box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        color: white;
       }
       
+      /* 三级菜单样式 */
       .submenu-3 {
         position: static !important;
+        background-color: #444;
+        margin-left: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+      
+      .submenu-3.active {
+        max-height: 200px;
+      }
+      
+      .submenu-3 li a {
+        padding: 12px 60px;
+        font-size: 13px;
+        color: #bbb;
+        background-color: #444;
+      }
+      
+      .submenu-3 li a:hover {
         background-color: #555;
-        margin-left: 20px;
+        color: white;
       }
       
       /* 为有子菜单的项目添加下拉箭头 */
       .menu > li.has-submenu > a::after {
-        content: ' ▼';
+        content: '\25BC'; /* 下箭头 */
         font-size: 12px;
-        transition: transform 0.3s;
-        float: right;
+        transition: transform 0.3s ease;
+        color: #999;
       }
       
       .menu > li.has-submenu.active > a::after {
         transform: rotate(180deg);
+        color: white;
       }
       
       .submenu li.has-submenu > a::after {
-        content: ' ►';
+        content: '\25B6'; /* 右箭头 */
         font-size: 10px;
-        float: right;
+        color: #999;
       }
       
       .submenu li.has-submenu.active > a::after {
-        content: ' ▼';
+        content: '\25BC'; /* 下箭头 */
         transform: none;
+        color: #ccc;
+      }
+      
+      /* 特殊菜单项样式（报名按钮） */
+      .menu > li > a[style*="color: red"] {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white !important;
+        font-weight: bold;
+        margin: 10px 15px;
+        border-radius: 6px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
       }
     }
 
@@ -218,6 +382,17 @@
 
   <!-- 主导航菜单 -->
 <nav>
+    <!-- 移动端汉堡菜单按钮 -->
+    <div class="mobile-menu-toggle">
+        <span class="hamburger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </span>
+    </div>
+    
+    <!-- 菜单覆盖层（移动端） -->
+    <div class="menu-overlay"></div>
     <ul class="menu">
       <li class="has-submenu">
         <a href="#">比赛信息</a>
@@ -263,9 +438,7 @@
       <li>
         <a href="calculator.html" target="content-frame">计算器</a>
       </li>
-      <li>
-        <button id="closeMenuBtn" style="background: #dc3545; color: white; border: none; padding: 8px 12px; margin: 8px; border-radius: 4px; cursor: pointer; font-size: 12px;">收起菜单</button>
-      </li>
+
     </ul>
 </nav>
 
@@ -279,7 +452,43 @@
 
     // 移动端菜单管理
     function initMobileMenu() {
-        console.log('初始化移动端菜单...');
+        console.log('初始化现代化移动端菜单...');
+        
+        // 获取关键元素
+        const mobileToggle = document.querySelector('.mobile-menu-toggle');
+        const menu = document.querySelector('.menu');
+        const menuOverlay = document.querySelector('.menu-overlay');
+        
+        // 汉堡菜单切换功能
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('点击汉堡菜单按钮');
+                
+                // 切换菜单显示状态
+                this.classList.toggle('active');
+                menu.classList.toggle('active');
+                menuOverlay.classList.toggle('active');
+                
+                // 防止背景滚动
+                if (menu.classList.contains('active')) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+        
+        // 覆盖层点击关闭菜单
+        if (menuOverlay) {
+            menuOverlay.addEventListener('click', function() {
+                console.log('点击覆盖层，关闭菜单');
+                closeAllMenus();
+                closeMobileMenu();
+            });
+        }
         
         // 为所有有子菜单的一级菜单项添加点击事件
         const menuItems = document.querySelectorAll('.menu > li.has-submenu > a');
@@ -350,7 +559,19 @@
             });
         });
         
-        // 关闭所有菜单的统一函数
+        // 关闭移动端菜单的辅助函数
+        function closeMobileMenu() {
+            const mobileToggle = document.querySelector('.mobile-menu-toggle');
+            const menu = document.querySelector('.menu');
+            const menuOverlay = document.querySelector('.menu-overlay');
+            
+            if (mobileToggle) mobileToggle.classList.remove('active');
+            if (menu) menu.classList.remove('active');
+            if (menuOverlay) menuOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        // 关闭所有菜单的统一函数（优化版）
         function closeAllMenus() {
             console.log('执行关闭所有菜单');
             document.querySelectorAll('.submenu.active, .submenu-3.active').forEach(activeSubmenu => {
@@ -369,43 +590,32 @@
                     console.log('点击了菜单项:', this.textContent.trim());
                     // 立即关闭所有菜单
                     closeAllMenus();
+                    // 在移动端也关闭侧边菜单
+                    setTimeout(() => {
+                        closeMobileMenu();
+                    }, 150); // 稍微延迟，给用户视觉反馈
                 });
             }
         });
         
-        // 点击外部区域关闭菜单
+        // 点击外部区域关闭菜单（优化版）
         document.addEventListener('click', function(e) {
-            if (!e.target.closest('nav')) {
+            if (!e.target.closest('nav') && !e.target.closest('.mobile-menu-toggle')) {
                 console.log('点击外部，关闭菜单');
-                document.querySelectorAll('.submenu.active, .submenu-3.active').forEach(activeSubmenu => {
-                    activeSubmenu.classList.remove('active');
-                });
-                document.querySelectorAll('.menu li.active').forEach(activeItem => {
-                    activeItem.classList.remove('active');
-                });
+                closeAllMenus();
+                closeMobileMenu();
             }
         });
         
-        // 收起菜单按钮功能
-        const closeMenuBtn = document.getElementById('closeMenuBtn');
-        if (closeMenuBtn) {
-            closeMenuBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                console.log('点击了收起菜单按钮');
-                
-                // 关闭所有菜单
-                document.querySelectorAll('.submenu.active, .submenu-3.active').forEach(activeSubmenu => {
-                    activeSubmenu.classList.remove('active');
-                });
-                document.querySelectorAll('.menu li.active').forEach(activeItem => {
-                    activeItem.classList.remove('active');
-                });
-                
-                console.log('已收起所有菜单');
-            });
-        }
+        // ESC键关闭菜单（现代化体验）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                console.log('按下ESC键，关闭菜单');
+                closeAllMenus();
+                closeMobileMenu();
+            }
+        });
+
         
         console.log('移动端菜单初始化完成');
     }
