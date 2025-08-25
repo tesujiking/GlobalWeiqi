@@ -3,16 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全球围棋超级联赛</title>
-    <meta name="description" content="全球围棋超级联赛">
-    <meta property="og:title" content="全球围棋超级联赛" />
-    <meta property="og:description" content="全名参与，高手云集，新手友好，真正涨棋的全球围棋超级联赛" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.globalweiqi.com/index.html" />
-    <meta property="og:image" content="https://www.globalweiqi.com/images/GlobalWeiqi.png" />
-    
+    <title>围棋世界</title>
+    <meta name="description" content="围棋世界">
     <style>
-        /* --- 基础和布局 --- */
         :root {
             --sidebar-width: 240px;
             --sidebar-bg: #262421;
@@ -25,8 +18,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--main-bg); overflow-x: hidden; }
         .layout-wrapper { display: flex; }
-
-        /* --- 左侧边栏导航 --- */
         .sidebar {
             width: var(--sidebar-width);
             height: 100vh;
@@ -48,8 +39,6 @@
         }
         .sidebar-logo { height: 40px; }
         .sidebar-title { font-size: 1.1rem; font-weight: bold; color: white; }
-
-        /* --- 主内容区 --- */
         .main-content-wrapper {
             flex-grow: 1;
             transition: transform 0.3s ease-in-out, margin-left 0.3s ease-in-out;
@@ -66,25 +55,16 @@
             top: 0;
             z-index: 900;
         }
-        .top-bar-logo { display: flex; align-items: center; gap: 0.75rem; }
-        #content-container { padding: 1.5rem; }
-        
-        /* --- 汉堡菜单按钮 --- */
         .hamburger-button { display: none; padding: 0.5rem; }
         .hamburger-button .bar { display: block; width: 22px; height: 2px; margin: 5px 0; background-color: #374151; }
-        
-        /* --- 导航菜单通用样式 --- */
         .menu { list-style: none; padding: 0.5rem 0; }
         .menu a { text-decoration: none; color: var(--sidebar-text); font-weight: 500; }
         .menu > li > a { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1.25rem; transition: all 0.2s; }
         .menu > li > a:hover { color: var(--sidebar-text-hover); background-color: var(--sidebar-bg-hover); }
-
-        /* --- 子菜单通用样式 --- */
         .submenu, .submenu-3 { list-style: none; padding-left: 0; }
         .submenu a { font-size: 0.9rem; }
         .submenu-3 a { font-size: 0.85rem; }
         
-        /* --- 电脑端：向右滑出子菜单 --- */
         @media (min-width: 1024px) {
             .main-content-wrapper { margin-left: var(--sidebar-width); }
             .submenu, .submenu-3 {
@@ -106,22 +86,15 @@
             }
         }
         
-        /* --- 手机/平板端：点击汉堡菜单滑出，子菜单手风琴式展开 --- */
         @media (max-width: 1023px) {
             .hamburger-button { display: block; }
             .sidebar { transform: translateX(-100%); }
             body.sidebar-open .sidebar { transform: translateX(0); }
             body.sidebar-open .main-content-wrapper { transform: translateX(var(--sidebar-width)); }
             .content-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.5);
-                z-index: 950;
-                opacity: 0;
-                visibility: hidden;
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.5); z-index: 950;
+                opacity: 0; visibility: hidden;
                 transition: opacity 0.3s ease-in-out;
             }
             body.sidebar-open .content-overlay { opacity: 1; visibility: visible; }
@@ -133,10 +106,9 @@
             .submenu-3 a { padding-left: 3.75rem; background-color: rgba(0,0,0,0.2); }
         }
         
-        /* Iframe占满剩余空间 */
         iframe {
             width: 100%;
-            height: calc(100vh - 64px - 3rem); /* 视窗高度 - 顶栏高度 - padding */
+            height: calc(100vh - 64px - 3rem);
             border: none;
         }
     </style>
@@ -145,9 +117,8 @@
 
 <div class="layout-wrapper">
     <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
+        <div class="sidebar-header hidden lg:flex justify-center p-4"> 
             <img src="./images/GlobalWeiqi.png" alt="Logo" class="sidebar-logo">
-            <span class="sidebar-title">全球联赛</span>
         </div>
         <ul class="menu" id="main-menu">
           <li class="has-submenu">
@@ -182,9 +153,9 @@
                 <button class="hamburger-button" id="hamburger-button">
                     <span class="bar"></span><span class="bar"></span><span class="bar"></span>
                 </button>
-                <div class="top-bar-logo ml-4 hidden lg:flex">
+                <div class="flex items-center gap-3 lg:hidden">
                     <img src="./images/GlobalWeiqi.png" alt="Logo" class="h-8">
-                    <span class="text-lg font-bold ml-2">全球围棋超级联赛</span>
+                    <span class="text-lg font-bold">全球围棋超级联赛</span>
                 </div>
             </div>
             
@@ -218,21 +189,13 @@
         
         contentOverlay.addEventListener('click', toggleMenu);
 
-        // --- 移动端多级菜单展开/收起逻辑 ---
         document.querySelectorAll('.sidebar .has-submenu > a').forEach(link => {
             link.addEventListener('click', function(e) {
-                // 只在移动端视图下执行点击展开逻辑
                 if (window.innerWidth >= 1024) return;
-                
-                // 阻止链接跳转
                 e.preventDefault();
-                
                 const parentLi = this.parentElement;
-                
-                // 如果点击的是已经激活的父菜单中的子菜单，则不关闭父菜单
                 const isSubSubMenu = parentLi.parentElement.classList.contains('submenu');
                 if (!isSubSubMenu) {
-                    // 关闭其他同级的已打开菜单
                     parentLi.parentElement.querySelectorAll('.has-submenu.active').forEach(openLi => {
                         if (openLi !== parentLi) {
                             openLi.classList.remove('active');
@@ -240,18 +203,13 @@
                         }
                     });
                 }
-                
                 parentLi.classList.toggle('active');
-
                 const submenu = parentLi.querySelector('.submenu, .submenu-3');
                 if (submenu) {
                     submenu.classList.toggle('active');
                 }
             });
         });
-
-        // (您其他的登录检查等JS代码可以放在这里)
-
     });
 </script>
 
