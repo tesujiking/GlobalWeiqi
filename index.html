@@ -8,185 +8,172 @@
     <meta property="og:title" content="全球围棋超级联赛" />
     <meta property="og:description" content="全名参与，高手云集，新手友好，真正涨棋的全球围棋超级联赛" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.globalweiqi.com/index.html" />
-    <meta property="og:image" content="https://www.globalweiqi.com/images/GlobalWeiqi.png" />
+    <meta property="og:url" content="https://www.globalweiqi.com/" />
+    <meta property="og:image" content="./images/GlobalWeiqi.png" />
     
-    <script src="https://cdn.tailwindcss.com"></script>
-
     <style>
-        /* 自定义全局样式 */
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f0f2f5; /* 参考chess.com的浅灰色背景 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f9f9f9; }
+        .site-header { background-color: #f8f8f8; padding: 20px; border-bottom: 1px solid #ccc; position: relative; }
+        .logo-link { display: flex; align-items: center; text-decoration: none; gap: 15px; }
+        .site-logo { height: 60px; width: auto; }
+        .site-title { font-size: 28px; font-weight: bold; color: #222; }
+        nav { background-color: #222; position: relative; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        .menu { display: flex; list-style: none; padding-left: 0; }
+        .menu > li { position: relative; }
+        .menu > li > a { display: block; color: #fff; padding: 16px 20px; text-decoration: none; font-weight: 500; }
+        .menu > li:hover { background-color: #333; }
+        .submenu { display: none; position: absolute; background-color: #333; top: 100%; left: 0; min-width: 180px; z-index: 100; }
+        .menu li:hover > .submenu { display: block; }
+        .submenu.active { display: block !important; }
+        .submenu li a { display: block; color: white; padding: 12px 16px; text-decoration: none; }
+        .submenu li a:hover { background-color: #444; }
+        .submenu-3 { display: none; position: absolute; top: 0; left: 100%; background-color: #444; min-width: 180px; z-index: 200; }
+        .has-submenu:hover > .submenu-3 { display: block; }
+        .submenu-3.active { display: block !important; }
+        .hamburger-toggle { display: none; background: none; border: 1px solid white; border-radius: 4px; padding: 8px; cursor: pointer; }
+        .hamburger-toggle .bar { display: block; width: 25px; height: 3px; margin: 5px auto; background-color: white; }
+        
+        @media (max-width: 768px) {
+            nav { padding: 10px 20px; }
+            .hamburger-toggle { display: block; }
+            .menu { display: none; }
+            .menu.is-open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background: #222; z-index: 1000; }
+            .menu.is-open > li { border-bottom: 1px solid #333; }
+            .submenu { position: static !important; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; display: block !important; }
+            .submenu.active { max-height: 500px; }
+            .submenu-3 { position: static !important; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; display: block !important; }
+            .submenu-3.active { max-height: 200px; }
+            .menu > li.has-submenu > a::after { content: '\\25BC'; font-size: 12px; }
+            .menu > li.has-submenu.active > a::after { transform: rotate(180deg); }
         }
 
-        /* 导航栏激活状态的下划线效果 */
-        .nav-link-desktop {
-            position: relative;
-            padding-bottom: 4px;
-        }
-        .nav-link-desktop::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 0;
-            left: 50%;
-            background-color: #e84134; /* 醒目的红色 */
-            transition: all 0.3s ease-in-out;
-        }
-        .nav-link-desktop:hover::after, .nav-link-desktop.active::after {
-            width: 100%;
-            left: 0;
-        }
-        .nav-link-desktop.active {
-            color: #1a2a4c;
-        }
-        
-        /* 移动端菜单展开动画 */
-        #mobile-menu {
-            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-            transform: translateY(-10%);
-            opacity: 0;
-            pointer-events: none;
-        }
-        #mobile-menu.is-open {
-            transform: translateY(0);
-            opacity: 1;
-            pointer-events: auto;
-        }
-        
-        /* 汉堡菜单按钮的 'X' 形变动画 */
-        .hamburger .bar {
-            transition: all 0.3s ease-in-out;
-        }
-        .hamburger.is-open .bar:nth-child(1) {
-            transform: translateY(8px) rotate(45deg);
-        }
-        .hamburger.is-open .bar:nth-child(2) {
-            opacity: 0;
-        }
-        .hamburger.is-open .bar:nth-child(3) {
-            transform: translateY(-8px) rotate(-45deg);
+        #nav-user-status { position: absolute; top: 20px; right: 20px; font-size: 16px; }
+        #nav-user-status a { color: #007bff; text-decoration: none; margin-left: 15px; }
+
+        /* 主内容区域样式 */
+        main {
+            padding: 20px;
+            min-height: calc(100vh - 140px); /* 确保内容区足够高 */
         }
     </style>
 </head>
+<body>
 
-<body class="text-gray-800">
-
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex-shrink-0">
-                    <a href="index.html" class="flex items-center space-x-3">
-                        <img src="./images/GlobalWeiqi.png" alt="Global Weiqi Logo" class="h-10 w-auto">
-                        <span class="text-xl font-bold tracking-tight hidden sm:block">全球围棋超级联赛</span>
-                    </a>
-                </div>
-
-                <nav class="hidden md:block">
-                    <ul class="flex items-baseline space-x-6">
-                        <li><a href="standingsS2R4.html" target="content-frame" class="nav-link-desktop text-gray-600 hover:text-black">比赛信息</a></li>
-                        <li><a href="regulations.html" target="content-frame" class="nav-link-desktop text-gray-600 hover:text-black">重要说明</a></li>
-                        <li><a href="ratinghistory.html" target="content-frame" class="nav-link-desktop text-gray-600 hover:text-black">会员名录</a></li>
-                        <li><a href="register.html" target="content-frame" class="nav-link-desktop text-red-600 font-bold hover:text-red-800 active">马上报名</a></li>
-                        <li><a href="calculator.html" target="content-frame" class="nav-link-desktop text-gray-600 hover:text-black">计算器</a></li>
-                    </ul>
-                </nav>
-
-                <div class="hidden md:block" id="nav-user-status-desktop">
-                    <span class="text-sm text-gray-500">正在加载...</span>
-                </div>
-
-                <div class="md:hidden">
-                    <button id="hamburger-button" class="hamburger p-2 rounded-md text-gray-600 hover:text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500">
-                        <span class="sr-only">Open main menu</span>
-                        <div class="bar h-0.5 w-6 bg-current"></div>
-                        <div class="bar h-0.5 w-6 bg-current"></div>
-                        <div class="bar h-0.5 w-6 bg-current"></div>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div id="mobile-menu" class="md:hidden absolute top-16 left-0 w-full bg-white shadow-lg">
-            <ul class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <li><a href="standingsS2R4.html" target="content-frame" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-black hover:bg-gray-50">比赛信息</a></li>
-                <li><a href="regulations.html" target="content-frame" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-black hover:bg-gray-50">重要说明</a></li>
-                <li><a href="ratinghistory.html" target="content-frame" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-black hover:bg-gray-50">会员名录</a></li>
-                <li><a href="register.html" target="content-frame" class="block px-3 py-2 rounded-md text-base font-bold text-red-600 hover:text-red-800 hover:bg-red-50">马上报名</a></li>
-                <li><a href="calculator.html" target="content-frame" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-black hover:bg-gray-50">计算器</a></li>
-            </ul>
-            <div class="border-t border-gray-200 px-5 py-4" id="nav-user-status-mobile">
-                <span class="text-sm text-gray-500">正在加载...</span>
-            </div>
-        </div>
+    <header class="site-header">
+        <a href="/" class="logo-link" data-nav-link>
+            <img src="./images/GlobalWeiqi.png" alt="Global Weiqi Logo" class="site-logo">
+            <span class="site-title">GlobalWeiqi.com</span>
+        </a>
+        <div id="nav-user-status"></div>
     </header>
 
-    <main>
-        <iframe src="home.html" name="content-frame" class="w-full border-0" style="height: calc(100vh - 64px);"></iframe>
-    </main>
+    <nav>
+        <button class="hamburger-toggle" id="hamburger-toggle">
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </button>
+        <ul class="menu" id="main-menu">
+            <li class="has-submenu">
+                <a href="#">比赛信息</a>
+                <ul class="submenu">
+                    <li><a href="/standings/s1" data-nav-link>第1期（已结束）</a></li>
+                    <li class="has-submenu">
+                        <a href="#">第2期（进行中）</a>
+                        <ul class="submenu-3">
+                            <li><a href="/standings/s2" data-nav-link>排行榜</a></li>
+                            <li><a href="/games/s2/r4" data-nav-link>第4轮对局</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li><a href="/rating-history" data-nav-link>会员名录</a></li>
+            <li><a href="/register" data-nav-link style="color: red; font-weight: bold;">马上报名</a></li>
+            <li><a href="/calculator" data-nav-link>计算器</a></li>
+        </ul>
+    </nav>
+
+    <main id="content-container">
+        </main>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- 汉堡菜单逻辑 ---
-            const hamburgerButton = document.getElementById('hamburger-button');
-            const mobileMenu = document.getElementById('mobile-menu');
+            const contentContainer = document.getElementById('content-container');
+            const mainMenu = document.getElementById('main-menu');
+            const hamburger = document.getElementById('hamburger-toggle');
 
-            hamburgerButton.addEventListener('click', function() {
-                // 切换菜单的显示/隐藏状态
-                mobileMenu.classList.toggle('is-open');
-                // 切换按钮的 'X' 形状
-                hamburgerButton.classList.toggle('is-open');
-            });
+            // --- 核心：路由和内容加载函数 ---
+            const routes = {
+                '/': 'home.html',
+                '/rating-history': 'ratinghistory.html',
+                '/register': 'register.html',
+                '/calculator': 'calculator.html',
+                // ... 在这里添加您所有的页面路由 ...
+            };
 
-            // 点击移动菜单中的链接后，自动关闭菜单
-            mobileMenu.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileMenu.classList.remove('is-open');
-                    hamburgerButton.classList.remove('is-open');
-                });
-            });
+            async function loadContent(path) {
+                // 如果是根路径，默认加载 home.html
+                const page = routes[path] || routes['/']; 
+                
+                // 如果找不到页面，可以显示404
+                if (!page) {
+                    contentContainer.innerHTML = '<h1>404 - 页面未找到</h1>';
+                    return;
+                }
 
-            // --- 用户状态逻辑 (保持不变) ---
-            const API_BASE_URL = 'https://yaoshen.pythonanywhere.com/api';
-            const userStatusDesktop = document.getElementById('nav-user-status-desktop');
-            const userStatusMobile = document.getElementById('nav-user-status-mobile');
-
-            function checkLoginStatus() {
-                // (您的登录检查逻辑无需修改，这里为了演示，使用模拟数据)
-                setTimeout(() => { // 模拟网络延迟
-                    const isLoggedIn = false; // 您可以改为 true 来测试登录后的效果
-                    const user = { name: '棋圣', member_id: '1001' };
+                try {
+                    // 显示加载动画
+                    contentContainer.innerHTML = '<p>正在加载...</p>';
                     
-                    let userHtml;
-                    if (isLoggedIn) {
-                        userHtml = `
-                            <div class="flex items-center space-x-4">
-                                <span class="text-sm font-medium text-gray-700">欢迎, ${user.name}</span>
-                                <a href="#" id="logout-link" class="text-sm text-gray-500 hover:text-black">退出</a>
-                            </div>
-                        `;
-                    } else {
-                        userHtml = `
-                            <div class="flex items-center space-x-4">
-                                <a href="login.html" target="content-frame" class="text-sm font-medium text-gray-600 hover:text-black">登录</a>
-                                <a href="zhuce.html" target="content-frame" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">注册</a>
-                            </div>
-                        `;
-                    }
-                    userStatusDesktop.innerHTML = userHtml;
-                    userStatusMobile.innerHTML = userHtml;
+                    const response = await fetch(page);
+                    if (!response.ok) throw new Error('页面加载失败');
                     
-                    if(isLoggedIn && document.getElementById('logout-link')) {
-                        document.getElementById('logout-link').addEventListener('click', () => alert('处理登出逻辑'));
-                    }
-                }, 500);
+                    const html = await response.text();
+                    contentContainer.innerHTML = html;
+                } catch (error) {
+                    contentContainer.innerHTML = `<p>加载内容时出错: ${error.message}</p>`;
+                }
             }
 
-            checkLoginStatus();
+            // --- 事件监听 ---
+            
+            // 1. 监听所有带 data-nav-link 属性的链接点击
+            document.body.addEventListener('click', e => {
+                const link = e.target.closest('a[data-nav-link]');
+                if (link) {
+                    e.preventDefault();
+                    const path = link.getAttribute('href');
+                    
+                    // 更新浏览器地址栏，但不刷新页面
+                    history.pushState({ path: path }, '', path);
+                    
+                    // 加载新内容
+                    loadContent(path);
+
+                    // 如果是移动端，关闭菜单
+                    mainMenu.classList.remove('is-open');
+                }
+            });
+
+            // 2. 监听浏览器前进/后退按钮
+            window.addEventListener('popstate', e => {
+                if (e.state && e.state.path) {
+                    loadContent(e.state.path);
+                } else {
+                    loadContent(location.pathname); // 处理初始加载
+                }
+            });
+            
+            // 3. 汉堡菜单逻辑 (保持不变)
+            hamburger.addEventListener('click', () => {
+                mainMenu.classList.toggle('is-open');
+            });
+            
+            // (您原有的多级菜单展开JS、登录检查JS等都应该放在这里)
+            
+            // --- 初始加载 ---
+            // 加载与当前URL匹配的内容，或默认首页
+            loadContent(window.location.pathname);
         });
     </script>
-
 </body>
 </html>
