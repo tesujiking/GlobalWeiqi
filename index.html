@@ -7,7 +7,7 @@
     
     <meta name="description" content="全球围棋超级联赛">
 
-    <title>全球围棋</title>
+    <title>全球围棋超级联赛 - Global Weiqi Super League</title>
     <meta property="og:title" content="全球围棋超级联赛" />
     <meta property="og:description" content="全名参与，高手云集，新手友好，真正涨棋的全球围棋超级联赛" />
     <meta property="og:type" content="website" />
@@ -50,375 +50,245 @@
       align-items: center;
     }
 
-    .logo-link {
+    /* Chess.com 风格的左侧 Sidebar 导航 */
+    .app-container {
       display: flex;
-      align-items: center;
-      text-decoration: none;
-      gap: 15px;
-      transition: transform 0.2s ease;
+      min-height: 100vh;
     }
 
-    .logo-link:hover {
-      transform: translateY(-2px);
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, #2c3e50, #34495e);
+      color: white;
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      z-index: 1000;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     }
 
-    .site-logo {
-      height: 50px;
-      width: auto;
-      border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    .sidebar.collapsed {
+      transform: translateX(-100%);
     }
 
-    .site-title {
-      font-size: 24px;
-      font-weight: 700;
+    .sidebar-header {
+      padding: 25px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       background: linear-gradient(135deg, #667eea, #764ba2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
     }
 
-    .site-subtitle {
-      font-size: 12px;
-      color: #666;
-      margin-top: 2px;
-      font-weight: 400;
-    }
-
-    /* 现代化导航设计 */
-    nav {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    }
-
-    .nav-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 30px;
-    }
-
-    .menu {
+    .sidebar-logo {
       display: flex;
-      list-style: none;
-      padding: 0;
-      margin: 0;
       align-items: center;
+      gap: 15px;
+      text-decoration: none;
+      color: white;
     }
 
-    .menu > li {
+    .sidebar-logo img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+    }
+
+    .sidebar-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .sidebar-subtitle {
+      font-size: 11px;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    .sidebar-nav {
+      padding: 20px 0;
+    }
+
+    .nav-section {
+      margin-bottom: 30px;
+    }
+
+    .nav-section-title {
+      padding: 8px 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .nav-item {
+      margin: 2px 0;
       position: relative;
     }
 
-    .menu > li > a {
-      display: block;
-      color: #333;
-      padding: 18px 20px;
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.9);
       text-decoration: none;
-      font-weight: 600;
-      font-size: 15px;
+      font-weight: 500;
+      font-size: 14px;
       transition: all 0.3s ease;
-      border-radius: 8px;
-      margin: 0 5px;
+      border-radius: 0;
     }
 
-    .menu > li > a:hover {
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      transform: translateX(5px);
+    }
+
+    .nav-link.active {
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
-      transform: translateY(-2px);
       box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
     }
 
-    /* 特殊按钮样式 */
-    .menu > li > a[style*="color: red"] {
-      background: linear-gradient(135deg, #ff6b6b, #ee5a24) !important;
-      color: white !important;
-      font-weight: 700;
-      padding: 12px 25px;
-      border-radius: 25px;
-      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
-      animation: pulse 2s infinite;
+    .nav-link .icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
     }
 
-    @keyframes pulse {
-      0% { box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4); }
-      50% { box-shadow: 0 4px 25px rgba(255, 107, 107, 0.6); }
-      100% { box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4); }
+    .nav-link .badge {
+      background: #e74c3c;
+      color: white;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      margin-left: auto;
     }
 
-    .menu > li > a[style*="color: red"]:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 25px rgba(255, 107, 107, 0.5);
+    .nav-item.has-submenu > .nav-link::after {
+      content: '▶';
+      margin-left: auto;
+      font-size: 10px;
+      transition: transform 0.3s ease;
     }
 
-    /* 现代化子菜单设计 */
+    .nav-item.has-submenu.expanded > .nav-link::after {
+      transform: rotate(90deg);
+    }
+
     .submenu {
       display: none;
-      position: absolute;
-      background: white;
-      top: 100%;
-      left: 0;
-      min-width: 220px;
-      z-index: 100;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.2);
       padding: 8px 0;
-      margin-top: 10px;
     }
 
-    /* 桌面端鼠标悬停显示子菜单 */
-    .menu li:hover > .submenu {
+    .submenu.expanded {
       display: block;
-      animation: fadeInUp 0.3s ease;
+      animation: slideDown 0.3s ease;
     }
 
-    @keyframes fadeInUp {
+    @keyframes slideDown {
       from {
         opacity: 0;
-        transform: translateY(10px);
+        max-height: 0;
       }
       to {
         opacity: 1;
-        transform: translateY(0);
+        max-height: 300px;
       }
     }
 
-    /* 移动端和桌面端都使用的激活状态 */
-    .submenu.active {
-      display: block !important;
-      animation: fadeInUp 0.3s ease;
+    .submenu .nav-link {
+      padding: 10px 20px 10px 52px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.8);
     }
 
-    .submenu li {
-      position: relative;
-      margin: 2px 8px;
+    .submenu .nav-link:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.95);
     }
 
-    .submenu li a {
-      display: block;
-      color: #333;
-      padding: 12px 16px;
-      text-decoration: none;
-      border-radius: 8px;
-      transition: all 0.2s ease;
-      font-weight: 500;
+    /* 主内容区域 */
+    .main-container {
+      flex: 1;
+      margin-left: 280px;
+      transition: margin-left 0.3s ease;
     }
 
-    .submenu li a:hover {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      transform: translateX(5px);
+    .main-container.sidebar-collapsed {
+      margin-left: 0;
     }
 
-    /* 三级菜单现代化设计 */
-    .submenu-3 {
-      display: none;
-      position: absolute;
+    .top-bar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 15px 30px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
       top: 0;
-      left: 100%;
-      background: white;
-      min-width: 200px;
-      z-index: 200;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      padding: 8px 0;
-      margin-left: 10px;
+      z-index: 100;
     }
 
-    .has-submenu:hover > .submenu-3 {
-      display: block;
-      animation: fadeInRight 0.3s ease;
+    .sidebar-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background 0.3s ease;
     }
 
-    @keyframes fadeInRight {
-      from {
-        opacity: 0;
-        transform: translateX(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
+    .sidebar-toggle:hover {
+      background: rgba(0, 0, 0, 0.1);
     }
 
-    .submenu-3.active {
-      display: block !important;
-      animation: fadeInRight 0.3s ease;
-    }
-
-    .submenu-3 li {
-      margin: 2px 8px;
-    }
-
-    .submenu-3 li a {
-      display: block;
-      color: #333;
-      padding: 10px 16px;
-      text-decoration: none;
-      border-radius: 8px;
-      transition: all 0.2s ease;
-      font-weight: 500;
+    .user-status {
+      display: flex;
+      align-items: center;
+      gap: 15px;
       font-size: 14px;
+      font-weight: 500;
     }
-
-    .submenu-3 li a:hover {
-      background: linear-gradient(135deg, #764ba2, #667eea);
+    
+    .user-status span {
+      color: #333;
+      padding: 8px 15px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .user-status a {
+      cursor: pointer;
       color: white;
-      transform: translateX(5px);
+      text-decoration: none;
+      padding: 8px 15px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 20px;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .user-status a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      text-decoration: none;
     }
 
-    /* 移动端现代化适配 */
-    @media (max-width: 768px) {
-      .header-container {
-        padding: 0 15px;
-      }
-      
-      .site-title {
-        font-size: 18px;
-      }
-      
-      .nav-container {
-        padding: 0 15px;
-      }
-      
-      .menu {
-        flex-direction: column;
-        padding: 0;
-      }
-      
-      .menu > li {
-        width: 100%;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      }
-      
-      .menu > li > a {
-        padding: 18px 20px;
-        font-size: 16px;
-        margin: 0;
-        border-radius: 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      
-      .menu > li > a:hover {
-        transform: none;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-      }
-      
-      /* 移动端子菜单 */
-      .submenu {
-        position: static !important;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        min-width: auto;
-        box-shadow: none;
-        border: none;
-        border-radius: 0;
-        margin: 0;
-        padding: 0;
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease;
-      }
-      
-      .submenu.active {
-        max-height: 500px;
-        display: block !important;
-        animation: none;
-      }
-      
-      .submenu li {
-        margin: 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      }
-      
-      .submenu li a {
-        padding: 15px 40px;
-        font-size: 14px;
-        color: #333;
-        border-radius: 0;
-      }
-      
-      .submenu li a:hover {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        transform: none;
-      }
-      
-      /* 移动端三级菜单 */
-      .submenu-3 {
-        position: static !important;
-        background: rgba(240, 240, 240, 0.95);
-        margin-left: 0;
-        border-radius: 0;
-        box-shadow: none;
-        border: none;
-        padding: 0;
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease;
-      }
-      
-      .submenu-3.active {
-        max-height: 200px;
-        display: block !important;
-        animation: none;
-      }
-      
-      .submenu-3 li {
-        margin: 0;
-      }
-      
-      .submenu-3 li a {
-        padding: 12px 60px;
-        font-size: 13px;
-        color: #555;
-        border-radius: 0;
-      }
-      
-      .submenu-3 li a:hover {
-        background: linear-gradient(135deg, #764ba2, #667eea);
-        color: white;
-        transform: none;
-      }
-      
-      /* 移动端箭头样式 */
-      .menu > li.has-submenu > a::after {
-        content: '\25BC';
-        font-size: 12px;
-        transition: transform 0.3s ease;
-        color: #666;
-      }
-      
-      .menu > li.has-submenu.active > a::after {
-        transform: rotate(180deg);
-        color: white;
-      }
-      
-      .submenu li.has-submenu > a::after {
-        content: '\25B6';
-        font-size: 10px;
-        color: #666;
-      }
-      
-      .submenu li.has-submenu.active > a::after {
-        content: '\25BC';
-        transform: none;
-        color: #333;
-      }
-    }
-
-    /* 主内容区域现代化设计 */
-    .main-content {
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 0 30px;
+    .content-area {
+      padding: 0;
     }
 
     .content-container {
@@ -427,9 +297,56 @@
       border-radius: 16px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
       overflow: hidden;
-      min-height: calc(100vh - 200px);
+      min-height: calc(100vh - 120px);
+      margin: 20px;
     }
 
+    /* 移动端适配 */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.mobile-open {
+        transform: translateX(0);
+      }
+
+      .main-container {
+        margin-left: 0;
+      }
+
+      .sidebar-toggle {
+        display: block;
+      }
+
+      .user-status {
+        flex-direction: column;
+        gap: 8px;
+        font-size: 12px;
+      }
+      
+      .user-status span,
+      .user-status a {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+    }
+
+    /* 遮罩层 */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      display: none;
+    }
+
+    .sidebar-overlay.active {
+      display: block;
+    }
     /* 英雄区域设计 */
     .hero-section {
       background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
@@ -552,163 +469,239 @@
       }
     }
   </style>
-<style>
-    /* 用户状态现代化设计 */
-    #nav-user-status {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        font-size: 14px;
-        font-weight: 500;
-    }
-    
-    #nav-user-status span {
-        color: #333;
-        padding: 8px 15px;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 20px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    #nav-user-status a {
-        cursor: pointer;
-        color: white;
-        text-decoration: none;
-        padding: 8px 15px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        border-radius: 20px;
-        transition: all 0.3s ease;
-        font-weight: 600;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-    }
-    
-    #nav-user-status a:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        text-decoration: none;
-    }
-    
-    @media (max-width: 768px) {
-        #nav-user-status {
-            flex-direction: column;
-            gap: 8px;
-            font-size: 12px;
-        }
-        
-        #nav-user-status span,
-        #nav-user-status a {
-            padding: 6px 12px;
-            font-size: 12px;
-        }
-    }
-</style>
+
 
 </head>
 <body>
-
-  <!-- 现代化头部设计 -->
-  <header class="site-header">
-    <div class="header-container">
-      <a href="index.html" class="logo-link">
-        <img src="./images/GlobalWeiqi.png" alt="Global Weiqi Logo" class="site-logo">
-      </a>
-      <div id="nav-user-status"></div>
-    </div>
-  </header>
-
-  <!-- 现代化导航菜单 -->
-<nav>
-  <div class="nav-container">
-    <ul class="menu">
-      <li class="has-submenu">
-        <a href="#">🏆 比赛信息</a>
-        <ul class="submenu">
-          <li><a href="standingsS1R5.html" data-page="standingsS1R5">🏁 第1期（已结束）</a></li>
-          <li class="has-submenu">
-            <a href="#">🔥 第2期（进行中）</a>
-            <ul class="submenu-3">
-              <li><a href="standingsS2R4.html" data-page="standingsS2R4">📈 排行榜</a></li>
-              <li><a href="GamesListS2R4.html" data-page="GamesListS2R4">⚔️ 第4轮对局</a></li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-      <li class="has-submenu">
-        <a href="#">📜 重要说明</a>
-        <ul class="submenu">
-          <li><a href="regulations.html" data-page="regulations">📋 比赛章程</a></li>
-          <li><a href="deposit.html" data-page="deposit">💰 保证金</a></li>
-          <li><a href="Review.html" data-page="Review">📚 复盘讲解</a></li>
-          <li><a href="Mcmahon.html" data-page="Mcmahon">🎲 麦克马洪编排</a></li>
-          <li><a href="play.html" data-page="play">♟️ 下棋</a></li>
-          <li><a href="board.html" data-page="board">🎨 对弈棋盘</a></li>
-          <li><a href="pairing_flow.html" data-page="pairing_flow">🔄 分区流动</a></li>
-          <li><a href="flow_test.html" data-page="flow_test">🧪 流动测试</a></li>
-          <li><a href="api_debug.html" data-page="api_debug">🔧 API调试</a></li>
-          <li><a href="mobile_menu_test.html" data-page="mobile_menu_test">📱 菜单测试</a></li>
-          <li><a href="menu_debug.html" data-page="menu_debug">🐛 菜单调试</a></li>
-          <li><a href="simple_menu_test.html" data-page="simple_menu_test">⚙️ 简单测试</a></li>
-          <li><a href="login.html" data-page="login">🔑 登陆</a></li>
-          <li><a href="zhuce.html" data-page="zhuce">📝 注册</a></li>
-        </ul>
-      </li>
+  <div class="app-container">
+    <!-- 左侧 Sidebar 导航 -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="#" class="sidebar-logo" onclick="showHomePage()">
+          <img src="./images/GlobalWeiqi.png" alt="Global Weiqi Logo">
+          <div>
+            <div class="sidebar-title">全球围棋超级联赛</div>
+            <div class="sidebar-subtitle">Global Weiqi Super League</div>
+          </div>
+        </a>
+      </div>
       
-      <li>
-        <a href="ratinghistory.html" data-page="ratinghistory">👥 会员名录</a>
-      </li>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-title">比赛信息</div>
+          <div class="nav-item has-submenu">
+            <a href="#" class="nav-link">
+              <span class="icon">🏆</span>
+              赛事信息
+            </a>
+            <div class="submenu">
+              <a href="standingsS1R5.html" class="nav-link" data-page="standingsS1R5">
+                <span class="icon">🏁</span>
+                第1期（已结束）
+              </a>
+              <div class="nav-item has-submenu">
+                <a href="#" class="nav-link">
+                  <span class="icon">🔥</span>
+                  第2期（进行中）
+                  <span class="badge">HOT</span>
+                </a>
+                <div class="submenu">
+                  <a href="standingsS2R4.html" class="nav-link" data-page="standingsS2R4">
+                    <span class="icon">📈</span>
+                    排行榜
+                  </a>
+                  <a href="GamesListS2R4.html" class="nav-link" data-page="GamesListS2R4">
+                    <span class="icon">⚔️</span>
+                    第4轮对局
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">功能工具</div>
+          <div class="nav-item">
+            <a href="calculator_content.html" class="nav-link" data-page="calculator">
+              <span class="icon">📊</span>
+              等级分计算器
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="ratinghistory.html" class="nav-link" data-page="ratinghistory">
+              <span class="icon">👥</span>
+              会员名录
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="play.html" class="nav-link" data-page="play">
+              <span class="icon">♟️</span>
+              在线对弈
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="board.html" class="nav-link" data-page="board">
+              <span class="icon">🎨</span>
+              对弈棋盘
+            </a>
+          </div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">资料与规则</div>
+          <div class="nav-item">
+            <a href="regulations.html" class="nav-link" data-page="regulations">
+              <span class="icon">📋</span>
+              赛事章程
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="Mcmahon.html" class="nav-link" data-page="Mcmahon">
+              <span class="icon">🎲</span>
+              麦克马洪赛制
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="pairing_flow.html" class="nav-link" data-page="pairing_flow">
+              <span class="icon">🔄</span>
+              配对流程
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="deposit.html" class="nav-link" data-page="deposit">
+              <span class="icon">💰</span>
+              保证金
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="Review.html" class="nav-link" data-page="Review">
+              <span class="icon">📚</span>
+              复盘讲解
+            </a>
+          </div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">用户中心</div>
+          <div class="nav-item">
+            <a href="login.html" class="nav-link" data-page="login">
+              <span class="icon">🔑</span>
+              登录
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="zhuce.html" class="nav-link" data-page="zhuce">
+              <span class="icon">📝</span>
+              注册
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="gomasterlogin.html" class="nav-link" data-page="gomasterlogin">
+              <span class="icon">🎯</span>
+              GoMaster账号
+            </a>
+          </div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-item">
+            <a href="register.html" class="nav-link" data-page="register" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white;">
+              <span class="icon">.EVT</span>
+              马上报名
+              <span class="badge">NEW</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 开发测试功能（可折叠） -->
+        <div class="nav-section">
+          <div class="nav-section-title">开发测试</div>
+          <div class="nav-item has-submenu">
+            <a href="#" class="nav-link">
+              <span class="icon">🔧</span>
+              测试功能
+            </a>
+            <div class="submenu">
+              <a href="flow_test.html" class="nav-link" data-page="flow_test">
+                <span class="icon">🧪</span>
+                流动测试
+              </a>
+              <a href="api_debug.html" class="nav-link" data-page="api_debug">
+                <span class="icon">🔧</span>
+                API调试
+              </a>
+              <a href="mobile_menu_test.html" class="nav-link" data-page="mobile_menu_test">
+                <span class="icon">📱</span>
+                菜单测试
+              </a>
+              <a href="menu_debug.html" class="nav-link" data-page="menu_debug">
+                <span class="icon">🐛</span>
+                菜单调试
+              </a>
+              <a href="simple_menu_test.html" class="nav-link" data-page="simple_menu_test">
+                <span class="icon">⚙️</span>
+                简单测试
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- 遮罩层 -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- 主内容区域 -->
+    <main class="main-container" id="mainContainer">
+      <div class="top-bar">
+        <button class="sidebar-toggle" id="sidebarToggle">
+          ☰
+        </button>
+        <div class="user-status" id="nav-user-status"></div>
+      </div>
       
-      <li>
-        <a href="register.html" data-page="register" style="color: red; font-weight: bold;">🎆 马上报名</a>
-      </li>
-
-      <li>
-        <a href="calculator.html" data-page="calculator">📊 计算器</a>
-      </li>
-    </ul>
-  </div>
-</nav>
-
-  <!-- 主内容区域 -->
-  <div class="main-content">
-    <div class="content-container" id="main-content">
-      <!-- 默认首页内容 -->
-      <div class="hero-section">
-        <div class="hero-content">
-          <h1 class="hero-title">全球围棋超级联赛</h1>
-          <p class="hero-subtitle">全名参与，高手云集，新手友好，真正涨棋的全球围棋超级联赛</p>
-          <div class="hero-buttons">
-            <a href="#" class="btn btn-primary" data-page="register">🎆 马上报名</a>
-            <a href="#" class="btn btn-secondary" data-page="standings">📈 查看排名</a>
+      <div class="content-area">
+        <div class="content-container" id="main-content">
+          <!-- 默认首页内容 -->
+          <div class="hero-section">
+            <div class="hero-content">
+              <h1 class="hero-title">全球围棋超级联赛</h1>
+              <p class="hero-subtitle">全名参与，高手云集，新手友好，真正涨棋的全球围棋超级联赛</p>
+              <div class="hero-buttons">
+                <a href="#" class="btn btn-primary" data-page="register">.EVT 马上报名</a>
+                <a href="#" class="btn btn-secondary" data-page="standings">📈 查看排名</a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="features-section">
+            <div class="features-grid">
+              <div class="feature-card">
+                <div class="feature-icon">🏆</div>
+                <h3>比赛信息</h3>
+                <p>实时更新的比赛进度和排名信息</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">♟️</div>
+                <h3>在线对弈</h3>
+                <p>支持在线下棋和复盘分析</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>学习资源</h3>
+                <p>丰富的学习材料和技巧分享</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3>社区交流</h3>
+                <p>与全球围棋爱好者交流学习</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      
-      <div class="features-section">
-        <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-icon">🏆</div>
-            <h3>比赛信息</h3>
-            <p>实时更新的比赛进度和排名信息</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">♟️</div>
-            <h3>在线对弈</h3>
-            <p>支持在线下棋和复盘分析</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">📚</div>
-            <h3>学习资源</h3>
-            <p>丰富的学习材料和技巧分享</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">👥</div>
-            <h3>社区交流</h3>
-            <p>与全球围棋爱好者交流学习</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    </main>
   </div>
 
   <script>
@@ -725,7 +718,7 @@
                     <h1 class="hero-title">全球围棋超级联赛</h1>
                     <p class="hero-subtitle">全名参与，高手云集，新手友好，真正涨棋的全球围棋超级联赛</p>
                     <div class="hero-buttons">
-                        <a href="#" class="btn btn-primary" data-page="register">🎆 马上报名</a>
+                        <a href="#" class="btn btn-primary" data-page="register">.EVT 马上报名</a>
                         <a href="#" class="btn btn-secondary" data-page="standingsS2R4">📈 查看排名</a>
                     </div>
                 </div>
@@ -831,7 +824,7 @@
             });
     }
     
-    // 初始化导航事件监听器
+    // 初始化sidebar导航事件监听器
     function initNavigation() {
         // 为所有带有data-page属性的链接添加事件监听器
         document.querySelectorAll('a[data-page]').forEach(link => {
@@ -839,131 +832,80 @@
                 e.preventDefault();
                 const pageUrl = e.target.getAttribute('href');
                 loadPage(pageUrl);
+                
+                // 设置活跃状态
+                document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                // 移动端自动关闭sidebar
+                if (window.innerWidth <= 768) {
+                    closeSidebar();
+                }
             });
         });
     }
-    
-    function initMobileMenu() {
-        console.log('初始化移动端菜单...');
-        
-        // 关闭所有菜单的统一函数
-        function closeAllMenus() {
-            console.log('关闭所有菜单');
-            document.querySelectorAll('.submenu.active, .submenu-3.active').forEach(activeSubmenu => {
-                activeSubmenu.classList.remove('active');
-            });
-            document.querySelectorAll('.menu li.active').forEach(activeItem => {
-                activeItem.classList.remove('active');
-            });
+
+    // Sidebar控制函数
+    function initSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const mainContainer = document.getElementById('mainContainer');
+
+        // 切换sidebar
+        function toggleSidebar() {
+            sidebar.classList.toggle('mobile-open');
+            sidebarOverlay.classList.toggle('active');
+            mainContainer.classList.toggle('sidebar-collapsed');
         }
-        
-        // 为所有有子菜单的一级菜单项添加点击事件
-        const menuItems = document.querySelectorAll('.menu > li.has-submenu > a');
-        console.log('找到菜单项:', menuItems.length);
-        
-        menuItems.forEach((menuLink, index) => {
-            console.log(`设置菜单项 ${index + 1}: ${menuLink.textContent.trim()}`);
-            
-            menuLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                console.log('点击了菜单:', this.textContent.trim());
-                
-                const parentLi = this.parentElement;
-                const submenu = parentLi.querySelector('.submenu');
-                
-                if (submenu) {
-                    // 检查当前菜单是否已经激活
-                    const isCurrentlyActive = submenu.classList.contains('active');
-                    
-                    // 先关闭所有菜单
-                    document.querySelectorAll('.submenu.active').forEach(activeMenu => {
-                        activeMenu.classList.remove('active');
-                        activeMenu.parentElement.classList.remove('active');
-                    });
-                    document.querySelectorAll('.submenu-3.active').forEach(activeMenu3 => {
-                        activeMenu3.classList.remove('active');
-                        activeMenu3.parentElement.classList.remove('active');
-                    });
-                    
-                    // 如果之前没有激活，则打开当前菜单；如果已激活且重复点击，则关闭所有菜单
-                    if (!isCurrentlyActive) {
-                        submenu.classList.add('active');
-                        parentLi.classList.add('active');
-                        console.log('打开子菜单');
-                    } else {
-                        console.log('重复点击同一菜单，关闭所有菜单');
-                    }
-                }
-            });
-        });
-        
-        // 为三级菜单项添加点击事件
-        const submenuItems = document.querySelectorAll('.submenu li.has-submenu > a');
-        console.log('找到三级菜单项:', submenuItems.length);
-        
-        submenuItems.forEach((submenuLink, index) => {
-            submenuLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                console.log('点击了三级菜单:', this.textContent.trim());
-                
-                const parentLi = this.parentElement;
-                const submenu3 = parentLi.querySelector('.submenu-3');
-                
-                if (submenu3) {
-                    const isActive = submenu3.classList.contains('active');
-                    if (isActive) {
-                        submenu3.classList.remove('active');
-                        parentLi.classList.remove('active');
-                    } else {
-                        submenu3.classList.add('active');
-                        parentLi.classList.add('active');
-                    }
-                }
-            });
-        });
-        
-        // 为所有子菜单和三级菜单的链接添加点击关闭功能
-        document.querySelectorAll('.submenu a, .submenu-3 a').forEach(link => {
-            // 跳过有子菜单的项目（这些项目用于展开下级菜单）
-            if (!link.parentElement.classList.contains('has-submenu')) {
-                link.addEventListener('click', function(e) {
-                    console.log('点击了菜单项:', this.textContent.trim());
-                    
-                    // 获取页面URL
-                    const pageUrl = this.getAttribute('href');
-                    if (pageUrl && pageUrl !== '#') {
-                        e.preventDefault();
-                        loadPage(pageUrl);
-                    }
-                    
-                    // 立即关闭所有菜单
-                    closeAllMenus();
-                });
-            }
-        });
-        
-        // 点击外部区域关闭菜单
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('nav')) {
-                console.log('点击外部，关闭菜单');
-                closeAllMenus();
-            }
-        });
-        
-        // ESC键关闭菜单
-        document.addEventListener('keydown', function(e) {
+
+        // 关闭sidebar
+        function closeSidebar() {
+            sidebar.classList.remove('mobile-open');
+            sidebarOverlay.classList.remove('active');
+            mainContainer.classList.remove('sidebar-collapsed');
+        }
+
+        // 汉堡菜单按钮点击
+        sidebarToggle.addEventListener('click', toggleSidebar);
+
+        // 点击遮罩层关闭
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        // ESC键关闭
+        document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                console.log('按下ESC键，关闭菜单');
-                closeAllMenus();
+                closeSidebar();
             }
         });
 
+        // 子菜单展开/收起
+        document.querySelectorAll('.nav-item.has-submenu > .nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const navItem = link.parentElement;
+                const submenu = navItem.querySelector('.submenu');
+                
+                // 切换当前子菜单
+                navItem.classList.toggle('expanded');
+                submenu.classList.toggle('expanded');
+                
+                // 关闭其他同级子菜单
+                const siblings = navItem.parentElement.children;
+                Array.from(siblings).forEach(sibling => {
+                    if (sibling !== navItem && sibling.classList.contains('has-submenu')) {
+                        sibling.classList.remove('expanded');
+                        const siblingSubmenu = sibling.querySelector('.submenu');
+                        if (siblingSubmenu) siblingSubmenu.classList.remove('expanded');
+                    }
+                });
+            });
+        });
         
-        console.log('移动端菜单初始化完成');
+        // 暴露关闭函数给全局
+        window.closeSidebar = closeSidebar;
     }
 
     function checkLoginStatus() {
@@ -1017,23 +959,9 @@
     // 页面加载时立即执行
     document.addEventListener('DOMContentLoaded', function() {
         checkLoginStatus();
-        initMobileMenu();
+        initSidebar(); // 初始化sidebar导航
         initNavigation();
         showHomePage(); // 默认显示首页
-    });
-    
-    // 窗口大小改变时重新初始化菜单
-    window.addEventListener('resize', function() {
-        // 清除所有活动状态
-        document.querySelectorAll('.submenu.active, .submenu-3.active').forEach(activeSubmenu => {
-            activeSubmenu.classList.remove('active');
-        });
-        document.querySelectorAll('.menu li.active').forEach(activeItem => {
-            activeItem.classList.remove('active');
-        });
-        
-        // 重新初始化
-        setTimeout(initMobileMenu, 100);
     });
 </script>
 
