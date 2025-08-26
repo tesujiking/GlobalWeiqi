@@ -21,12 +21,13 @@
             padding: 0;
         }
 
-        /* 主内容区域 */
+        /* 主内容区域 - 适配嵌入式容器 */
         .main-content {
             width: 100%;
             margin: 0;
             background: transparent;
-            padding: 40px;
+            padding: 20px;
+            min-height: 600px;
         }
 
         .page-title {
@@ -35,7 +36,7 @@
         }
 
         .page-title h1 {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
             background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
@@ -56,10 +57,11 @@
             padding: 30px;
             border: 2px solid rgba(102, 126, 234, 0.1);
             overflow: hidden;
+            margin-bottom: 20px;
         }
 
         .table-header {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
             color: #2c3e50;
             margin-bottom: 15px;
@@ -76,11 +78,13 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 600px;
         }
 
         thead {
@@ -95,6 +99,11 @@
             font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        thead th[style*="center"] {
+            text-align: center;
         }
 
         tbody tr {
@@ -110,13 +119,15 @@
         }
 
         tbody td {
-            padding: 15px 12px;
+            padding: 12px;
             font-size: 14px;
+            vertical-align: middle;
         }
 
         .rank-cell {
             font-weight: 700;
             color: #667eea;
+            text-align: center;
         }
 
         .name-cell {
@@ -128,6 +139,7 @@
             font-weight: 700;
             color: #667eea;
             text-align: center;
+            font-family: 'Courier New', monospace;
         }
 
         .rank-cell-display {
@@ -300,13 +312,18 @@
             font-family: 'Courier New', monospace;
         }
 
+        /* 响应式设计 */
         @media (max-width: 768px) {
             .main-content {
-                padding: 20px;
+                padding: 10px;
             }
             
             .page-title h1 {
-                font-size: 24px;
+                font-size: 22px;
+            }
+            
+            .table-container {
+                padding: 15px;
             }
             
             .modal-content {
@@ -329,7 +346,6 @@
     </style>
 </head>
 <body>
-
     <!-- 主内容区域 -->
     <div class="main-content">
         <div class="page-title">
@@ -379,12 +395,13 @@
         </div>
     </div>
 
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // --- 全局变量和常量 ---
         let playerChartInstance = null;
         const API_BASE_URL = 'https://yaoshen.pythonanywhere.com'; // 你的后端API地址
+
+        console.log('Rating History Page: 开始加载页面');
 
         // --- 辅助函数 ---
         function calculateRankFromRating(rating) {
@@ -478,7 +495,29 @@
                                 playerChartInstance = new Chart(ctx, {
                                     type: 'line',
                                     data: chartDisplayData,
-                                    options: { /* ... 完整的图表Options ... */ }
+                                    options: {
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                        plugins: {
+                                            title: {
+                                                display: true,
+                                                text: `${playerName} 的等级分变化图表`,
+                                                font: { size: 16, weight: 'bold' }
+                                            },
+                                            legend: { display: false }
+                                        },
+                                        scales: {
+                                            y: {
+                                                beginAtZero: false,
+                                                min: dataMin - padding,
+                                                max: dataMax + padding,
+                                                title: { display: true, text: '等级分' }
+                                            },
+                                            x: {
+                                                title: { display: true, text: '对局场次' }
+                                            }
+                                        }
+                                    }
                                 });
                             } else {
                                 chartContainer.style.display = 'none';
@@ -544,15 +583,27 @@
 
         // 函数：加载并显示所有选手列表
         function loadPlayerList() {
+            console.log('Rating History: 开始加载选手列表');
             const playerListBody = document.getElementById('player-list-body');
+            
+            if (!playerListBody) {
+                console.error('Rating History: 找不到 player-list-body 元素');
+                return;
+            }
+
             fetch(`${API_BASE_URL}/api/players/`)
                 .then(response => {
-                    if (!response.ok) { throw new Error('网络响应错误'); }
+                    console.log('Rating History: API响应状态', response.status);
+                    if (!response.ok) { 
+                        throw new Error(`网络响应错误: ${response.status}`); 
+                    }
                     return response.json();
                 })
                 .then(data => {
+                    console.log('Rating History: 收到数据', data);
                     let tableRowsHtml = '';
                     if (data.players && data.players.length > 0) {
+                        console.log('Rating History: 处理 ' + data.players.length + ' 个选手');
                         data.players.forEach((player, index) => {
                             tableRowsHtml += `
                                 <tr class="player-row" data-player-id="${player.id}" data-player-name="${player.full_name}">
@@ -566,18 +617,21 @@
                             `;
                         });
                     } else {
+                        console.log('Rating History: 没有找到选手数据');
                         tableRowsHtml = '<tr><td colspan="6" class="loading-cell">🏆 系统中尚无活跃选手。</td></tr>';
                     }
                     playerListBody.innerHTML = tableRowsHtml;
+                    console.log('Rating History: 表格内容已更新');
                     attachClickListeners(); // 数据加载并渲染完成后，再为新的行绑定点击事件
                 })
                 .catch(error => {
-                    console.error('加载选手列表失败:', error);
+                    console.error('Rating History: 加载选手列表失败:', error);
                     playerListBody.innerHTML = '<tr><td colspan="6" class="error-cell">⚠️ 加载选手列表失败，请检查后端服务是否正常。</td></tr>';
                 });
         }
 
         // --- 启动程序 ---
+        console.log('Rating History: 准备启动');
         loadPlayerList();
     });
 </script>
