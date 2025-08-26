@@ -3,127 +3,492 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第一期全球围棋超级联赛 - 最终排名</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>全球围棋超级联赛（第1期） - 最终排名</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        .fade-in { animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        /* 增加更细的表格线 */
-        th, td { border-bottom-width: 1px; }
-        thead th { border-bottom-width: 2px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: transparent;
+            min-height: 100vh;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            width: 100%;
+            margin: 0;
+            background: transparent;
+            padding: 40px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+
+        /* 表格样式 */
+        .table-container {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            padding: 30px;
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .table-note {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        .table-wrapper {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        thead th {
+            padding: 15px 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        thead th:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            transform: translateY(-1px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        tbody tr.impair {
+            background: #ffffff;
+        }
+
+        tbody tr.pair {
+            background: #f8f9fa;
+        }
+
+        tbody tr:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)) !important;
+        }
+
+        tbody td {
+            padding: 12px 8px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .rank-cell {
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .name-cell {
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: left;
+        }
+
+        .level-cell {
+            font-weight: 600;
+            color: #e74c3c;
+        }
+
+        .country-cell {
+            color: #27ae60;
+        }
+
+        .wins-cell {
+            font-weight: 700;
+            color: #f39c12;
+        }
+
+        /* 胜负结果样式 */
+        td b {
+            background: linear-gradient(135deg, #00ff3c, #27ae60);
+            color: #155724;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 11px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .page-title h1 {
+                font-size: 24px;
+            }
+        }
+
+        /* 统计信息卡片 */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stats-card {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .stats-card h3 {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stats-card .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
     </style>
 </head>
-<body class="bg-gray-100">
 
-    <div class="container mx-auto px-4 py-8">
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-800">第一期全球围棋超级联赛</h1>
-            <h2 class="text-2xl text-gray-600 mt-2">最终排名公告</h2>
+<body>
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <div class="page-title">
+            <h1>🏆 全球围棋超级联赛（第1期）</h1>
+            <p>最终排名榜 - 共进行5轮比赛</p>
         </div>
 
-        <div id="loading" class="text-center text-gray-500 py-10">
-            <p>正在从服务器加载最终排名数据，请稍候...</p>
-        </div>
-
-        <div id="error" class="hidden text-center text-red-600 bg-red-100 p-4 rounded-lg my-4">
-            <p id="error-message"></p>
-        </div>
-
-        <div id="standings-table" class="hidden bg-white p-6 rounded-lg shadow-lg">
-            <div class="overflow-x-auto border rounded-lg">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50 text-xs uppercase text-gray-500">
-                        <tr>
-                            <th class="px-2 py-3 text-left">序号</th>
-                            <th class="px-2 py-3 text-left">名次</th>
-                            <th class="px-4 py-3 text-left">姓名/城市</th>
-                            <th class="px-3 py-3 text-center">段位</th>
-                            <th class="px-3 py-3 text-center">胜局</th>
-                            
-                            <th class="px-2 py-3 text-center">第1轮</th>
-                            <th class="px-2 py-3 text-center">第2轮</th>
-                            <th class="px-2 py-3 text-center">第3轮</th>
-                            <th class="px-2 py-3 text-center">第4轮</th>
-                            <th class="px-2 py-3 text-center">第5轮</th>
-                            <th class="px-3 py-3 text-center">MMS</th>
-                            <th class="px-3 py-3 text-center">SOS</th>
-                            <th class="px-3 py-3 text-center">SOSOS</th>
-                        </tr>
-                    </thead>
-                    <tbody id="standings-body" class="bg-white divide-y divide-gray-200 text-sm">
-                        </tbody>
-                </table>
+        <!-- 统计信息卡片 -->
+        <div class="stats-cards">
+            <div class="stats-card">
+                <h3>📊 参赛人数</h3>
+                <div class="value">96</div>
+            </div>
+            <div class="stats-card">
+                <h3>🎯 完成轮数</h3>
+                <div class="value">5</div>
+            </div>
+            <div class="stats-card">
+                <h3>🥇 冠军</h3>
+                <div class="value">金融 5D</div>
+            </div>
+            <div class="stats-card">
+                <h3>⭐ 全胜</h3>
+                <div class="value">1人</div>
             </div>
         </div>
-    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const TOURNAMENT_ID = 1; 
-            const API_URL = `https://yaoshen.pythonanywhere.com/api/tournament/${TOURNAMENT_ID}/final_standings/`;
+        <!-- 排名表格 -->
+        <div class="table-container">
+            <div class="table-header">
+                📋 最终排名表
+            </div>
+            <div class="table-note">
+                💡 点击表头可排序 | <b>绿色</b>表示获胜 | MMS=麦克马洪分数
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable(0)">序号</th>
+                            <th onclick="sortTable(1)">排名</th>
+                            <th onclick="sortTable(2)">ID&姓名</th>
+                            <th onclick="sortTable(3)">标准级别</th>
+                            <th onclick="sortTable(4)">国家</th>
+                            <th onclick="sortTable(5)">地区</th>
+                            <th onclick="sortTable(6)">胜局数</th>
+                            <th onclick="sortTable(7)">第1轮</th>
+                            <th onclick="sortTable(8)">第2轮</th>
+                            <th onclick="sortTable(9)">第3轮</th>
+                            <th onclick="sortTable(10)">第4轮</th>
+                            <th onclick="sortTable(11)">第5轮</th>
+                            <th onclick="sortTable(12)">MMS</th>
+                            <th onclick="sortTable(13)">SOS</th>
+                            <th onclick="sortTable(14)">SOSOS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="impair">
+                            <td class="rank-cell">1</td>
+                            <td class="rank-cell">1</td>
+                            <td class="name-cell">0055 金融</td>
+                            <td class="level-cell">5D</td>
+                            <td class="country-cell">中国</td>
+                            <td>辽宁沈阳</td>
+                            <td class="wins-cell">5</td>
+                            <td><b>71+/w2</b></td>
+                            <td><b>2+/w0</b></td>
+                            <td><b>3+/w0</b></td>
+                            <td><b>4+/b0</b></td>
+                            <td><b>7+/w0</b></td>
+                            <td>39</td>
+                            <td>174</td>
+                            <td>884</td>
+                        </tr>
+<tr>
+    <td class=pair align="right">2&nbsp;</td>
+    <td class=pair align="right">   2&nbsp;</td>
+    <td class=pair>0082 刘宜盎</td>
+    <td class=pair align="center">6D</td>
+    <td class=pair align="center">中国</td>
+    <td class=pair align="center">河南郑州</td>
+    <td class=pair align="center">2</td>
+    <td class=pair align="center">   5-/w0</td>
+    <td class=pair align="center">   1-/b0</td>
+    <td class=pair align="center"><b>   4+/b0</b></td>
+    <td class=pair align="center"><b>   7+/b0</b></td>
+    <td class=pair align="center">   3-/w0</td>
+    <td class=pair align="center">37</td>
+    <td class=pair align="center">183</td>
+    <td class=pair align="center">898</td>
+</tr>
+<tr><td class=impair align="right">3&nbsp;</td><td class=impair align="right">   3&nbsp;</td><td class=impair>0034 顾思维</td><td class=impair align="center">4D</td><td class=impair align="center">中国</td><td class=impair align="center">上海闵行</td><td class=impair align="center">4</td><td class=impair align="center"><b>  28+/w2</b></td><td class=impair align="center"><b>  24+/w2</b></td><td class=impair align="center">   1-/b0</td><td class=impair align="center"><b>   5+/w0</b></td><td class=impair align="center"><b>   2+/b0</b></td><td class=impair align="center">37</td><td class=impair align="center">181</td><td class=impair align="center">867</td></tr>
+<tr><td class=pair align="right">4&nbsp;</td><td class=pair align="right">   4&nbsp;</td><td class=pair>0090 李凯辉</td><td class=pair align="center">4D</td><td class=pair align="center">中国</td><td class=pair align="center">湖南岳阳</td><td class=pair align="center">3</td><td class=pair align="center"><b>   7+/w0</b></td><td class=pair align="center"><b>   5+/b0</b></td><td class=pair align="center">   2-/w0</td><td class=pair align="center">   1-/w0</td><td class=pair align="center"><b>  11+/b0</b></td><td class=pair align="center">36</td><td class=pair align="center">181</td><td class=pair align="center">888</td></tr>
+<tr><td class=impair align="right">5&nbsp;</td><td class=impair align="right">   5&nbsp;</td><td class=impair>0083 李彧洋</td><td class=impair align="center">5D</td><td class=impair align="center">中国</td><td class=impair align="center">广东广州</td><td class=impair align="center">2</td><td class=impair align="center"><b>   2+/b0</b></td><td class=impair align="center">   4-/w0</td><td class=impair align="center">   7-/w0</td><td class=impair align="center">   3-/b0</td><td class=impair align="center"><b>   9+/w0</b></td><td class=impair align="center">36</td><td class=impair align="center">180</td><td class=impair align="center">890</td></tr>
+<tr><td class=pair align="right">6&nbsp;</td><td class=pair align="right">   6&nbsp;</td><td class=pair>0109 程平</td><td class=pair align="center">3D</td><td class=pair align="center">中国</td><td class=pair align="center">上海闵行</td><td class=pair align="center">3</td><td class=pair align="center">   0=   </td><td class=pair align="center"><b>  26+/w0</b></td><td class=pair align="center"><b>  17+/w0</b></td><td class=pair align="center">   0=   </td><td class=pair align="center"><b>  22+/w0</b></td><td class=pair align="center">36</td><td class=pair align="center">163</td><td class=pair align="center">815</td></tr>
+<tr><td class=impair align="right">7&nbsp;</td><td class=impair align="right">   7&nbsp;</td><td class=impair>0092 徐定平</td><td class=impair align="center">5D</td><td class=impair align="center">中国</td><td class=impair align="center">湖北潜江</td><td class=impair align="center">1</td><td class=impair align="center">   4-/b0</td><td class=impair align="center">   0=   </td><td class=impair align="center"><b>   5+/b0</b></td><td class=impair align="center">   2-/w0</td><td class=impair align="center">   1-/b0</td><td class=impair align="center">35</td><td class=impair align="center">182</td><td class=impair align="center">888</td></tr>
+<tr><td class=pair align="right">8&nbsp;</td><td class=pair align="right">   8&nbsp;</td><td class=pair>0061 王福宁</td><td class=pair align="center">2D</td><td class=pair align="center">美国</td><td class=pair align="center">华盛顿州</td><td class=pair align="center">4</td><td class=pair align="center">  22-/w2</td><td class=pair align="center"><b>  17+/w0</b></td><td class=pair align="center"><b>  13+/w0</b></td><td class=pair align="center"><b>  28+/b0</b></td><td class=pair align="center"><b>  12+/b0</b></td><td class=pair align="center">35</td><td class=pair align="center">168</td><td class=pair align="center">832</td></tr>
+<tr><td class=impair align="right">9&nbsp;</td><td class=impair align="right">   9&nbsp;</td><td class=impair>0037 安然</td><td class=impair align="center">2D</td><td class=impair align="center">中国</td><td class=impair align="center">北京西城</td><td class=impair align="center">4</td><td class=impair align="center"><b>  29+/b1</b></td><td class=impair align="center"><b>  37+/b0</b></td><td class=impair align="center"><b>  30+/w0</b></td><td class=impair align="center"><b>  19+/w0</b></td><td class=impair align="center">   5-/b0</td><td class=impair align="center">35</td><td class=impair align="center">163</td><td class=impair align="center">836</td></tr>
+<tr><td class=pair align="right">10&nbsp;</td><td class=pair align="right">  10&nbsp;</td><td class=pair>0088 刘奕葳</td><td class=pair align="center">3D</td><td class=pair align="center">中国</td><td class=pair align="center">湖北武汉</td><td class=pair align="center">1</td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center"><b>  21+/w0</b></td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">35</td><td class=pair align="center">161</td><td class=pair align="center">805</td></tr>
+<tr><td class=impair align="right">11&nbsp;</td><td class=impair align="right">  11&nbsp;</td><td class=impair>0084 甄颖进</td><td class=impair align="center">2D</td><td class=impair align="center">中国</td><td class=impair align="center">广东广州</td><td class=impair align="center">3</td><td class=impair align="center"><b>  20+/w0</b></td><td class=impair align="center">  12-/w0</td><td class=impair align="center"><b>  31+/b0</b></td><td class=impair align="center"><b>  14+/b0</b></td><td class=impair align="center">   4-/w0</td><td class=impair align="center">34</td><td class=impair align="center">169</td><td class=impair align="center">838</td></tr>
+<tr><td class=pair align="right">12&nbsp;</td><td class=pair align="right">  12&nbsp;</td><td class=pair>0097 王子杭</td><td class=pair align="center">2D</td><td class=pair align="center">中国</td><td class=pair align="center">广东深圳</td><td class=pair align="center">3</td><td class=pair align="center"><b>  18+/w0</b></td><td class=pair align="center"><b>  11+/b0</b></td><td class=pair align="center">  20-/b0</td><td class=pair align="center"><b>  23+/w0</b></td><td class=pair align="center">   8-/w0</td><td class=pair align="center">34</td><td class=pair align="center">168</td><td class=pair align="center">832</td></tr>
+<tr><td class=impair align="right">13&nbsp;</td><td class=impair align="right">  13&nbsp;</td><td class=impair>0072 朱远友</td><td class=impair align="center">1D</td><td class=impair align="center">中国</td><td class=impair align="center">贵州遵义</td><td class=impair align="center">4</td><td class=impair align="center"><b>  57+/w0</b></td><td class=impair align="center"><b>  35+/w0</b></td><td class=impair align="center">   8-/b0</td><td class=impair align="center"><b>  21+/b0</b></td><td class=impair align="center"><b>  19+/b0</b></td><td class=impair align="center">34</td><td class=impair align="center">162</td><td class=impair align="center">806</td></tr>
+<tr><td class=pair align="right">14&nbsp;</td><td class=pair align="right">  14&nbsp;</td><td class=pair>0048 小桃子</td><td class=pair align="center">1D</td><td class=pair align="center">中国</td><td class=pair align="center">湖南娄底</td><td class=pair align="center">4</td><td class=pair align="center"><b>  38+/b0</b></td><td class=pair align="center"><b>  39+/b0</b></td><td class=pair align="center"><b>  29+/w0</b></td><td class=pair align="center">  11-/w0</td><td class=pair align="center"><b>  17+/b0</b></td><td class=pair align="center">34</td><td class=pair align="center">161</td><td class=pair align="center">819</td></tr>
+<tr><td class=impair align="right">15&nbsp;</td><td class=impair align="right">  15&nbsp;</td><td class=impair>0119 杨颜瑞</td><td class=impair align="center">2D</td><td class=impair align="center">中国</td><td class=impair align="center">四川雅安</td><td class=impair align="center">1</td><td class=impair align="center">   0=   </td><td class=impair align="center">   0=   </td><td class=impair align="center">   0=   </td><td class=impair align="center">   0=   </td><td class=impair align="center"><b>  28+/w0</b></td><td class=impair align="center">34</td><td class=impair align="center">156</td><td class=impair align="center">787</td></tr>
+<tr><td class=pair align="right">16&nbsp;</td><td class=pair align="right">  16&nbsp;</td><td class=pair>0077 袁胜</td><td class=pair align="center">2D</td><td class=pair align="center">中国</td><td class=pair align="center">浙江金华</td><td class=pair align="center">1</td><td class=pair align="center"><b>  73+/w0</b></td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">34</td><td class=pair align="center">151</td><td class=pair align="center">753</td></tr>
+<tr><td class=impair align="right">17&nbsp;</td><td class=impair align="right">  17&nbsp;</td><td class=impair>0057 朱路阳</td><td class=impair align="center">2D</td><td class=impair align="center">中国</td><td class=impair align="center">浙江衢州</td><td class=impair align="center">2</td><td class=impair align="center"><b>  33+/w1</b></td><td class=impair align="center">   8-/b0</td><td class=impair align="center">   6-/b0</td><td class=impair align="center"><b>  20+/w0</b></td><td class=impair align="center">  14-/w0</td><td class=impair align="center">33</td><td class=impair align="center">171</td><td class=impair align="center">816</td></tr>
+<tr><td class=pair align="right">18&nbsp;</td><td class=pair align="right">  18&nbsp;</td><td class=pair>0087 张翼轸</td><td class=pair align="center">2D</td><td class=pair align="center">中国</td><td class=pair align="center">广州广东</td><td class=pair align="center">2</td><td class=pair align="center">  12-/b0</td><td class=pair align="center"><b>  20+/b0</b></td><td class=pair align="center"><b>  25+/w0</b></td><td class=pair align="center">  22-/w0</td><td class=pair align="center">  27-/w0</td><td class=pair align="center">33</td><td class=pair align="center">166</td><td class=pair align="center">816</td></tr>
+<tr><td class=impair align="right">19&nbsp;</td><td class=impair align="right">  19&nbsp;</td><td class=impair>0070 李森</td><td class=impair align="center">1D</td><td class=impair align="center">中国</td><td class=impair align="center">山东东营</td><td class=impair align="center">3</td><td class=impair align="center"><b>  31+/w0</b></td><td class=impair align="center"><b>  25+/b0</b></td><td class=impair align="center"><b>  32+/b0</b></td><td class=impair align="center">   9-/b0</td><td class=impair align="center">  13-/w0</td><td class=impair align="center">33</td><td class=impair align="center">166</td><td class=impair align="center">811</td></tr>
+<tr><td class=pair align="right">20&nbsp;</td><td class=pair align="right">  20&nbsp;</td><td class=pair>0071 徐齐辰</td><td class=pair align="center">2D</td><td class=pair align="center">中国</td><td class=pair align="center">江苏无锡</td><td class=pair align="center">2</td><td class=pair align="center">  11-/b0</td><td class=pair align="center">  18-/w0</td><td class=pair align="center"><b>  12+/w0</b></td><td class=pair align="center">  17-/b0</td><td class=pair align="center"><b>  40+/w0</b></td><td class=pair align="center">33</td><td class=pair align="center">165</td><td class=pair align="center">829</td></tr>
+<tr><td class=impair align="right">21&nbsp;</td><td class=impair align="right">  21&nbsp;</td><td class=impair>0085 潘璇玑</td><td class=impair align="center">2D</td><td class=impair align="center">中国</td><td class=impair align="center">广州广东</td><td class=impair align="center">2</td><td class=impair align="center"><b>  25+/w0</b></td><td class=impair align="center">   0=   </td><td class=impair align="center">  10-/b0</td><td class=impair align="center">  13-/w0</td><td class=impair align="center"><b>  33+/b0</b></td><td class=impair align="center">33</td><td class=impair align="center">165</td><td class=impair align="center">799</td></tr>
+<tr><td class=pair align="right">22&nbsp;</td><td class=pair align="right">  22&nbsp;</td><td class=pair>0059 王梓韬</td><td class=pair align="center">1K</td><td class=pair align="center">中国</td><td class=pair align="center">江苏南京</td><td class=pair align="center">4</td><td class=pair align="center"><b>   8+/b2</b></td><td class=pair align="center"><b>  40+/w0</b></td><td class=pair align="center"><b>  37+/w0</b></td><td class=pair align="center"><b>  18+/b0</b></td><td class=pair align="center">   6-/b0</td><td class=pair align="center">33</td><td class=pair align="center">164</td><td class=pair align="center">813</td></tr>
+<tr><td class=impair align="right">23&nbsp;</td><td class=impair align="right">  23&nbsp;</td><td class=impair>0013 轩轩</td><td class=impair align="center">1D</td><td class=impair align="center">中国</td><td class=impair align="center">湖南常德</td><td class=impair align="center">3</td><td class=impair align="center">  24-/b0</td><td class=impair align="center"><b>  33+/w0</b></td><td class=impair align="center"><b>  27+/w0</b></td><td class=impair align="center">  12-/b0</td><td class=impair align="center"><b>  32+/b0</b></td><td class=impair align="center">33</td><td class=impair align="center">164</td><td class=impair align="center">808</td></tr>
+<tr><td class=pair align="right">24&nbsp;</td><td class=pair align="right">  24&nbsp;</td><td class=pair>0001 李小萌</td><td class=pair align="center">1D</td><td class=pair align="center">中国</td><td class=pair align="center">广东广州</td><td class=pair align="center">3</td><td class=pair align="center"><b>  23+/w0</b></td><td class=pair align="center">   3-/b2</td><td class=pair align="center">  28-/b0</td><td class=pair align="center"><b>  41+/w0</b></td><td class=pair align="center"><b>  34+/b0</b></td><td class=pair align="center">33</td><td class=pair align="center">163</td><td class=pair align="center">822</td></tr>
+<tr><td class=impair align="right">25&nbsp;</td><td class=impair align="right">  25&nbsp;</td><td class=impair>0102 郑莘雨</td><td class=impair align="center">2D</td><td class=impair align="center">中国</td><td class=impair align="center">广东广州</td><td class=impair align="center">2</td><td class=impair align="center">  21-/b0</td><td class=impair align="center">  19-/w0</td><td class=impair align="center">  18-/b0</td><td class=impair align="center"><b>  29+/b0</b></td><td class=impair align="center"><b>  43+/w0</b></td><td class=impair align="center">33</td><td class=impair align="center">162</td><td class=impair align="center">813</td></tr>
+<tr><td class=pair align="right">26&nbsp;</td><td class=pair align="right">  26&nbsp;</td><td class=pair>0120 张子裕</td><td class=pair align="center">2D</td><td class=pair align="center">中国</td><td class=pair align="center">山西太原</td><td class=pair align="center">0</td><td class=pair align="center">   0=   </td><td class=pair align="center">   6-/b0</td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">33</td><td class=pair align="center">160</td><td class=pair align="center">783</td></tr>
+<tr><td class=impair align="right">27&nbsp;</td><td class=impair align="right">  27&nbsp;</td><td class=impair>0010 张淇浚</td><td class=impair align="center">1D</td><td class=impair align="center">中国</td><td class=impair align="center">广东清远</td><td class=impair align="center">3</td><td class=impair align="center">  50-/b0</td><td class=impair align="center"><b>  58+/w0</b></td><td class=impair align="center">  23-/b0</td><td class=impair align="center"><b>  31+/w0</b></td><td class=impair align="center"><b>  18+/b0</b></td><td class=impair align="center">33</td><td class=impair align="center">157</td><td class=impair align="center">804</td></tr>
+<tr><td class=pair align="right">28&nbsp;</td><td class=pair align="right">  28&nbsp;</td><td class=pair>0026 影月</td><td class=pair align="center">1D</td><td class=pair align="center">中国</td><td class=pair align="center">湖南长沙</td><td class=pair align="center">2</td><td class=pair align="center">   3-/b2</td><td class=pair align="center"><b>  50+/b0</b></td><td class=pair align="center"><b>  24+/w0</b></td><td class=pair align="center">   8-/w0</td><td class=pair align="center">  15-/b0</td><td class=pair align="center">32</td><td class=pair align="center">167</td><td class=pair align="center">827</td></tr>
+<tr><td class=impair align="right">29&nbsp;</td><td class=impair align="right">  29&nbsp;</td><td class=impair>0012 羽高</td><td class=impair align="center">1D</td><td class=impair align="center">中国</td><td class=impair align="center">广东江门</td><td class=impair align="center">2</td><td class=impair align="center">   9-/w1</td><td class=impair align="center"><b>  30+/b1</b></td><td class=impair align="center">  14-/b0</td><td class=impair align="center">  25-/w0</td><td class=impair align="center"><b>  42+/w0</b></td><td class=impair align="center">32</td><td class=impair align="center">165</td><td class=impair align="center">802</td></tr>
+<tr><td class=pair align="right">30&nbsp;</td><td class=pair align="right">  30&nbsp;</td><td class=pair>0053 幻空</td><td class=pair align="center">1D</td><td class=pair align="center">中国</td><td class=pair align="center">江苏南京</td><td class=pair align="center">2</td><td class=pair align="center"><b>  54+/w3</b></td><td class=pair align="center">  29-/w1</td><td class=pair align="center">   9-/b0</td><td class=pair align="center">  34-/w0</td><td class=pair align="center"><b>  49+/b0</b></td><td class=pair align="center">32</td><td class=pair align="center">164</td><td class=pair align="center">763</td></tr>
+<tr><td class=impair align="right">31&nbsp;</td><td class=impair align="right">  31&nbsp;</td><td class=impair>0069 丁方铄</td><td class=impair align="center">1D</td><td class=impair align="center">中国</td><td class=impair align="center">河南濮阳</td><td class=impair align="center">2</td><td class=impair align="center">  19-/b0</td><td class=impair align="center"><b>  32+/w0</b></td><td class=impair align="center">  11-/w0</td><td class=impair align="center">  27-/b0</td><td class=impair align="center"><b>  47+/b0</b></td><td class=impair align="center">32</td><td class=impair align="center">163</td><td class=impair align="center">796</td></tr>
+<tr><td class=pair align="right">32&nbsp;</td><td class=pair align="right">  32&nbsp;</td><td class=pair>0086 黎建宏</td><td class=pair align="center">1D</td><td class=pair align="center">中国</td><td class=pair align="center">广东广州</td><td class=pair align="center">2</td><td class=pair align="center"><b>  36+/w0</b></td><td class=pair align="center">  31-/b0</td><td class=pair align="center">  19-/w0</td><td class=pair align="center"><b>  37+/b0</b></td><td class=pair align="center">  23-/w0</td><td class=pair align="center">32</td><td class=pair align="center">161</td><td class=pair align="center">807</td></tr>
+<tr><td class=impair align="right">33&nbsp;</td><td class=impair align="right">  33&nbsp;</td><td class=impair>0054 王大双</td><td class=impair align="center">1D</td><td class=impair align="center">中国</td><td class=impair align="center">上海浦东</td><td class=impair align="center">2</td><td class=impair align="center">  17-/b1</td><td class=impair align="center">  23-/b0</td><td class=impair align="center"><b>  39+/w0</b></td><td class=impair align="center"><b>  50+/w0</b></td><td class=impair align="center">  21-/w0</td><td class=impair align="center">32</td><td class=impair align="center">159</td><td class=impair align="center">816</td></tr>
+<tr><td class=pair align="right">34&nbsp;</td><td class=pair align="right">  34&nbsp;</td><td class=pair>0098 君涵</td><td class=pair align="center">1K</td><td class=pair align="center">中国</td><td class=pair align="center">广东佛山</td><td class=pair align="center">3</td><td class=pair align="center"><b>  40+/w0</b></td><td class=pair align="center"><b>  57+/b0</b></td><td class=pair align="center">  36-/b0</td><td class=pair align="center"><b>  30+/b0</b></td><td class=pair align="center">  24-/w0</td><td class=pair align="center">32</td><td class=pair align="center">157</td><td class=pair align="center">788</td></tr>
+<tr><td class=impair align="right">35&nbsp;</td><td class=impair align="right">  35&nbsp;</td><td class=impair>0067 李浩德</td><td class=impair align="center">1D</td><td class=impair align="center">中国</td><td class=impair align="center">青海海东</td><td class=impair align="center">0</td><td class=impair align="center">   0=   </td><td class=impair align="center">  13-/b0</td><td class=impair align="center">   0=   </td><td class=impair align="center">   0=   </td><td class=impair align="center">   0=   </td><td class=impair align="center">32</td><td class=impair align="center">154</td><td class=impair align="center">762</td></tr>
+<tr><td class=pair align="right">36&nbsp;</td><td class=pair align="right">  36&nbsp;</td><td class=pair>0106 李梓硕</td><td class=pair align="center">1K</td><td class=pair align="center">中国</td><td class=pair align="center">豫驻马店</td><td class=pair align="center">3</td><td class=pair align="center">  32-/b0</td><td class=pair align="center">   0=   </td><td class=pair align="center"><b>  34+/w0</b></td><td class=pair align="center"><b>  51+/w0</b></td><td class=pair align="center"><b>  53+/w0</b></td><td class=pair align="center">32</td><td class=pair align="center">153</td><td class=pair align="center">767</td></tr>
+<tr><td class=impair align="right">37&nbsp;</td><td class=impair align="right">  37&nbsp;</td><td class=impair>0036 庞晨露</td><td class=impair align="center">1K</td><td class=impair align="center">中国</td><td class=impair align="center">上海长宁</td><td class=impair align="center">2</td><td class=impair align="center"><b>  41+/b0</b></td><td class=impair align="center">   9-/w0</td><td class=impair align="center">  22-/b0</td><td class=impair align="center">  32-/w0</td><td class=impair align="center"><b>  52+/b0</b></td><td class=impair align="center">31</td><td class=impair align="center">161</td><td class=impair align="center">792</td></tr>
+<tr><td class=pair align="right">38&nbsp;</td><td class=pair align="right">  38&nbsp;</td><td class=pair>0018 新宝</td><td class=pair align="center">1K</td><td class=pair align="center">中国</td><td class=pair align="center">湖北武汉</td><td class=pair align="center">2</td><td class=pair align="center">  14-/w0</td><td class=pair align="center"><b>  52+/w0</b></td><td class=pair align="center"><b>  42+/b0</b></td><td class=pair align="center">  43-/w0</td><td class=pair align="center">  45-/w0</td><td class=pair align="center">31</td><td class=pair align="center">157</td><td class=pair align="center">764</td></tr>
+<tr><td class=impair align="right">39&nbsp;</td><td class=impair align="right">  39&nbsp;</td><td class=impair>0011 辰辰</td><td class=impair align="center">1K</td><td class=impair align="center">中国</td><td class=impair align="center">广东广州</td><td class=impair align="center">2</td><td class=impair align="center"><b>  55+/w0</b></td><td class=impair align="center">  14-/w0</td><td class=impair align="center">  33-/b0</td><td class=impair align="center">  42-/b0</td><td class=impair align="center"><b>  56+/w0</b></td><td class=impair align="center">31</td><td class=impair align="center">157</td><td class=impair align="center">759</td></tr>
+<tr><td class=pair align="right">40&nbsp;</td><td class=pair align="right">  40&nbsp;</td><td class=pair>0099 罗骅</td><td class=pair align="center">1K</td><td class=pair align="center">中国</td><td class=pair align="center">上海虹口</td><td class=pair align="center">2</td><td class=pair align="center">  34-/b0</td><td class=pair align="center">  22-/b0</td><td class=pair align="center"><b>  57+/w0</b></td><td class=pair align="center"><b>  66+/w0</b></td><td class=pair align="center">  20-/b0</td><td class=pair align="center">31</td><td class=pair align="center">155</td><td class=pair align="center">781</td></tr>
+<tr><td class=impair align="right">41&nbsp;</td><td class=impair align="right">  41&nbsp;</td><td class=impair>0021 小雨</td><td class=impair align="center">1K</td><td class=impair align="center">中国</td><td class=impair align="center">陕西榆林</td><td class=impair align="center">2</td><td class=impair align="center">  37-/w0</td><td class=impair align="center"><b>  51+/b0</b></td><td class=impair align="center"><b>  50+/w0</b></td><td class=impair align="center">  24-/b0</td><td class=impair align="center">   0=   </td><td class=impair align="center">31</td><td class=impair align="center">153</td><td class=impair align="center">781</td></tr>
+<tr><td class=pair align="right">42&nbsp;</td><td class=pair align="right">  42&nbsp;</td><td class=pair>0032 段泽皓</td><td class=pair align="center">2K</td><td class=pair align="center">中国</td><td class=pair align="center">广东东莞</td><td class=pair align="center">3</td><td class=pair align="center"><b>  65+/w1</b></td><td class=pair align="center"><b>  60+/b0</b></td><td class=pair align="center">  38-/w0</td><td class=pair align="center"><b>  39+/w0</b></td><td class=pair align="center">  29-/b0</td><td class=pair align="center">31</td><td class=pair align="center">152</td><td class=pair align="center">769</td></tr>
+<tr><td class=impair align="right">43&nbsp;</td><td class=impair align="right">  43&nbsp;</td><td class=impair>0068 刘开阳</td><td class=impair align="center">2K</td><td class=impair align="center">中国</td><td class=impair align="center">黑省大庆</td><td class=impair align="center">3</td><td class=impair align="center">  48-/b0</td><td class=impair align="center"><b>  71+/w0</b></td><td class=impair align="center"><b>  59+/w0</b></td><td class=impair align="center"><b>  38+/b0</b></td><td class=impair align="center">  25-/b0</td><td class=impair align="center">31</td><td class=impair align="center">151</td><td class=impair align="center">769</td></tr>
+<tr><td class=pair align="right">44&nbsp;</td><td class=pair align="right">  44&nbsp;</td><td class=pair>0113 孙方玺</td><td class=pair align="center">2K</td><td class=pair align="center">中国</td><td class=pair align="center">山东青岛</td><td class=pair align="center">3</td><td class=pair align="center"><b>  45+/b0</b></td><td class=pair align="center">  46-/b0</td><td class=pair align="center"><b>  53+/b0</b></td><td class=pair align="center">   0=   </td><td class=pair align="center"><b>  50+/w0</b></td><td class=pair align="center">31</td><td class=pair align="center">150</td><td class=pair align="center">746</td></tr>
+<tr><td class=impair align="right">45&nbsp;</td><td class=impair align="right">  45&nbsp;</td><td class=impair>0114 佳骏</td><td class=impair align="center">1K</td><td class=impair align="center">中国</td><td class=impair align="center">福建三明</td><td class=impair align="center">1</td><td class=impair align="center">  44-/w0</td><td class=impair align="center">   0=   </td><td class=impair align="center">   0=   </td><td class=impair align="center">   0=   </td><td class=impair align="center"><b>  38+/b0</b></td><td class=impair align="center">31</td><td class=impair align="center">149</td><td class=impair align="center">742</td></tr>
+<tr><td class=pair align="right">46&nbsp;</td><td class=pair align="right">  46&nbsp;</td><td class=pair>0105 宋源</td><td class=pair align="center">2K</td><td class=pair align="center">中国</td><td class=pair align="center">山东日照</td><td class=pair align="center">3</td><td class=pair align="center">  53-/b0</td><td class=pair align="center"><b>  44+/w0</b></td><td class=pair align="center">   0=   </td><td class=pair align="center"><b>  52+/w0</b></td><td class=pair align="center"><b>  64+/w0</b></td><td class=pair align="center">31</td><td class=pair align="center">147</td><td class=pair align="center">737</td></tr>
+<tr><td class=impair align="right">47&nbsp;</td><td class=impair align="right">  47&nbsp;</td><td class=impair>0065 妍妍</td><td class=impair align="center">3K</td><td class=impair align="center">中国</td><td class=impair align="center">浙江温州</td><td class=impair align="center">4</td><td class=impair align="center"><b>  68+/w0</b></td><td class=impair align="center"><b>  64+/b0</b></td><td class=impair align="center"><b>  63+/b0</b></td><td class=impair align="center"><b>  71+/b0</b></td><td class=impair align="center">  31-/w0</td><td class=impair align="center">31</td><td class=impair align="center">143</td><td class=impair align="center">745</td></tr>
+<tr><td class=pair align="right">48&nbsp;</td><td class=pair align="right">  48&nbsp;</td><td class=pair>0075 陈宇昊</td><td class=pair align="center">2K</td><td class=pair align="center">中国</td><td class=pair align="center">山东淄博</td><td class=pair align="center">1</td><td class=pair align="center"><b>  43+/w0</b></td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">31</td><td class=pair align="center">143</td><td class=pair align="center">711</td></tr>
+<tr><td class=impair align="right">49&nbsp;</td><td class=impair align="right">  49&nbsp;</td><td class=impair>0015 乐乐</td><td class=impair align="center">3K</td><td class=impair align="center">中国</td><td class=impair align="center">河南开封</td><td class=impair align="center">4</td><td class=impair align="center"><b>  79+/w1</b></td><td class=impair align="center"><b>  84+/w0</b></td><td class=impair align="center"><b>  77+/b0</b></td><td class=impair align="center"><b>  59+/b0</b></td><td class=impair align="center">  30-/w0</td><td class=impair align="center">31</td><td class=impair align="center">133</td><td class=impair align="center">694</td></tr>
+<tr><td class=pair align="right">50&nbsp;</td><td class=pair align="right">  50&nbsp;</td><td class=pair>0044 江锦彬</td><td class=pair align="center">1K</td><td class=pair align="center">中国</td><td class=pair align="center">广东揭阳</td><td class=pair align="center">1</td><td class=pair align="center"><b>  27+/w0</b></td><td class=pair align="center">  28-/w0</td><td class=pair align="center">  41-/b0</td><td class=pair align="center">  33-/b0</td><td class=pair align="center">  44-/b0</td><td class=pair align="center">30</td><td class=pair align="center">159</td><td class=pair align="center">786</td></tr>
+<tr><td class=impair align="right">51&nbsp;</td><td class=impair align="right">  51&nbsp;</td><td class=impair>0022 蒋铭宇</td><td class=impair align="center">2K</td><td class=impair align="center">中国</td><td class=impair align="center">广西桂林</td><td class=impair align="center">2</td><td class=impair align="center">  52-/w1</td><td class=impair align="center">  41-/w0</td><td class=impair align="center"><b>  54+/b0</b></td><td class=impair align="center">  36-/b0</td><td class=impair align="center"><b>  60+/w0</b></td><td class=impair align="center">30</td><td class=impair align="center">153</td><td class=impair align="center">749</td></tr>
+<tr><td class=pair align="right">52&nbsp;</td><td class=pair align="right">  52&nbsp;</td><td class=pair>0033 卫炎森</td><td class=pair align="center">2K</td><td class=pair align="center">中国</td><td class=pair align="center">江苏无锡</td><td class=pair align="center">2</td><td class=pair align="center"><b>  51+/b1</b></td><td class=pair align="center">  38-/b0</td><td class=pair align="center"><b>  58+/w0</b></td><td class=pair align="center">  46-/b0</td><td class=pair align="center">  37-/w0</td><td class=pair align="center">30</td><td class=pair align="center">151</td><td class=pair align="center">770</td></tr>
+<tr><td class=impair align="right">53&nbsp;</td><td class=impair align="right">  53&nbsp;</td><td class=impair>0111 风和刻</td><td class=impair align="center">2K</td><td class=impair align="center">中国</td><td class=impair align="center">湖南邵阳</td><td class=impair align="center">2</td><td class=impair align="center"><b>  46+/w0</b></td><td class=impair align="center"><b>  59+/b0</b></td><td class=impair align="center">  44-/w0</td><td class=impair align="center">   0=   </td><td class=impair align="center">  36-/b0</td><td class=impair align="center">30</td><td class=impair align="center">151</td><td class=impair align="center">740</td></tr>
+<tr><td class=pair align="right">54&nbsp;</td><td class=pair align="right">  54&nbsp;</td><td class=pair>0052 不见君</td><td class=pair align="center">3K</td><td class=pair align="center">中国</td><td class=pair align="center">江苏无锡</td><td class=pair align="center">3</td><td class=pair align="center">  30-/b3</td><td class=pair align="center"><b>  65+/w0</b></td><td class=pair align="center">  51-/w0</td><td class=pair align="center"><b>  60+/b0</b></td><td class=pair align="center"><b>  58+/b0</b></td><td class=pair align="center">30</td><td class=pair align="center">145</td><td class=pair align="center">759</td></tr>
+<tr><td class=impair align="right">55&nbsp;</td><td class=impair align="right">  55&nbsp;</td><td class=impair>0049 曾梓睿</td><td class=impair align="center">3K</td><td class=impair align="center">中国</td><td class=impair align="center">广东韶关</td><td class=impair align="center">3</td><td class=impair align="center">  39-/b0</td><td class=impair align="center"><b>  63+/b0</b></td><td class=impair align="center"><b>  71+/w0</b></td><td class=impair align="center">  58-/b0</td><td class=impair align="center"><b>  59+/w0</b></td><td class=impair align="center">30</td><td class=impair align="center">144</td><td class=impair align="center">762</td></tr>
+<tr><td class=pair align="right">56&nbsp;</td><td class=pair align="right">  56&nbsp;</td><td class=pair>0050 Bradley Jheng</td><td class=pair align="center">2K</td><td class=pair align="center">加国</td><td class=pair align="center">不列颠省</td><td class=pair align="center">1</td><td class=pair align="center"><b>  67+/w0</b></td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">  39-/b0</td><td class=pair align="center">30</td><td class=pair align="center">143</td><td class=pair align="center">714</td></tr>
+<tr><td class=impair align="right">57&nbsp;</td><td class=impair align="right">  57&nbsp;</td><td class=impair>0078 杨镇霖</td><td class=impair align="center">2K</td><td class=impair align="center">中国</td><td class=impair align="center">河南南阳</td><td class=impair align="center">1</td><td class=impair align="center">  13-/b0</td><td class=impair align="center">  34-/w0</td><td class=impair align="center">  40-/b0</td><td class=impair align="center">   0=   </td><td class=impair align="center"><b>  67+/w0</b></td><td class=impair align="center">29</td><td class=impair align="center">153</td><td class=impair align="center">751</td></tr>
+<tr><td class=pair align="right">58&nbsp;</td><td class=pair align="right">  58&nbsp;</td><td class=pair>0025 依泽</td><td class=pair align="center">3K</td><td class=pair align="center">中国</td><td class=pair align="center">广东广州</td><td class=pair align="center">2</td><td class=pair align="center"><b>  60+/w0</b></td><td class=pair align="center">  27-/b0</td><td class=pair align="center">  52-/b0</td><td class=pair align="center"><b>  55+/w0</b></td><td class=pair align="center">  54-/w0</td><td class=pair align="center">29</td><td class=pair align="center">152</td><td class=pair align="center">744</td></tr>
+<tr><td class=impair align="right">59&nbsp;</td><td class=impair align="right">  59&nbsp;</td><td class=impair>0094 杜瑾瑜</td><td class=impair align="center">2K</td><td class=impair align="center">中国</td><td class=impair align="center">广东广州</td><td class=impair align="center">1</td><td class=impair align="center"><b>  66+/w0</b></td><td class=impair align="center">  53-/w0</td><td class=impair align="center">  43-/b0</td><td class=impair align="center">  49-/w0</td><td class=impair align="center">  55-/b0</td><td class=impair align="center">29</td><td class=impair align="center">150</td><td class=impair align="center">721</td></tr>
+<tr><td class=pair align="right">60&nbsp;</td><td class=pair align="right">  60&nbsp;</td><td class=pair>0038 陈枥</td><td class=pair align="center">2K</td><td class=pair align="center">中国</td><td class=pair align="center">广东清远</td><td class=pair align="center">1</td><td class=pair align="center">  58-/b0</td><td class=pair align="center">  42-/w0</td><td class=pair align="center"><b>  75+/b0</b></td><td class=pair align="center">  54-/w0</td><td class=pair align="center">  51-/b0</td><td class=pair align="center">29</td><td class=pair align="center">147</td><td class=pair align="center">731</td></tr>
+<tr><td class=impair align="right">61&nbsp;</td><td class=impair align="right">  61&nbsp;</td><td class=impair>0108 朱树林</td><td class=impair align="center">4K</td><td class=impair align="center">澳洲</td><td class=impair align="center">墨尔本</td><td class=impair align="center">2</td><td class=impair align="center"><b>  69+/w0</b></td><td class=impair align="center">   0=   </td><td class=impair align="center">   0=   </td><td class=impair align="center">   0=   </td><td class=impair align="center"><b>  63+/b0</b></td><td class=impair align="center">29</td><td class=impair align="center">134</td><td class=impair align="center">670</td></tr>
+<tr><td class=pair align="right">62&nbsp;</td><td class=pair align="right">  62&nbsp;</td><td class=pair>0117 Joe</td><td class=pair align="center">4K</td><td class=pair align="center">中国</td><td class=pair align="center">陕西西安</td><td class=pair align="center">1</td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center"><b>  65+/b0</b></td><td class=pair align="center">29</td><td class=pair align="center">132</td><td class=pair align="center">663</td></tr>
+<tr><td class=impair align="right">63&nbsp;</td><td class=impair align="right">  63&nbsp;</td><td class=impair>0017 云中鹤</td><td class=impair align="center">4K</td><td class=impair align="center">中国</td><td class=impair align="center">广东深圳</td><td class=impair align="center">2</td><td class=impair align="center"><b>  70+/b0</b></td><td class=impair align="center">  55-/w0</td><td class=impair align="center">  47-/w0</td><td class=impair align="center"><b>  64+/b0</b></td><td class=impair align="center">  61-/w0</td><td class=impair align="center">28</td><td class=impair align="center">146</td><td class=impair align="center">698</td></tr>
+<tr><td class=pair align="right">64&nbsp;</td><td class=pair align="right">  64&nbsp;</td><td class=pair>0091 高斌</td><td class=pair align="center">4K</td><td class=pair align="center">中国</td><td class=pair align="center">湖南长沙</td><td class=pair align="center">2</td><td class=pair align="center"><b>  72+/w0</b></td><td class=pair align="center">  47-/w0</td><td class=pair align="center"><b>  66+/b0</b></td><td class=pair align="center">  63-/w0</td><td class=pair align="center">  46-/b0</td><td class=pair align="center">28</td><td class=pair align="center">145</td><td class=pair align="center">712</td></tr>
+<tr><td class=impair align="right">65&nbsp;</td><td class=impair align="right">  65&nbsp;</td><td class=impair>0005 张如一</td><td class=impair align="center">4K</td><td class=impair align="center">中国</td><td class=impair align="center">上海浦东</td><td class=impair align="center">2</td><td class=impair align="center">  42-/b1</td><td class=impair align="center">  54-/b0</td><td class=impair align="center"><b>  74+/b0</b></td><td class=impair align="center"><b>  75+/w0</b></td><td class=impair align="center">  62-/w0</td><td class=impair align="center">28</td><td class=impair align="center">143</td><td class=impair align="center">689</td></tr>
+<tr><td class=pair align="right">66&nbsp;</td><td class=pair align="right">  66&nbsp;</td><td class=pair>0101 梁凯闻</td><td class=pair align="center">3K</td><td class=pair align="center">中国</td><td class=pair align="center">广东广州</td><td class=pair align="center">1</td><td class=pair align="center">  59-/b0</td><td class=pair align="center">   0=   </td><td class=pair align="center">  64-/w0</td><td class=pair align="center">  40-/b0</td><td class=pair align="center"><b>  74+/w0</b></td><td class=pair align="center">28</td><td class=pair align="center">142</td><td class=pair align="center">716</td></tr>
+<tr><td class=impair align="right">67&nbsp;</td><td class=impair align="right">  67&nbsp;</td><td class=impair>0103 孟雷</td><td class=impair align="center">4K</td><td class=impair align="center">加国</td><td class=impair align="center">安大略省</td><td class=impair align="center">2</td><td class=impair align="center">  56-/b0</td><td class=impair align="center">   0=   </td><td class=impair align="center"><b>  72+/w0</b></td><td class=impair align="center"><b>  78+/w0</b></td><td class=impair align="center">  57-/b0</td><td class=impair align="center">28</td><td class=impair align="center">137</td><td class=impair align="center">690</td></tr>
+<tr><td class=pair align="right">68&nbsp;</td><td class=pair align="right">  68&nbsp;</td><td class=pair>0060 李青泓</td><td class=pair align="center">5K</td><td class=pair align="center">中国</td><td class=pair align="center">广东广州</td><td class=pair align="center">3</td><td class=pair align="center">  47-/b0</td><td class=pair align="center">   0=   </td><td class=pair align="center"><b>  79+/b0</b></td><td class=pair align="center"><b>  74+/w0</b></td><td class=pair align="center"><b>  71+/b0</b></td><td class=pair align="center">28</td><td class=pair align="center">134</td><td class=pair align="center">686</td></tr>
+<tr><td class=impair align="right">69&nbsp;</td><td class=impair align="right">  69&nbsp;</td><td class=impair>0107 陈雨贺</td><td class=impair align="center">4K</td><td class=impair align="center">中国</td><td class=impair align="center">河南郑州</td><td class=impair align="center">1</td><td class=impair align="center">  61-/b0</td><td class=impair align="center">   0=   </td><td class=impair align="center">   0=   </td><td class=impair align="center">   0=   </td><td class=impair align="center"><b>  75+/w0</b></td><td class=impair align="center">28</td><td class=impair align="center">134</td><td class=impair align="center">653</td></tr>
+<tr><td class=pair align="right">70&nbsp;</td><td class=pair align="right">  70&nbsp;</td><td class=pair>0016 轩轩</td><td class=pair align="center">4K</td><td class=pair align="center">中国</td><td class=pair align="center">辽宁沈阳</td><td class=pair align="center">0</td><td class=pair align="center">  63-/w0</td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">28</td><td class=pair align="center">132</td><td class=pair align="center">666</td></tr>
+<tr><td class=impair align="right">71&nbsp;</td><td class=impair align="right">  71&nbsp;</td><td class=impair>0058 刘翊萱</td><td class=impair align="center">3K</td><td class=impair align="center">中国</td><td class=impair align="center">浙江衢州</td><td class=impair align="center">0</td><td class=impair align="center">   1-/b2</td><td class=impair align="center">  43-/b0</td><td class=impair align="center">  55-/b0</td><td class=impair align="center">  47-/w0</td><td class=impair align="center">  68-/w0</td><td class=impair align="center">27</td><td class=impair align="center">157</td><td class=impair align="center">746</td></tr>
+<tr><td class=pair align="right">72&nbsp;</td><td class=pair align="right">  72&nbsp;</td><td class=pair>0081 刘恒显</td><td class=pair align="center">6K</td><td class=pair align="center">中国</td><td class=pair align="center">河北保定</td><td class=pair align="center">3</td><td class=pair align="center">  64-/b0</td><td class=pair align="center"><b>  73+/b0</b></td><td class=pair align="center">  67-/b0</td><td class=pair align="center"><b>  77+/w0</b></td><td class=pair align="center"><b>  76+/w0</b></td><td class=pair align="center">27</td><td class=pair align="center">134</td><td class=pair align="center">671</td></tr>
+<tr><td class=impair align="right">73&nbsp;</td><td class=impair align="right">  73&nbsp;</td><td class=impair>0080 朱伟刚</td><td class=impair align="center">6K</td><td class=impair align="center">中国</td><td class=impair align="center">上海闵行</td><td class=impair align="center">3</td><td class=impair align="center">  16-/b0</td><td class=impair align="center">  72-/w0</td><td class=impair align="center"><b>  82+/w0</b></td><td class=impair align="center"><b>  79+/w0</b></td><td class=impair align="center"><b>  78+/w0</b></td><td class=impair align="center">27</td><td class=impair align="center">133</td><td class=impair align="center">653</td></tr>
+<tr><td class=pair align="right">74&nbsp;</td><td class=pair align="right">  74&nbsp;</td><td class=pair>0056 张琛</td><td class=pair align="center">5K</td><td class=pair align="center">中国</td><td class=pair align="center">山东枣庄</td><td class=pair align="center">2</td><td class=pair align="center"><b>  83+/b0</b></td><td class=pair align="center"><b>  78+/b0</b></td><td class=pair align="center">  65-/w0</td><td class=pair align="center">  68-/b0</td><td class=pair align="center">  66-/b0</td><td class=pair align="center">27</td><td class=pair align="center">131</td><td class=pair align="center">670</td></tr>
+<tr><td class=impair align="right">75&nbsp;</td><td class=impair align="right">  75&nbsp;</td><td class=impair>0040 Lucas</td><td class=impair align="center">5K</td><td class=impair align="center">加国</td><td class=impair align="center">不列颠省</td><td class=impair align="center">2</td><td class=impair align="center"><b>  90+/b0</b></td><td class=impair align="center"><b>  77+/w0</b></td><td class=impair align="center">  60-/w0</td><td class=impair align="center">  65-/b0</td><td class=impair align="center">  69-/b0</td><td class=impair align="center">27</td><td class=impair align="center">129</td><td class=impair align="center">660</td></tr>
+<tr><td class=pair align="right">76&nbsp;</td><td class=pair align="right">  76&nbsp;</td><td class=pair>0115 陈安喆</td><td class=pair align="center">6K</td><td class=pair align="center">中国</td><td class=pair align="center">广东广州</td><td class=pair align="center">0</td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">  72-/b0</td><td class=pair align="center">26</td><td class=pair align="center">123</td><td class=pair align="center">614</td></tr>
+<tr><td class=impair align="right">77&nbsp;</td><td class=impair align="right">  77&nbsp;</td><td class=impair>0002 谭十一</td><td class=impair align="center">7K</td><td class=impair align="center">中国</td><td class=impair align="center">上海松江</td><td class=impair align="center">2</td><td class=impair align="center"><b>  80+/w0</b></td><td class=impair align="center">  75-/b0</td><td class=impair align="center">  49-/w0</td><td class=impair align="center">  72-/b0</td><td class=impair align="center"><b>  81+/b0</b></td><td class=impair align="center">25</td><td class=impair align="center">133</td><td class=impair align="center">606</td></tr>
+<tr><td class=pair align="right">78&nbsp;</td><td class=pair align="right">  78&nbsp;</td><td class=pair>0104 张译琛</td><td class=pair align="center">6K</td><td class=pair align="center">中国</td><td class=pair align="center">苏连云港</td><td class=pair align="center">0</td><td class=pair align="center">   0=   </td><td class=pair align="center">  74-/w0</td><td class=pair align="center">   0=   </td><td class=pair align="center">  67-/b0</td><td class=pair align="center">  73-/b0</td><td class=pair align="center">25</td><td class=pair align="center">130</td><td class=pair align="center">641</td></tr>
+<tr><td class=impair align="right">79&nbsp;</td><td class=impair align="right">  79&nbsp;</td><td class=impair>0020 李云泽</td><td class=impair align="center">7K</td><td class=impair align="center">中国</td><td class=impair align="center">上海松江</td><td class=impair align="center">1</td><td class=impair align="center">  49-/b1</td><td class=impair align="center"><b>  83+/w0</b></td><td class=impair align="center">  68-/w0</td><td class=impair align="center">  73-/b0</td><td class=impair align="center">   0=   </td><td class=impair align="center">24</td><td class=impair align="center">130</td><td class=impair align="center">636</td></tr>
+<tr><td class=pair align="right">80&nbsp;</td><td class=pair align="right">  80&nbsp;</td><td class=pair>0009 曹子骞</td><td class=pair align="center">8K</td><td class=pair align="center">中国</td><td class=pair align="center">上海闵行</td><td class=pair align="center">2</td><td class=pair align="center">  77-/b0</td><td class=pair align="center"><b>  85+/w0</b></td><td class=pair align="center">  83-/w0</td><td class=pair align="center"><b>  91+/w0</b></td><td class=pair align="center">   0=   </td><td class=pair align="center">24</td><td class=pair align="center">110</td><td class=pair align="center">576</td></tr>
+<tr><td class=impair align="right">81&nbsp;</td><td class=impair align="right">  81&nbsp;</td><td class=impair>0028 Leo Tao</td><td class=impair align="center">10K</td><td class=impair align="center">加国</td><td class=impair align="center">不列颠省</td><td class=impair align="center">4</td><td class=impair align="center"><b> 101+/w0</b></td><td class=impair align="center"><b>  92+/b0</b></td><td class=impair align="center"><b>  84+/b0</b></td><td class=impair align="center"><b>  83+/b0</b></td><td class=impair align="center">  77-/w0</td><td class=impair align="center">24</td><td class=impair align="center">100</td><td class=impair align="center">537</td></tr>
+<tr><td class=pair align="right">82&nbsp;</td><td class=pair align="right">  82&nbsp;</td><td class=pair>0100 林芯如</td><td class=pair align="center">10K</td><td class=pair align="center">中国</td><td class=pair align="center">福建泉州</td><td class=pair align="center">2</td><td class=pair align="center">   0=   </td><td class=pair align="center"><b>  91+/b0</b></td><td class=pair align="center">  73-/b0</td><td class=pair align="center"><b>  85+/w0</b></td><td class=pair align="center">   0=   </td><td class=pair align="center">23</td><td class=pair align="center">108</td><td class=pair align="center">545</td></tr>
+<tr><td class=impair align="right">83&nbsp;</td><td class=impair align="right">  83&nbsp;</td><td class=impair>0007 孙逸航</td><td class=impair align="center">9K</td><td class=impair align="center">中国</td><td class=impair align="center">安徽淮南</td><td class=impair align="center">1</td><td class=impair align="center">  74-/w0</td><td class=impair align="center">  79-/b0</td><td class=impair align="center"><b>  80+/b0</b></td><td class=impair align="center">  81-/w0</td><td class=impair align="center">  85-/w0</td><td class=impair align="center">22</td><td class=impair align="center">121</td><td class=impair align="center">584</td></tr>
+<tr><td class=pair align="right">84&nbsp;</td><td class=pair align="right">  84&nbsp;</td><td class=pair>0035 凌艺</td><td class=pair align="center">11K</td><td class=pair align="center">中国</td><td class=pair align="center">上海浦东</td><td class=pair align="center">3</td><td class=pair align="center"><b>  85+/b2</b></td><td class=pair align="center">  49-/b0</td><td class=pair align="center">  81-/w0</td><td class=pair align="center"><b>  89+/w0</b></td><td class=pair align="center"><b>  86+/b0</b></td><td class=pair align="center">22</td><td class=pair align="center">117</td><td class=pair align="center">542</td></tr>
+<tr><td class=impair align="right">85&nbsp;</td><td class=impair align="right">  85&nbsp;</td><td class=impair>0046 姚铭</td><td class=impair align="center">10K</td><td class=impair align="center">中国</td><td class=impair align="center">江苏苏州</td><td class=impair align="center">2</td><td class=impair align="center">  84-/w2</td><td class=impair align="center">  80-/b0</td><td class=impair align="center"><b>  88+/w0</b></td><td class=impair align="center">  82-/b0</td><td class=impair align="center"><b>  83+/b0</b></td><td class=impair align="center">22</td><td class=impair align="center">113</td><td class=impair align="center">551</td></tr>
+<tr><td class=pair align="right">86&nbsp;</td><td class=pair align="right">  86&nbsp;</td><td class=pair>0112 Alen</td><td class=pair align="center">10K</td><td class=pair align="center">中国</td><td class=pair align="center">广东深圳</td><td class=pair align="center">0</td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">  84-/w0</td><td class=pair align="center">22</td><td class=pair align="center">102</td><td class=pair align="center">517</td></tr>
+<tr><td class=impair align="right">87&nbsp;</td><td class=impair align="right">  87&nbsp;</td><td class=impair>0042 罗骏腾</td><td class=impair align="center">12K</td><td class=impair align="center">中国</td><td class=impair align="center">湖南邵阳</td><td class=impair align="center">4</td><td class=impair align="center"><b> 107+/b0</b></td><td class=impair align="center"><b> 105+/b0</b></td><td class=impair align="center"><b> 102+/b0</b></td><td class=impair align="center"><b>  90+/w0</b></td><td class=impair align="center">   0=   </td><td class=impair align="center">22</td><td class=impair align="center">69</td><td class=impair align="center">365</td></tr>
+<tr><td class=pair align="right">88&nbsp;</td><td class=pair align="right">  88&nbsp;</td><td class=pair>0063 Richard Xiang</td><td class=pair align="center">12K</td><td class=pair align="center">美国</td><td class=pair align="center">加州</td><td class=pair align="center">2</td><td class=pair align="center">   0=   </td><td class=pair align="center"><b>  89+/b0</b></td><td class=pair align="center">  85-/b0</td><td class=pair align="center"><b>  98+/w0</b></td><td class=pair align="center">  90-/w0</td><td class=pair align="center">20</td><td class=pair align="center">95</td><td class=pair align="center">492</td></tr>
+<tr><td class=impair align="right">89&nbsp;</td><td class=impair align="right">  89&nbsp;</td><td class=impair>0096 黎庆阳</td><td class=impair align="center">13K</td><td class=impair align="center">中国</td><td class=impair align="center">宁夏吴忠</td><td class=impair align="center">3</td><td class=impair align="center"><b>  93+/b0</b></td><td class=impair align="center">  88-/w0</td><td class=impair align="center"><b>  98+/w0</b></td><td class=impair align="center">  84-/b0</td><td class=impair align="center"><b>  91+/w0</b></td><td class=impair align="center">20</td><td class=impair align="center">94</td><td class=impair align="center">487</td></tr>
+<tr><td class=pair align="right">90&nbsp;</td><td class=pair align="right">  90&nbsp;</td><td class=pair>0006 陈睿予</td><td class=pair align="center">14K</td><td class=pair align="center">中国</td><td class=pair align="center">云南昆明</td><td class=pair align="center">3</td><td class=pair align="center">  75-/w0</td><td class=pair align="center"><b>  94+/b0</b></td><td class=pair align="center"><b>  96+/b0</b></td><td class=pair align="center">  87-/b0</td><td class=pair align="center"><b>  88+/b0</b></td><td class=pair align="center">19</td><td class=pair align="center">103</td><td class=pair align="center">447</td></tr>
+<tr><td class=impair align="right">91&nbsp;</td><td class=impair align="right">  91&nbsp;</td><td class=impair>0066 张伊诺</td><td class=impair align="center">13K</td><td class=impair align="center">中国</td><td class=impair align="center">辽宁沈阳</td><td class=impair align="center">2</td><td class=impair align="center"><b>  98+/w0</b></td><td class=impair align="center">  82-/w0</td><td class=impair align="center"><b>  99+/w0</b></td><td class=impair align="center">  80-/b0</td><td class=impair align="center">  89-/b0</td><td class=impair align="center">19</td><td class=impair align="center">99</td><td class=impair align="center">491</td></tr>
+<tr><td class=pair align="right">92&nbsp;</td><td class=pair align="right">  92&nbsp;</td><td class=pair>0004 诗宇</td><td class=pair align="center">16K</td><td class=pair align="center">中国</td><td class=pair align="center">广东广州</td><td class=pair align="center">3</td><td class=pair align="center">  94-/w0</td><td class=pair align="center">  81-/w0</td><td class=pair align="center"><b> 100+/b0</b></td><td class=pair align="center"><b>  93+/b0</b></td><td class=pair align="center"><b>  99+/b0</b></td><td class=pair align="center">17</td><td class=pair align="center">90</td><td class=pair align="center">422</td></tr>
+<tr><td class=impair align="right">93&nbsp;</td><td class=impair align="right">  93&nbsp;</td><td class=impair>0074 黄依纯</td><td class=impair align="center">15K</td><td class=impair align="center">中国</td><td class=impair align="center">浙江慈溪</td><td class=impair align="center">2</td><td class=impair align="center">  89-/w0</td><td class=impair align="center"><b>  99+/b0</b></td><td class=impair align="center">   0=   </td><td class=impair align="center">  92-/w0</td><td class=impair align="center"><b>  98+/b0</b></td><td class=impair align="center">17</td><td class=impair align="center">84</td><td class=impair align="center">438</td></tr>
+<tr><td class=pair align="right">94&nbsp;</td><td class=pair align="right">  94&nbsp;</td><td class=pair>0024 小天</td><td class=pair align="center">15K</td><td class=pair align="center">中国</td><td class=pair align="center">陕西榆林</td><td class=pair align="center">2</td><td class=pair align="center"><b>  92+/b0</b></td><td class=pair align="center">  90-/w0</td><td class=pair align="center">  95-/b0</td><td class=pair align="center"><b>  99+/w0</b></td><td class=pair align="center">   0=   </td><td class=pair align="center">17</td><td class=pair align="center">84</td><td class=pair align="center">433</td></tr>
+<tr><td class=impair align="right">95&nbsp;</td><td class=impair align="right">  95&nbsp;</td><td class=impair>0064 Alex Ehrlich</td><td class=impair align="center">15K</td><td class=impair align="center">美国</td><td class=impair align="center">伊利诺伊</td><td class=impair align="center">2</td><td class=impair align="center">  99-/w0</td><td class=impair align="center">   0=   </td><td class=impair align="center"><b>  94+/w0</b></td><td class=impair align="center">  96-/b0</td><td class=impair align="center"><b> 102+/w0</b></td><td class=impair align="center">17</td><td class=impair align="center">78</td><td class=impair align="center">384</td></tr>
+<tr><td class=pair align="right">96&nbsp;</td><td class=pair align="right">  96&nbsp;</td><td class=pair>0047 陈思宇</td><td class=pair align="center">16K</td><td class=pair align="center">中国</td><td class=pair align="center">浙江宁波</td><td class=pair align="center">3</td><td class=pair align="center"><b> 111+/b0</b></td><td class=pair align="center"><b> 101+/b0</b></td><td class=pair align="center">  90-/w0</td><td class=pair align="center"><b>  95+/w0</b></td><td class=pair align="center">  97-/w0</td><td class=pair align="center">17</td><td class=pair align="center">70</td><td class=pair align="center">363</td></tr>
+<tr><td class=impair align="right">97&nbsp;</td><td class=impair align="right">  97&nbsp;</td><td class=impair>0079 阴昭宇</td><td class=impair align="center">16K</td><td class=impair align="center">中国</td><td class=impair align="center">山西平遥</td><td class=impair align="center">3</td><td class=impair align="center"><b> 104+/w0</b></td><td class=impair align="center">   0=   </td><td class=impair align="center"> 109-/w0</td><td class=impair align="center"><b> 101+/b0</b></td><td class=impair align="center"><b>  96+/b0</b></td><td class=impair align="center">17</td><td class=impair align="center">63</td><td class=impair align="center">304</td></tr>
+<tr><td class=pair align="right">98&nbsp;</td><td class=pair align="right">  98&nbsp;</td><td class=pair>0073 闫天翔</td><td class=pair align="center">14K</td><td class=pair align="center">中国</td><td class=pair align="center">天津</td><td class=pair align="center">0</td><td class=pair align="center">  91-/b0</td><td class=pair align="center">   0=   </td><td class=pair align="center">  89-/b0</td><td class=pair align="center">  88-/b0</td><td class=pair align="center">  93-/w0</td><td class=pair align="center">16</td><td class=pair align="center">92</td><td class=pair align="center">452</td></tr>
+<tr><td class=impair align="right">99&nbsp;</td><td class=impair align="right">  99&nbsp;</td><td class=impair>0093 汪越琪</td><td class=impair align="center">15K</td><td class=impair align="center">中国</td><td class=impair align="center">上海宝山</td><td class=impair align="center">1</td><td class=impair align="center"><b>  95+/b0</b></td><td class=impair align="center">  93-/w0</td><td class=impair align="center">  91-/b0</td><td class=impair align="center">  94-/b0</td><td class=impair align="center">  92-/w0</td><td class=impair align="center">16</td><td class=impair align="center">87</td><td class=impair align="center">435</td></tr>
+<tr><td class=pair align="right">100&nbsp;</td><td class=pair align="right"> 100&nbsp;</td><td class=pair>0045 小航哥</td><td class=pair align="center">16K</td><td class=pair align="center">中国</td><td class=pair align="center">广东深圳</td><td class=pair align="center">1</td><td class=pair align="center"><b> 108+/w0</b></td><td class=pair align="center">   0=   </td><td class=pair align="center">  92-/w0</td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">16</td><td class=pair align="center">67</td><td class=pair align="center">355</td></tr>
+<tr><td class=impair align="right">101&nbsp;</td><td class=impair align="right"> 101&nbsp;</td><td class=impair>0039 Oliver</td><td class=impair align="center">18K</td><td class=impair align="center">加国</td><td class=impair align="center">不列颠省</td><td class=impair align="center">2</td><td class=impair align="center">  81-/b0</td><td class=impair align="center">  96-/w0</td><td class=impair align="center"><b> 108+/w0</b></td><td class=impair align="center">  97-/w0</td><td class=impair align="center"><b> 105+/w0</b></td><td class=impair align="center">14</td><td class=impair align="center">76</td><td class=impair align="center">358</td></tr>
+<tr><td class=pair align="right">102&nbsp;</td><td class=pair align="right"> 102&nbsp;</td><td class=pair>0041 Cynthia</td><td class=pair align="center">19K</td><td class=pair align="center">加国</td><td class=pair align="center">不列颠省</td><td class=pair align="center">2</td><td class=pair align="center"><b> 105+/w0</b></td><td class=pair align="center">   0=   </td><td class=pair align="center">  87-/w0</td><td class=pair align="center"><b> 108+/w0</b></td><td class=pair align="center">  95-/b0</td><td class=pair align="center">13</td><td class=pair align="center">68</td><td class=pair align="center">327</td></tr>
+<tr><td class=impair align="right">103&nbsp;</td><td class=impair align="right"> 103&nbsp;</td><td class=impair>0095 Ryan Jheng</td><td class=impair align="center">20K</td><td class=impair align="center">加国</td><td class=impair align="center">不列颠省</td><td class=impair align="center">1</td><td class=impair align="center">   0=   </td><td class=impair align="center">   0=   </td><td class=impair align="center">   0=   </td><td class=impair align="center"><b> 105+/w0</b></td><td class=impair align="center"> 104-/w0</td><td class=impair align="center">12</td><td class=impair align="center">52</td><td class=impair align="center">267</td></tr>
+<tr><td class=pair align="right">104&nbsp;</td><td class=pair align="right"> 104&nbsp;</td><td class=pair>0089 范辰希</td><td class=pair align="center">21K</td><td class=pair align="center">中国</td><td class=pair align="center">江苏常州</td><td class=pair align="center">3</td><td class=pair align="center">  97-/b0</td><td class=pair align="center"><b> 114+/w0</b></td><td class=pair align="center">   0=   </td><td class=pair align="center"><b> 106+/b0</b></td><td class=pair align="center"><b> 103+/b0</b></td><td class=pair align="center">12</td><td class=pair align="center">47</td><td class=pair align="center">231</td></tr>
+<tr><td class=impair align="right">105&nbsp;</td><td class=impair align="right"> 105&nbsp;</td><td class=impair>0014 豪豪</td><td class=impair align="center">21K</td><td class=impair align="center">中国</td><td class=impair align="center">湖南常德</td><td class=impair align="center">1</td><td class=impair align="center"> 102-/b0</td><td class=impair align="center">  87-/w0</td><td class=impair align="center"><b> 106+/w0</b></td><td class=impair align="center"> 103-/b0</td><td class=impair align="center"> 101-/b0</td><td class=impair align="center">10</td><td class=impair align="center">70</td><td class=impair align="center">304</td></tr>
+<tr><td class=pair align="right">106&nbsp;</td><td class=pair align="right"> 106&nbsp;</td><td class=pair>0029 欧阳乐山</td><td class=pair align="center">24K</td><td class=pair align="center">中国</td><td class=pair align="center">湖南长沙</td><td class=pair align="center">3</td><td class=pair align="center"><b> 109+/w0</b></td><td class=pair align="center"><b> 112+/w0</b></td><td class=pair align="center"> 105-/b0</td><td class=pair align="center"> 104-/w0</td><td class=pair align="center"><b> 108+/b0</b></td><td class=pair align="center">9</td><td class=pair align="center">39</td><td class=pair align="center">240</td></tr>
+<tr><td class=impair align="right">107&nbsp;</td><td class=impair align="right"> 107&nbsp;</td><td class=impair>0030 欧阳乐水</td><td class=impair align="center">25K</td><td class=impair align="center">中国</td><td class=impair align="center">湖南长沙</td><td class=impair align="center">4</td><td class=impair align="center">  87-/w0</td><td class=impair align="center"><b> 109+/b0</b></td><td class=impair align="center"><b> 114+/w0</b></td><td class=impair align="center"><b> 112+/b0</b></td><td class=impair align="center"><b> 111+/w0</b></td><td class=impair align="center">9</td><td class=impair align="center">34</td><td class=impair align="center">212</td></tr>
+<tr><td class=pair align="right">108&nbsp;</td><td class=pair align="right"> 108&nbsp;</td><td class=pair>0003 睿睿</td><td class=pair align="center">23K</td><td class=pair align="center">中国</td><td class=pair align="center">辽宁沈阳</td><td class=pair align="center">1</td><td class=pair align="center"> 100-/b0</td><td class=pair align="center"><b> 111+/w0</b></td><td class=pair align="center"> 101-/b0</td><td class=pair align="center"> 102-/b0</td><td class=pair align="center"> 106-/w0</td><td class=pair align="center">8</td><td class=pair align="center">55</td><td class=pair align="center">293</td></tr>
+<tr><td class=impair align="right">109&nbsp;</td><td class=impair align="right"> 109&nbsp;</td><td class=impair>0031 刘梓瑜</td><td class=impair align="center">27K</td><td class=impair align="center">中国</td><td class=impair align="center">湖南长沙</td><td class=impair align="center">3</td><td class=impair align="center"> 106-/b0</td><td class=impair align="center"> 107-/w0</td><td class=impair align="center"><b>  97+/b0</b></td><td class=impair align="center"><b> 111+/b0</b></td><td class=impair align="center"><b> 112+/w0</b></td><td class=impair align="center">6</td><td class=impair align="center">41</td><td class=impair align="center">206</td></tr>
+<tr><td class=pair align="right">110&nbsp;</td><td class=pair align="right"> 110&nbsp;</td><td class=pair>0116 赵晟煜</td><td class=pair align="center">28K</td><td class=pair align="center">中国</td><td class=pair align="center">浙江宁波</td><td class=pair align="center">1</td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center">   0=   </td><td class=pair align="center"><b> 114+/w0</b></td><td class=pair align="center">5</td><td class=pair align="center">8</td><td class=pair align="center">72</td></tr>
+<tr><td class=impair align="right">111&nbsp;</td><td class=impair align="right"> 111&nbsp;</td><td class=impair>0051 龚阿蒙</td><td class=impair align="center">28K</td><td class=impair align="center">中国</td><td class=impair align="center">湖南邵阳</td><td class=impair align="center">1</td><td class=impair align="center">  96-/w0</td><td class=impair align="center"> 108-/b0</td><td class=impair align="center"><b> 112+/b0</b></td><td class=impair align="center"> 109-/w0</td><td class=impair align="center"> 107-/b0</td><td class=impair align="center">3</td><td class=impair align="center">43</td><td class=impair align="center">227</td></tr>
+<tr><td class=pair align="right">112&nbsp;</td><td class=pair align="right"> 112&nbsp;</td><td class=pair>0027 元宝</td><td class=pair align="center">28K</td><td class=pair align="center">中国</td><td class=pair align="center">河南郑州</td><td class=pair align="center">1</td><td class=pair align="center"><b> 114+/b0</b></td><td class=pair align="center"> 106-/b0</td><td class=pair align="center"> 111-/w0</td><td class=pair align="center"> 107-/w0</td><td class=pair align="center"> 109-/b0</td><td class=pair align="center">3</td><td class=pair align="center">27</td><td class=pair align="center">189</td></tr>
+<tr><td class=impair align="right">113&nbsp;</td><td class=impair align="right"> 113&nbsp;</td><td class=impair>0118 赵嘉瑞</td><td class=impair align="center">30K</td><td class=impair align="center">中国</td><td class=impair align="center">浙江宁波</td><td class=impair align="center">1</td><td class=impair align="center">   0=   </td><td class=impair align="center">   0=   </td><td class=impair align="center">   0=   </td><td class=impair align="center"><b> 114+/w0</b></td><td class=impair align="center">   0=   </td><td class=impair align="center">3</td><td class=impair align="center">0</td><td class=impair align="center">32</td></tr>
+<tr><td class=pair align="right">114&nbsp;</td><td class=pair align="right"> 114&nbsp;</td><td class=pair>0043 罗景妍</td><td class=pair align="center">30K</td><td class=pair align="center">中国</td><td class=pair align="center">湖南邵阳</td><td class=pair align="center">0</td><td class=pair align="center"> 112-/w0</td><td class=pair align="center"> 104-/b0</td><td class=pair align="center"> 107-/b0</td><td class=pair align="center"> 113-/b0</td><td class=pair align="center"> 110-/b0</td><td class=pair align="center">0</td><td class=pair align="center">32</td><td class=pair align="center">116</td></tr>
+</table>
 
-            const loadingDiv = document.getElementById('loading');
-            const errorDiv = document.getElementById('error');
-            const errorMessage = document.getElementById('error-message');
-            const tableDiv = document.getElementById('standings-table');
-            const tableBody = document.getElementById('standings-body');
+<h4 align=center><br>26-07-2025 20:57</h4>
 
-            fetch(API_URL)
-                .then(response => {
-                    if (!response.ok) throw new Error(`网络错误 (状态码: ${response.status})`);
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.error) throw new Error(data.error);
+<h4 align=center><br>成绩表图例说明</h4>
 
-                    loadingDiv.style.display = 'none';
+  <div class="legend">
+        <img src="./images/legends.JPG" style="width: 80%; height: auto; display: block; margin: 0 auto;" alt="图例说明" />
+      </div>
 
-                    let tableRowsHtml = '';
-                    if (data.standings && data.standings.length > 0) {
-                        data.standings.forEach((player, index) => {
-                            // 将轮次结果数组转换为<td>元素
-                            let resultsHtml = '';
-                            if(player.results_list) {
-                                player.results_list.forEach(res => {
-                                    resultsHtml += `<td class="px-2 py-3 text-center font-mono text-gray-600">${res}</td>`;
-                                });
-                            }
+<script>
+// 表格排序功能
+function sortTable(columnIndex) {
+    const table = document.querySelector('table');
+    const tbody = table.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    
+    // 判断当前排序方向
+    const currentDirection = table.getAttribute('data-sort-direction') || 'asc';
+    const newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+    table.setAttribute('data-sort-direction', newDirection);
+    
+    // 排序行
+    rows.sort((a, b) => {
+        const aText = a.children[columnIndex]?.textContent.trim() || '';
+        const bText = b.children[columnIndex]?.textContent.trim() || '';
+        
+        // 尝试将文本转换为数字进行比较
+        const aNum = parseFloat(aText.replace(/[^\d.-]/g, ''));
+        const bNum = parseFloat(bText.replace(/[^\d.-]/g, ''));
+        
+        let comparison = 0;
+        if (!isNaN(aNum) && !isNaN(bNum)) {
+            comparison = aNum - bNum;
+        } else {
+            comparison = aText.localeCompare(bText, 'zh', { numeric: true });
+        }
+        
+        return newDirection === 'asc' ? comparison : -comparison;
+    });
+    
+    // 重新添加排序后的行到表格中
+    rows.forEach(row => tbody.appendChild(row));
+    
+    // 更新表头指示器
+    const headers = table.querySelectorAll('thead th');
+    headers.forEach((header, index) => {
+        header.classList.remove('sorted-asc', 'sorted-desc');
+        if (index === columnIndex) {
+            header.classList.add(newDirection === 'asc' ? 'sorted-asc' : 'sorted-desc');
+        }
+    });
+    
+    // 重新设置行的奇偶样式
+    rows.forEach((row, index) => {
+        row.className = index % 2 === 0 ? 'impair' : 'pair';
+    });
+}
 
-                            tableRowsHtml += `
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-2 py-3 font-medium text-gray-500">${index + 1}</td>
-                                    <td class="px-2 py-3 font-bold text-center">${player.rank}</td>
-                                    <td class="px-4 py-3 font-semibold text-gray-800">
-                                        ${player.playerName}
-                                        <span class="block text-xs font-normal text-gray-500">${player.city}</span>
-                                    </td>
-                                    <td class="px-3 py-3 text-center text-gray-700">${player.tournament_rank}</td>
-                                    <td class="px-3 py-3 text-center font-bold text-blue-600">${player.wins}</td>
-                                    
-                                    ${resultsHtml}
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('页面已加载，排序功能可用');
+});
+</script>
 
-                                    <td class="px-3 py-3 text-center font-bold text-indigo-600">${player.mms}</td>
-                                    <td class="px-3 py-3 text-center text-gray-700">${player.sos}</td>
-                                    <td class="px-3 py-3 text-center text-gray-700">${player.sosos}</td>
-                                </tr>
-                            `;
-                        });
-                        tableBody.innerHTML = tableRowsHtml;
-                        tableDiv.classList.remove('hidden');
-                        tableDiv.classList.add('fade-in');
-                    } else {
-                        throw new Error('未找到排名数据。');
-                    }
-                })
-                .catch(error => {
-                    console.error('加载排名数据失败:', error);
-                    loadingDiv.style.display = 'none';
-                    errorMessage.textContent = `加载排名数据失败: ${error.message}`;
-                    errorDiv.classList.remove('hidden');
-                });
-        });
-    </script>
 
-</body>
-</html>
+</body></html>
