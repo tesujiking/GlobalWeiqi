@@ -65,15 +65,15 @@ body {
 
 .sidebar-logo {
   display: flex;
-  align-items: center;
-  gap: 15px;
+  justify-content: center; /* 水平居中 */
+  align-items: center;     /* 垂直居中 */
   text-decoration: none;
   color: white;
 }
 
 .sidebar-logo img {
-  width: 40px;
-  height: 40px;
+  height: 40px;   /* 固定高度 */
+  width: auto;    /* 宽度自适应 */
   border-radius: 8px;
 }
 
