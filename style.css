@@ -40,7 +40,7 @@ body {
 }
 
 .sidebar {
-  width: 280px;
+  width: 210px;
   background: linear-gradient(180deg, #2c3e50, #34495e);
   color: white;
   position: fixed;
@@ -199,7 +199,7 @@ body {
 /* 主内容区域 */
 .main-container {
   flex: 1;
-  margin-left: 280px;
+  margin-left: 210px;
   transition: margin-left 0.3s ease;
 }
 
@@ -532,7 +532,7 @@ tbody td {
 .positive-delta, .negative-delta { font-family: 'Courier New', monospace; }
 
 /* 移动端适配 */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .sidebar {
     transform: translateX(-100%);
   }
