@@ -233,7 +233,7 @@
         });
     }
 
-    // 【核心修改】升级版的 loadPage 函数
+    // ▼▼▼【使用这个最终的、最强大的 loadPage 函数】▼▼▼
     function loadPage(pageUrl) {
         console.log('加载页面:', pageUrl);
         const mainContent = document.getElementById('main-content');
@@ -254,18 +254,17 @@
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
                 
-                // 智能地寻找核心内容容器，这里我们假设所有子页面都有一个 class="main-content" 的根容器
+                // 步骤1: 智能地寻找核心HTML内容容器并注入
                 const contentToInject = doc.querySelector('.main-content');
-                
                 if (contentToInject) {
                     mainContent.innerHTML = contentToInject.innerHTML;
                 } else {
-                    // 备用方案：如果子页面没有 .main-content 容器，则注入body的全部内容
                     mainContent.innerHTML = doc.body.innerHTML;
                 }
                 
-                // 执行页面中的脚本
-                const scripts = mainContent.querySelectorAll('script');
+                // 步骤2: 【核心修正】从原始加载的文档(doc)中寻找并执行脚本
+                // 这样可以确保即使脚本在核心内容外部，也能被找到并执行。
+                const scripts = doc.querySelectorAll('script');
                 scripts.forEach(script => {
                     const newScript = document.createElement('script');
                     if (script.src) {
@@ -290,6 +289,7 @@
                 `;
             });
     }
+    // ▲▲▲【替换结束】▲▲▲
 
     // ... 您原有的 initNavigation, initSidebar, checkLoginStatus, handleLogout, 和事件监听器都保持不变 ...
     function initNavigation() {
