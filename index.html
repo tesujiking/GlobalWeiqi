@@ -2,485 +2,28 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <meta name="description" content="全球围棋超级联赛">
-
-    <title>全球围棋超级联赛</title>
-    <meta property="og:title" content="全球围棋超级联赛" />
-    <meta property="og:description" content="全名参与，高手云集，新手友好，真正涨棋的全球围棋超级联赛" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.globalweiqi.com/index.html" />
-    <meta property="og:image" content="https://www.globalweiqi.com/images/GlobalWeiqi.png" />
-    <link rel="stylesheet" href="style.css">
-
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      color: #333;
-    }
-
-    /* 现代化头部设计 */
-    .site-header {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 15px 30px;
-      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    .header-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    /* Chess.com 风格的左侧 Sidebar 导航 */
-    .app-container {
-      display: flex;
-      min-height: 100vh;
-    }
-
-    .sidebar {
-      width: 280px;
-      background: linear-gradient(180deg, #2c3e50, #34495e);
-      color: white;
-      position: fixed;
-      left: 0;
-      top: 0;
-      height: 100vh;
-      z-index: 1000;
-      overflow-y: auto;
-      transition: transform 0.3s ease;
-      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .sidebar.collapsed {
-      transform: translateX(-100%);
-    }
-
-    .sidebar-header {
-      padding: 25px 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      background: linear-gradient(135deg, #667eea, #764ba2);
-    }
-
-    .sidebar-logo {
-      display: flex;
-      justify-content: center; /* 水平居中 */
-      align-items: center;   /* 垂直居中 */
-
-      gap: 15px;
-      text-decoration: none;
-      color: white;
-    }
-
-    .sidebar-logo img {
-      width: auto;
-      height: 80px;
-      border-radius: 8px;
-    }
-
-    .sidebar-title {
-      font-size: 18px;
-      font-weight: 700;
-      line-height: 1.2;
-    }
-
-    .sidebar-subtitle {
-      font-size: 11px;
-      opacity: 0.8;
-      margin-top: 2px;
-    }
-
-    .sidebar-nav {
-      padding: 20px 0;
-    }
-
-    .nav-section {
-      margin-bottom: 30px;
-    }
-
-    .nav-section-title {
-      padding: 8px 20px;
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.6);
-      letter-spacing: 0.5px;
-      margin-bottom: 10px;
-    }
-
-    .nav-item {
-      margin: 2px 0;
-      position: relative;
-    }
-
-    .nav-link {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 20px;
-      color: rgba(255, 255, 255, 0.9);
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 14px;
-      transition: all 0.3s ease;
-      border-radius: 0;
-    }
-
-    .nav-link:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      transform: translateX(5px);
-    }
-
-    .nav-link.active {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-    }
-
-    .nav-link .icon {
-      font-size: 16px;
-      width: 20px;
-      text-align: center;
-    }
-
-    .nav-link .badge {
-      background: #e74c3c;
-      color: white;
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 10px;
-      margin-left: auto;
-    }
-
-    .nav-item.has-submenu > .nav-link::after {
-      content: '▶';
-      margin-left: auto;
-      font-size: 10px;
-      transition: transform 0.3s ease;
-    }
-
-    .nav-item.has-submenu.expanded > .nav-link::after {
-      transform: rotate(90deg);
-    }
-
-    .submenu {
-      display: none;
-      background: rgba(0, 0, 0, 0.2);
-      padding: 8px 0;
-    }
-
-    .submenu.expanded {
-      display: block;
-      animation: slideDown 0.3s ease;
-    }
-
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        max-height: 0;
-      }
-      to {
-        opacity: 1;
-        max-height: 300px;
-      }
-    }
-
-    .submenu .nav-link {
-      padding: 10px 20px 10px 52px;
-      font-size: 13px;
-      color: rgba(255, 255, 255, 0.8);
-    }
-
-    .submenu .nav-link:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: rgba(255, 255, 255, 0.95);
-    }
-
-    /* 主内容区域 */
-    .main-container {
-      flex: 1;
-      margin-left: 280px;
-      transition: margin-left 0.3s ease;
-    }
-
-    .main-container.sidebar-collapsed {
-      margin-left: 0;
-    }
-
-    .top-bar {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 15px 30px;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .sidebar-toggle {
-      display: none;
-      background: none;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 6px;
-      transition: background 0.3s ease;
-    }
-
-    .sidebar-toggle:hover {
-      background: rgba(0, 0, 0, 0.1);
-    }
-
-    .user-status {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      font-size: 14px;
-      font-weight: 500;
-    }
-    
-    .user-status span {
-      color: #333;
-      padding: 8px 15px;
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .user-status a {
-      cursor: pointer;
-      color: white;
-      text-decoration: none;
-      padding: 8px 15px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      border-radius: 20px;
-      transition: all 0.3s ease;
-      font-weight: 600;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-    }
-    
-    .user-status a:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-      text-decoration: none;
-    }
-
-    .content-area {
-      padding: 0;
-    }
-
-    .content-container {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-      min-height: calc(100vh - 120px);
-      margin: 20px;
-    }
-
-    /* 移动端适配 */
-    @media (max-width: 768px) {
-      .sidebar {
-        transform: translateX(-100%);
-      }
-
-      .sidebar.mobile-open {
-        transform: translateX(0);
-      }
-
-      .main-container {
-        margin-left: 0;
-      }
-
-      .sidebar-toggle {
-        display: block;
-      }
-
-      .user-status {
-        flex-direction: column;
-        gap: 8px;
-        font-size: 12px;
-      }
-      
-      .user-status span,
-      .user-status a {
-        padding: 6px 12px;
-        font-size: 12px;
-      }
-    }
-
-    /* 遮罩层 */
-    .sidebar-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-      display: none;
-    }
-
-    .sidebar-overlay.active {
-      display: block;
-    }
-    /* 英雄区域设计 */
-    .hero-section {
-      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-      padding: 80px 60px;
-      text-align: center;
-    }
-
-    .hero-title {
-      font-size: 48px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 20px;
-    }
-
-    .hero-subtitle {
-      font-size: 20px;
-      color: #666;
-      line-height: 1.6;
-      max-width: 600px;
-      margin: 0 auto 40px;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      padding: 15px 30px;
-      border-radius: 50px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 16px;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-      color: white;
-      box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(255, 107, 107, 0.5);
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.9);
-      color: #333;
-      border: 2px solid rgba(102, 126, 234, 0.3);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-secondary:hover {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
-    }
-
-    /* 功能区域设计 */
-    .features-section {
-      padding: 60px;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
-    }
-
-    .feature-card {
-      background: rgba(255, 255, 255, 0.8);
-      border-radius: 16px;
-      padding: 40px 30px;
-      text-align: center;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-    }
-
-    .feature-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      background: rgba(255, 255, 255, 0.95);
-    }
-
-    .feature-icon {
-      font-size: 48px;
-      margin-bottom: 20px;
-      display: block;
-    }
-
-    .feature-card h3 {
-      font-size: 24px;
-      font-weight: 700;
-      color: #333;
-      margin-bottom: 15px;
-    }
-
-    .feature-card p {
-      color: #666;
-      line-height: 1.6;
-      font-size: 16px;
-    }
-
-    @media (max-width: 768px) {
-      .main-content {
-        padding: 0 15px;
-        margin: 15px auto;
-      }
-    }
-  </style>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="全球围棋超级联赛">
+  <title>全球围棋超级联赛 - Global Weiqi Super League</title>
+  <meta property="og:title" content="全球围棋超级联赛" />
+  <meta property="og:description" content="全名参与，高手云集，新手友好，真正涨棋的全球围棋超级联赛" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.globalweiqi.com/index.html" />
+  <meta property="og:image" content="https://www.globalweiqi.com/images/GlobalWeiqi.png" />
+  
+  <link rel="stylesheet" href="style.css">
 
 </head>
 <body>
   <div class="app-container">
-    <!-- 左侧 Sidebar 导航 -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <a href="#" class="sidebar-logo" onclick="showHomePage()">
           <img src="./images/GlobalWeiqi.png" alt="Global Weiqi Logo">
+          <div>
+            <div class="sidebar-title">全球围棋超级联赛</div>
+            <div class="sidebar-subtitle">Global Weiqi Super League</div>
+          </div>
         </a>
       </div>
       
@@ -521,7 +64,7 @@
         <div class="nav-section">
           <div class="nav-section-title">功能工具</div>
           <div class="nav-item">
-            <a href="calculator.html" class="nav-link" data-page="calculator">
+            <a href="calculator_content.html" class="nav-link" data-page="calculator">
               <span class="icon">📊</span>
               等级分计算器
             </a>
@@ -611,46 +154,11 @@
             </a>
           </div>
         </div>
-
-        <!-- 开发测试功能（可折叠） -->
-        <div class="nav-section">
-          <div class="nav-section-title">开发测试</div>
-          <div class="nav-item has-submenu">
-            <a href="#" class="nav-link">
-              <span class="icon">🔧</span>
-              测试功能
-            </a>
-            <div class="submenu">
-              <a href="flow_test.html" class="nav-link" data-page="flow_test">
-                <span class="icon">🧪</span>
-                流动测试
-              </a>
-              <a href="api_debug.html" class="nav-link" data-page="api_debug">
-                <span class="icon">🔧</span>
-                API调试
-              </a>
-              <a href="mobile_menu_test.html" class="nav-link" data-page="mobile_menu_test">
-                <span class="icon">📱</span>
-                菜单测试
-              </a>
-              <a href="menu_debug.html" class="nav-link" data-page="menu_debug">
-                <span class="icon">🐛</span>
-                菜单调试
-              </a>
-              <a href="simple_menu_test.html" class="nav-link" data-page="simple_menu_test">
-                <span class="icon">⚙️</span>
-                简单测试
-              </a>
-            </div>
-          </div>
-        </div>
       </nav>
     </aside>
 
-    <!-- 遮罩层 -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- 主内容区域 -->
     <main class="main-container" id="mainContainer">
       <div class="top-bar">
         <button class="sidebar-toggle" id="sidebarToggle">
@@ -661,56 +169,20 @@
       
       <div class="content-area">
         <div class="content-container" id="main-content">
-          <!-- 默认首页内容 -->
-          <div class="hero-section">
-            <div class="hero-content">
-              <h1 class="hero-title">全球围棋超级联赛</h1>
-              <p class="hero-subtitle">全名参与，高手云集，新手友好，真正涨棋的全球围棋超级联赛</p>
-              <div class="hero-buttons">
-                <a href="#" class="btn btn-primary" data-page="register">.EVT 马上报名</a>
-                <a href="#" class="btn btn-secondary" data-page="standings">📈 查看排名</a>
-              </div>
-            </div>
           </div>
-          
-          <div class="features-section">
-            <div class="features-grid">
-              <div class="feature-card">
-                <div class="feature-icon">🏆</div>
-                <h3>比赛信息</h3>
-                <p>实时更新的比赛进度和排名信息</p>
-              </div>
-              <div class="feature-card">
-                <div class="feature-icon">♟️</div>
-                <h3>在线对弈</h3>
-                <p>支持在线下棋和复盘分析</p>
-              </div>
-              <div class="feature-card">
-                <div class="feature-icon">📚</div>
-                <h3>学习资源</h3>
-                <p>丰富的学习材料和技巧分享</p>
-              </div>
-              <div class="feature-card">
-                <div class="feature-icon">👥</div>
-                <h3>社区交流</h3>
-                <p>与全球围棋爱好者交流学习</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </main>
   </div>
 
   <script>
+    // ... 您原有的 const API_BASE_URL 和 userStatusDiv 定义保持不变 ...
     const API_BASE_URL = 'https://yaoshen.pythonanywhere.com/api';
     const userStatusDiv = document.getElementById('nav-user-status');
 
-    // 页面内容管理
     function showHomePage() {
+        // ... 您原有的 showHomePage 函数保持不变 ...
         const mainContent = document.getElementById('main-content');
         mainContent.innerHTML = `
-            <!-- 默认首页内容 -->
             <div class="hero-section">
                 <div class="hero-content">
                     <h1 class="hero-title">全球围棋超级联赛</h1>
@@ -747,13 +219,11 @@
                 </div>
             </div>
         `;
-        
-        // 为首页按钮添加事件监听器
         const heroButtons = mainContent.querySelectorAll('[data-page]');
         heroButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
-                const page = e.target.getAttribute('data-page');
+                const page = e.currentTarget.getAttribute('data-page');
                 if (page === 'register') {
                     loadPage('register.html');
                 } else if (page === 'standingsS2R4') {
@@ -762,12 +232,12 @@
             });
         });
     }
-    
+
+    // 【核心修改】升级版的 loadPage 函数
     function loadPage(pageUrl) {
         console.log('加载页面:', pageUrl);
         const mainContent = document.getElementById('main-content');
         
-        // 显示加载状态
         mainContent.innerHTML = `
             <div style="text-align: center; padding: 50px; color: #666;">
                 <div style="font-size: 24px; margin-bottom: 20px;">⏳</div>
@@ -775,24 +245,23 @@
             </div>
         `;
         
-        // 加载外部HTML文件
         fetch(pageUrl)
             .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
+                if (!response.ok) { throw new Error(`HTTP ${response.status}: ${response.statusText}`); }
                 return response.text();
             })
             .then(html => {
-                // 提取body内容或完整HTML
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
-                const bodyContent = doc.body;
                 
-                if (bodyContent) {
-                    mainContent.innerHTML = bodyContent.innerHTML;
+                // 智能地寻找核心内容容器，这里我们假设所有子页面都有一个 class="main-content" 的根容器
+                const contentToInject = doc.querySelector('.main-content');
+                
+                if (contentToInject) {
+                    mainContent.innerHTML = contentToInject.innerHTML;
                 } else {
-                    mainContent.innerHTML = html;
+                    // 备用方案：如果子页面没有 .main-content 容器，则注入body的全部内容
+                    mainContent.innerHTML = doc.body.innerHTML;
                 }
                 
                 // 执行页面中的脚本
@@ -804,7 +273,7 @@
                     } else {
                         newScript.textContent = script.textContent;
                     }
-                    document.head.appendChild(newScript);
+                    document.body.appendChild(newScript).parentNode.removeChild(newScript);
                 });
                 
                 console.log('页面加载完成:', pageUrl);
@@ -821,21 +290,18 @@
                 `;
             });
     }
-    
-    // 初始化sidebar导航事件监听器
+
+    // ... 您原有的 initNavigation, initSidebar, checkLoginStatus, handleLogout, 和事件监听器都保持不变 ...
     function initNavigation() {
-        // 为所有带有data-page属性的链接添加事件监听器
         document.querySelectorAll('a[data-page]').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
-                const pageUrl = e.target.getAttribute('href');
+                const pageUrl = e.currentTarget.getAttribute('href');
                 loadPage(pageUrl);
                 
-                // 设置活跃状态
                 document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
-                e.target.classList.add('active');
+                e.currentTarget.classList.add('active');
                 
-                // 移动端自动关闭sidebar
                 if (window.innerWidth <= 768) {
                     closeSidebar();
                 }
@@ -843,41 +309,32 @@
         });
     }
 
-    // Sidebar控制函数
     function initSidebar() {
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebarToggle');
         const sidebarOverlay = document.getElementById('sidebarOverlay');
         const mainContainer = document.getElementById('mainContainer');
 
-        // 切换sidebar
         function toggleSidebar() {
             sidebar.classList.toggle('mobile-open');
             sidebarOverlay.classList.toggle('active');
             mainContainer.classList.toggle('sidebar-collapsed');
         }
 
-        // 关闭sidebar
         function closeSidebar() {
             sidebar.classList.remove('mobile-open');
             sidebarOverlay.classList.remove('active');
             mainContainer.classList.remove('sidebar-collapsed');
         }
 
-        // 汉堡菜单按钮点击
         sidebarToggle.addEventListener('click', toggleSidebar);
-
-        // 点击遮罩层关闭
         sidebarOverlay.addEventListener('click', closeSidebar);
-
-        // ESC键关闭
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeSidebar();
             }
         });
 
-        // 子菜单展开/收起
         document.querySelectorAll('.nav-item.has-submenu > .nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -886,11 +343,9 @@
                 const navItem = link.parentElement;
                 const submenu = navItem.querySelector('.submenu');
                 
-                // 切换当前子菜单
                 navItem.classList.toggle('expanded');
                 submenu.classList.toggle('expanded');
                 
-                // 关闭其他同级子菜单
                 const siblings = navItem.parentElement.children;
                 Array.from(siblings).forEach(sibling => {
                     if (sibling !== navItem && sibling.classList.contains('has-submenu')) {
@@ -902,10 +357,9 @@
             });
         });
         
-        // 暴露关闭函数给全局
         window.closeSidebar = closeSidebar;
     }
-
+    
     function checkLoginStatus() {
         fetch(`${API_BASE_URL}/status/`, { credentials: 'include' })
             .then(response => response.json())
@@ -918,17 +372,14 @@
                     document.getElementById('logout-link').addEventListener('click', handleLogout);
                 } else {
                     userStatusDiv.innerHTML = `
-                        <a href="#" data-page="login">登录</a>
-                        <a href="#" data-page="zhuce">注册</a>
+                        <a href="#" data-page="login.html">登录</a>
+                        <a href="#" data-page="zhuce.html">注册</a>
                     `;
-                    // 为新创建的登录和注册链接添加事件监听器
-                    document.querySelector('a[data-page="login"]').addEventListener('click', (e) => {
-                        e.preventDefault();
-                        loadPage('login.html');
-                    });
-                    document.querySelector('a[data-page="zhuce"]').addEventListener('click', (e) => {
-                        e.preventDefault();
-                        loadPage('zhuce.html');
+                    document.querySelectorAll('#nav-user-status a[data-page]').forEach(link => {
+                        link.addEventListener('click', e => {
+                            e.preventDefault();
+                            loadPage(e.currentTarget.getAttribute('data-page'));
+                        });
                     });
                 }
             });
@@ -940,28 +391,26 @@
             .then(data => {
                 if(data.success) {
                     alert('您已成功退出。');
-                    checkLoginStatus(); // 更新UI
-                    showHomePage(); // 退出后，返回首页
+                    checkLoginStatus();
+                    showHomePage();
                 }
             });
     }
 
-    // 监听来自子页面的消息，在登录或注册成功后刷新状态
     window.addEventListener("message", (event) => {
         if (event.data === "loginSuccess" || event.data === "registrationSuccess") {
             checkLoginStatus();
-            showHomePage(); // 成功后返回首页
+            showHomePage();
         }
     });
 
-    // 页面加载时立即执行
     document.addEventListener('DOMContentLoaded', function() {
         checkLoginStatus();
-        initSidebar(); // 初始化sidebar导航
+        initSidebar();
         initNavigation();
-        showHomePage(); // 默认显示首页
+        showHomePage();
     });
-</script>
+  </script>
 
 </body>
 </html>
