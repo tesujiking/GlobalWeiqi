@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoMaster 作业中心</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            margin: 20px;
+        }
+        .card {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #1a2a4c;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .btn {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .btn:disabled {
+            background-color: #a0cffc;
+            cursor: not-allowed;
+        }
+        #assignments-container {
+            display: none; /* 默认隐藏 */
+        }
+        .assignment-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .assignment-item {
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .assignment-item .info span {
+            display: block;
+            color: #666;
+            font-size: 0.9rem;
+        }
+         .assignment-item .info strong {
+            font-size: 1.1rem;
+        }
+        .assignment-item .status {
+            padding: 0.3rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .status-new { background-color: #ffc107; color: #333; }
+        .status-draft { background-color: #17a2b8; color: white; }
+        .error-message {
+            color: #dc3545;
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
+        }
+        .loading { text-align: center; padding: 2rem; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="login-container" class="card">
+            <h1>用户登录</h1>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="loginName">登录名</label>
+                    <input type="text" id="loginName" name="loginName" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" id="login-button" class="btn">登录</button>
+            </form>
+            <p id="error-message" class="error-message"></p>
+        </div>
+
+        <div id="assignments-container" class="card">
+            <h2 id="welcome-message"></h2>
+            <h3>未完成的作业</h3>
+            <div id="assignments-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- DOM 元素获取 ---
+        const loginContainer = document.getElementById('login-container');
+        const assignmentsContainer = document.getElementById('assignments-container');
+        const loginForm = document.getElementById('login-form');
+        const loginButton = document.getElementById('login-button');
+        const errorMessage = document.getElementById('error-message');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const assignmentsContent = document.getElementById('assignments-content');
+
+        const API_BASE_URL = 'https://gomasterapp.com:8088/api';
+
+        // 1. 处理登录表单提交
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            errorMessage.style.display = 'none';
+            loginButton.disabled = true;
+            loginButton.textContent = '登录中...';
+
+            const loginName = document.getElementById('loginName').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // 调用真实的 POST /login API
+                // 修正：在这里添加了之前缺失的逗号
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: loginName, password: password })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || '登录失败');
+                }
+
+                // 登录成功，浏览器会自动处理 Set-Cookie 头
+                const userData = await response.json();
+
+                // UI 切换
+                welcomeMessage.textContent = `欢迎您, ${userData.loginName}！`;
+                loginContainer.style.display = 'none';
+                assignmentsContainer.style.display = 'block';
+
+                await fetchAndDisplayAssignments();
+
+            } catch (error) {
+                console.error('登录时发生错误:', error);
+                errorMessage.textContent = `登录失败: ${error.message}`;
+                errorMessage.style.display = 'block';
+            } finally {
+                loginButton.disabled = false;
+                loginButton.textContent = '登录';
+            }
+        });
+
+        // 2. 获取并显示作业列表
+        async function fetchAndDisplayAssignments() {
+            assignmentsContent.innerHTML = '<p class="loading">正在加载作业列表...</p>';
+
+            try {
+                // 调用真实的 GET /assignments API
+                const response = await fetch(`${API_BASE_URL}/assignments`);
+
+                if (!response.ok) {
+                    throw new Error('无法获取作业列表');
+                }
+
+                const assignments = await response.json();
+
+                // 根据 API 文档，筛选未完成的作业 (State: 0=New, 1=Draft)
+                const unfinishedAssignments = assignments.filter(
+                    assignment => assignment.state === 0 || assignment.state === 1
+                );
+
+                assignmentsContent.innerHTML = ''; 
+
+                if (unfinishedAssignments.length === 0) {
+                    assignmentsContent.innerHTML = '<p>太棒了！您已完成所有作业。</p>';
+                    return;
+                }
+
+                const list = document.createElement('ul');
+                list.className = 'assignment-list';
+
+                unfinishedAssignments.forEach(assignment => {
+                    const item = document.createElement('li');
+                    item.className = 'assignment-item';
+
+                    const stateInfo = getStateInfo(assignment.state);
+                    const assignmentDate = new Date(assignment.assignmentDate * 1000).toLocaleDateString();
+
+                    item.innerHTML = `
+                        <div class="info">
+                            <strong>作业 #${assignment.assignmentID}</strong>
+                            <span>题目数量: ${assignment.questionNum}</span>
+                            <span>布置日期: ${assignmentDate}</span>
+                        </div>
+                        <div class="status ${stateInfo.className}">${stateInfo.text}</div>
+                    `;
+                    list.appendChild(item);
+                });
+
+                assignmentsContent.appendChild(list);
+
+            } catch (error) {
+                console.error('获取作业失败:', error);
+                assignmentsContent.innerHTML = '<p style="color: red;">无法加载作业列表，请稍后重试。</p>';
+            }
+        }
+
+        // 3. 辅助函数：根据作业状态码返回文本和样式
+        function getStateInfo(state) {
+            switch (state) {
+                case 0: return { text: '新作业', className: 'status-new' };
+                case 1: return { text: '草稿', className: 'status-draft' };
+                default: return { text: '未知', className: '' };
+            }
+        }
+    </script>
+
+</body>
+</html>
