@@ -58,14 +58,20 @@
         </div>
     </div>
 
-
 <script>
-    // ... 您原有的所有 <script> 内容保持不变 ...
-    document.addEventListener('DOMContentLoaded', function() {
+    // ▼▼▼【核心修改】▼▼▼
+    // 使用 IIFE (立即调用函数表达式) 来包裹代码，
+    // 确保它在被动态加载时能够立即执行，同时避免污染全局作用域。
+    (function() {
+        // --- 全局变量和常量 ---
         let playerChartInstance = null;
-        const API_BASE_URL = 'https://yaoshen.pythonanywhere.com';
+        // 注意：这里的API地址应该是从主页面或者一个统一的配置文件中获取
+        // 为确保独立打开时也能工作，我们暂时保留它
+        const API_BASE_URL = 'https://yaoshen.pythonanywhere.com'; 
+
+        // --- 辅助函数 ---
         function calculateRankFromRating(rating) {
-             if (rating === null || rating === undefined) { return "N/A"; }
+            if (rating === null || rating === undefined) { return "N/A"; }
             try {
                 rating = parseFloat(rating);
                 if (isNaN(rating)) { return "Error"; }
@@ -84,6 +90,7 @@
                 }
             } catch (e) { return "Error"; }
         }
+
         function calculateAndDisplayStats(ratingData) {
             const statsContainer = document.getElementById('statsContainer');
             const gameRatings = ratingData.slice(1).map(d => d.y);
@@ -111,8 +118,12 @@
                 <p style="font-size: 12px; color: #7f8c8d; margin-top: 10px;">📈 根据最近 ${n} 盤对局计算。标准差越小，状态越稳定。</p>
             `;
         }
+
+        // --- 核心功能函数 ---
+
         function attachClickListeners() {
-            document.querySelectorAll('.player-row').forEach(row => {
+            // ... (这个函数内容保持不变) ...
+             document.querySelectorAll('.player-row').forEach(row => {
                 row.addEventListener('click', function() {
                     const playerId = this.dataset.playerId;
                     const playerName = this.dataset.playerName;
@@ -122,11 +133,13 @@
                     const tableContainer = document.getElementById('tableContainer');
                     const statsContainer = document.getElementById('statsContainer');
                     const closeModalBtn = document.getElementById('closeModal');
+
                     modalPlayerName.textContent = `${playerName} 的历史记录`;
                     tableContainer.innerHTML = '<p class="loading-cell">🔄 正在加载对局历史...</p>';
                     statsContainer.innerHTML = '';
                     chartContainer.style.display = 'none';
                     modal.classList.add('show');
+
                     fetch(`${API_BASE_URL}/players/${playerId}/match_history/`)
                         .then(response => response.json())
                         .then(data => {
@@ -204,13 +217,16 @@
                             console.error('Error fetching match history:', error);
                             tableContainer.innerHTML = '<p class="error-cell">⚠️ 加载数据失败，请稍后再试。</p>';
                         });
+
                     const closeModal = () => modal.classList.remove('show');
                     closeModalBtn.onclick = closeModal;
                     modal.onclick = function(event) { if (event.target == modal) { closeModal(); }};
                 });
             });
         }
+        
         function loadPlayerList() {
+            // ... (这个函数内容保持不变) ...
             const playerListBody = document.getElementById('player-list-body');
             fetch(`${API_BASE_URL}/api/players/`)
                 .then(response => {
@@ -236,15 +252,18 @@
                         tableRowsHtml = '<tr><td colspan="6" class="loading-cell">🏆 系统中尚无活跃选手。</td></tr>';
                     }
                     playerListBody.innerHTML = tableRowsHtml;
-                    attachClickListeners();
+                    attachClickListeners(); 
                 })
                 .catch(error => {
                     console.error('加载选手列表失败:', error);
                     playerListBody.innerHTML = '<tr><td colspan="6" class="error-cell">⚠️ 加载选手列表失败，请检查后端服务是否正常。</td></tr>';
                 });
         }
+
+        // --- 启动程序 ---
         loadPlayerList();
-    });
+    })(); // <-- 立即执行
+    // ▲▲▲【核心修改】▲▲▲
 </script>
 
 </body>
