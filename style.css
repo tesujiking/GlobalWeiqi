@@ -639,7 +639,7 @@ thead th {
     white-space: nowrap;
     cursor: pointer;
     transition: background 0.3s ease;
-    text-align: center; /* 增加居中对齐 */
+    text-align: left; /* 增加左对齐 */
 }
 
 thead th:hover {
