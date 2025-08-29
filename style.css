@@ -589,6 +589,14 @@ tbody td {
 
 /* --- 从 standingsS1R5.html 合并过来的非冲突样式 --- */
 
+/* 主内容区域特定布局 */
+.main-content {
+    width: 100%;
+    margin: 0;
+    background: #ffffff; /* 确保内容区有白色背景 */
+    padding: 40px;
+}
+
 /* 统计信息卡片 */
 .stats-cards {
     display: grid;
