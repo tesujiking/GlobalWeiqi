@@ -686,3 +686,29 @@ td b {
     font-size: 11px;
     text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
+
+/* 统一设置胜、负、和结果的基础字体样式 */
+.result-win, .result-loss, .result-draw {
+    font-weight: bold;
+    font-size: 11px; /* <-- 修改为 11px */
+}
+
+/* 胜局: 红色背景，白色字体 */
+.result-win {
+    color: #ffffff;
+    background-color: #e74c3c; /* 红色背景 */
+    padding: 2px 6px; /* 调整内边距以适应小字体 */
+    border-radius: 6px;
+}
+
+/* 败局: 黑色字体，无背景 */
+.result-loss {
+    color: #333333; /* 黑色字体 */
+    background-color: transparent;
+}
+
+/* 和棋: 粉色字体，无背景 */
+.result-draw {
+    color: #ec4899; /* 粉色字体 */
+    background-color: transparent;
+}
