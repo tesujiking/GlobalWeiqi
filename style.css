@@ -476,7 +476,7 @@ thead {
 
 thead th {
     padding: 15px 12px;
-    text-align: left;
+    text-align: center;
     font-weight: 600;
     font-size: 14px;
     text-transform: uppercase;
@@ -498,15 +498,16 @@ tbody tr:hover {
 tbody td {
     padding: 15px 12px;
     font-size: 14px;
+    text-align: center; /* <-- 在此添加新行 */
 }
 
 .rank-cell { font-weight: 700; color: #667eea; }
-.name-cell { font-weight: 600; color: #2c3e50; }
-.rating-cell { font-weight: 700; color: #667eea; text-align: center; }
-.rank-cell-display { text-align: center; color: #34495e; font-weight: 500; }
-.games-cell { text-align: center; color: #7f8c8d; }
+.name-cell { font-weight: 600; color: #2c3e50; text-align: left; }
+.rating-cell { font-weight: 700; color: #667eea; }
+.rank-cell-display { color: #34495e; font-weight: 500; }
+.games-cell { color: #7f8c8d; }
 .region-cell { color: #7f8c8d; }
-.loading-cell, .error-cell { text-align: center; color: #7f8c8d; padding: 30px; }
+.loading-cell, .error-cell { color: #7f8c8d; padding: 30px; }
 .error-cell { color: #e74c3c; }
 
 /* 模态框样式 */
