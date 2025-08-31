@@ -67,8 +67,9 @@
                 if (!data.tournament_info || !data.standings) throw new Error("API返回的数据格式不正确。");
                 
                 renderHeaderAndStats(data.tournament_info);
-                renderTable(data.standings, data.tournament_info.total_rounds);
-
+                // ▼▼▼【核心修改：将整个 tournament_info 对象传进去】▼▼▼
+                renderTable(data.standings, data.tournament_info);
+                // ▲▲▲ 修改结束 ▲▲▲
             } catch (error) {
                 console.error('加载排名失败:', error);
                 if (titleEl) titleEl.textContent = '❌ 加载失败';
@@ -88,18 +89,21 @@
             `;
         }
 
-        function renderTable(standings, totalRounds) {
-            // ▼▼▼【核心修改】▼▼▼
-            // 将“标准级别”修改为“报名级别”
-            const headers = ['序号', '排名', '姓名', '报名级别', '地区', '胜局数'];
+        function renderTable(standings, tournament_info) {
+            // ▼▼▼【核心修改：从 tournament_info 中获取要显示的轮数】▼▼▼
+            const display_rounds_until = tournament_info.display_rounds_until;
             // ▲▲▲ 修改结束 ▲▲▲
-            
+        
+            // 动态生成表头
             let headHTML = '<tr>';
+            const headers = ['序号', '排名', '姓名', '报名级别', '地区', '胜局数'];
             headers.forEach((h, i) => headHTML += `<th onclick="sortTable(${i})">${h}</th>`);
             
-            for (let i = 1; i <= totalRounds; i++) {
+            // ▼▼▼【核心修改：只循环到需要显示的轮数】▼▼▼
+            for (let i = 1; i <= display_rounds_until; i++) {
                 headHTML += `<th onclick="sortTable(${headers.length + i - 1})">第${i}轮</th>`;
             }
+            // ▲▲▲ 修改结束 ▲▲▲
             
             const finalHeaders = ['MMS', 'SOS', 'SOSOS'];
             const totalColumns = headers.length + totalRounds + finalHeaders.length;
