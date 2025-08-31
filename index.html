@@ -32,28 +32,19 @@
               赛事信息
             </a>
             <div class="submenu">
-              <a href="standingsS1R5.html" class="nav-link" data-page="standingsS1R5">
+              <a href="standings.html?id=1" class="nav-link" data-page="standings">
                 <span class="icon">🏁</span>
-                第1期
+                第1期排名
               </a>
-              <div class="nav-item has-submenu">
-                <a href="#" class="nav-link">
-                  <span class="icon">🔥</span>
-                  第2期
-                  <span class="badge">HOT</span>
-                </a>
-                <div class="submenu">
-                  <a href="standingsS2R4.html" class="nav-link" data-page="standingsS2R4">
-                    <span class="icon">📈</span>
-                    排行榜
-                  </a>
-                  <a href="GamesListS2R4.html" class="nav-link" data-page="GamesListS2R4">
-                    <span class="icon">⚔️</span>
-                    第4轮对局
-                  </a>
-                </div>
+              <a href="standings.html?id=2" class="nav-link" data-page="standings">
+                <span class="icon">🔥</span>
+                第2期排名
+              </a>
+              <a href="standings.html?id=3" class="nav-link" data-page="standings">
+                <span class="icon">🔥</span>
+                第3期排名
+              </a>
               </div>
-            </div>
           </div>
         </div>
 
@@ -155,6 +146,10 @@
     // ... 您原有的 const API_BASE_URL 和 userStatusDiv 定义保持不变 ...
     const API_BASE_URL = 'https://yaoshen.pythonanywhere.com/api';
     const userStatusDiv = document.getElementById('nav-user-status');
+    
+    // ▼▼▼【核心修改 2/2】▼▼▼
+    // 1. 定义一个全局变量，用于在页面加载时传递参数
+    window.currentPageParams = {};
 
     function showHomePage() {
         // ... 您原有的 showHomePage 函数保持不变 ...
@@ -210,76 +205,67 @@
         });
     }
 
-    // ▼▼▼【使用这个最终的、最强大的 loadPage 函数】▼▼▼
-    function loadPage(pageUrl) {
-        console.log('加载页面:', pageUrl);
+    function loadPage(pageUrl, params = {}) {
+        console.log('加载页面:', pageUrl, '参数:', params);
+        // 在加载新页面内容之前，将参数存储到全局变量中
+        window.currentPageParams = params;
+        
         const mainContent = document.getElementById('main-content');
         
-        mainContent.innerHTML = `
-            <div style="text-align: center; padding: 50px; color: #666;">
-                <div style="font-size: 24px; margin-bottom: 20px;">⏳</div>
-                <div>正在加载页面...</div>
-            </div>
-        `;
+        mainContent.innerHTML = `<div style="text-align: center; padding: 50px; color: #666;">...正在加载...</div>`;
         
         fetch(pageUrl)
             .then(response => {
-                if (!response.ok) { throw new Error(`HTTP ${response.status}: ${response.statusText}`); }
+                if (!response.ok) { throw new Error(`HTTP ${response.status}`); }
                 return response.text();
             })
             .then(html => {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
-                
-                // 步骤1: 智能地寻找核心HTML内容容器并注入
                 const contentToInject = doc.querySelector('.main-content');
-                if (contentToInject) {
-                    mainContent.innerHTML = contentToInject.innerHTML;
-                } else {
-                    mainContent.innerHTML = doc.body.innerHTML;
-                }
+                mainContent.innerHTML = contentToInject ? contentToInject.innerHTML : doc.body.innerHTML;
                 
-                // 步骤2: 【核心修正】从原始加载的文档(doc)中寻找并执行脚本
-                // 这样可以确保即使脚本在核心内容外部，也能被找到并执行。
                 const scripts = doc.querySelectorAll('script');
                 scripts.forEach(script => {
                     const newScript = document.createElement('script');
-                    if (script.src) {
-                        newScript.src = script.src;
-                    } else {
-                        newScript.textContent = script.textContent;
-                    }
+                    newScript.textContent = script.textContent;
                     document.body.appendChild(newScript).parentNode.removeChild(newScript);
                 });
-                
-                console.log('页面加载完成:', pageUrl);
             })
             .catch(error => {
                 console.error('页面加载失败:', error);
-                mainContent.innerHTML = `
-                    <div style="text-align: center; padding: 50px; color: #e74c3c;">
-                        <div style="font-size: 24px; margin-bottom: 20px;">❌</div>
-                        <div>页面加载失败</div>
-                        <div style="margin-top: 10px; font-size: 14px; color: #7f8c8d;">${error.message}</div>
-                        <button onclick="showHomePage()" style="margin-top: 20px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">返回首页</button>
-                    </div>
-                `;
+                mainContent.innerHTML = `<div style="text-align: center; padding: 50px; color: #e74c3c;">...页面加载失败...</div>`;
             });
     }
-    // ▲▲▲【替换结束】▲▲▲
 
-    // ... 您原有的 initNavigation, initSidebar, checkLoginStatus, handleLogout, 和事件监听器都保持不变 ...
+    // 3. 更新 initNavigation 函数，让它在点击链接时解析并传递参数
     function initNavigation() {
         document.querySelectorAll('a[data-page]').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const pageUrl = e.currentTarget.getAttribute('href');
-                loadPage(pageUrl);
+                
+                // 从 href 中解析出文件名和参数
+                const urlParts = pageUrl.split('?');
+                const fileName = urlParts[0];
+                const paramsString = urlParts[1];
+                
+                let params = {};
+                if (paramsString) {
+                    const urlParams = new URLSearchParams(paramsString);
+                    // 将所有URL参数转换为一个普通对象
+                    for (const [key, value] of urlParams.entries()) {
+                        params[key] = value;
+                    }
+                }
+                
+                // 调用 loadPage，并传入解析出的文件名和参数对象
+                loadPage(fileName, params);
                 
                 document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
                 e.currentTarget.classList.add('active');
                 
-                if (window.innerWidth <= 768) {
+                if (window.innerWidth <= 992 && typeof closeSidebar === 'function') {
                     closeSidebar();
                 }
             });
@@ -388,6 +374,6 @@
         showHomePage();
     });
   </script>
-
+  
 </body>
 </html>
