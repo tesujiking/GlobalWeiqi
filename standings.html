@@ -41,7 +41,12 @@
     (function() {
         // --- 配置区域 ---
         const API_BASE_URL = 'https://yaoshen.pythonanywhere.com'; 
-        const TOURNAMENT_ID = 1; // 默认加载第1期比赛
+        // ▼▼▼【核心修改】▼▼▼
+        // 不再使用固定的ID，而是从 index.html 设置的全局变量中读取
+        // 如果找不到参数，则默认加载 ID 为 1 的比赛，以防直接打开此文件
+        const TOURNAMENT_ID = window.currentPageParams?.id || 1;
+        // ▲▲▲ 修改结束 ▲▲▲
+
 
         // --- 指向你已有的API地址 ---
         const apiUrl = `${API_BASE_URL}/api/tournament/${TOURNAMENT_ID}/final_standings/`;
