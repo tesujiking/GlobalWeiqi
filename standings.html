@@ -116,7 +116,19 @@
             let bodyHTML = '';
             standings.forEach((player, index) => {
                 const roundResultsHTML = player.round_results_list?.map(result => {
-                    const displayResult = result.includes('+') ? `<b>${result}</b>` : result;
+                    // ▼▼▼ 新代码从这里开始 ▼▼▼
+                    let resultClass = '';
+                    if (result.includes('+')) {
+                        resultClass = 'result-win';    // 胜局
+                    } else if (result.includes('-')) {
+                        resultClass = 'result-loss';   // 败局
+                    } else if (result.includes('=')) {
+                        resultClass = 'result-draw';   // 新增：和棋
+                    }
+                
+                    const displayResult = `<span class="${resultClass}">${result}</span>`;
+                    // ▲▲▲ 新代码到这里结束 ▲▲▲
+                
                     return `<td style="font-family: monospace; text-align: center;">${displayResult}</td>`;
                 }).join('') || '';
 
