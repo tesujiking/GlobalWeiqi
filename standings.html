@@ -80,10 +80,10 @@
         // --- 辅助渲染函数 ---
         function renderHeaderAndStats(info) {
             titleEl.textContent = `🏆 ${info.name}`;
-            subtitleEl.textContent = `最终排名榜 - 共进行 ${info.total_rounds} 轮比赛`;
+            subtitleEl.textContent = `排名截至第 ${info.display_rounds_until} 轮 - 共 ${info.total_rounds} 轮`;
             statsContainerEl.innerHTML = `
                 <div class="stats-card"><h3>📊 参赛人数</h3><div class="value">${info.participant_count}</div></div>
-                <div class="stats-card"><h3>🎯 完成轮数</h3><div class="value">${info.total_rounds}</div></div>
+                <div class="stats-card"><h3>🎯 已赛轮数</h3><div class="value">${info.display_rounds_until}</div></div>
                 <div class="stats-card"><h3>🥇 冠军</h3><div class="value">${info.winner_name || 'N/A'} ${info.winner_rank || ''}</div></div>
                 <div class="stats-card"><h3>⭐ 全胜</h3><div class="value">${info.undefeated_count}人</div></div>
             `;
@@ -104,7 +104,7 @@
                 headHTML += `<th onclick="sortTable(${headers.length + i - 1})">第${i}轮</th>`;
             }
             // ▲▲▲ 修改结束 ▲▲▲
-            
+
             const finalHeaders = ['MMS', 'SOS', 'SOSOS'];
             const totalColumns = headers.length + totalRounds + finalHeaders.length;
             finalHeaders.forEach((h, i) => headHTML += `<th onclick="sortTable(${headers.length + totalRounds + i})">${h}</th>`);
