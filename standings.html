@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赛事排名 - 全球围棋超级联赛</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 为排序表头添加箭头指示器样式 */
+        thead th.sorted-asc::after { content: ' ▲'; }
+        thead th.sorted-desc::after { content: ' ▼'; }
+    </style>
+</head>
+<body>
+
+    <div class="main-content">
+        <div class="page-title">
+            <h1 id="tournament-title">🏆 正在加载赛事信息...</h1>
+            <p id="tournament-subtitle"></p>
+        </div>
+
+        <div class="stats-cards" id="stats-cards-container">
+            </div>
+
+        <div class="table-container">
+            <div class="table-header">📋 最终排名表</div>
+            <div class="table-note">💡 点击表头可排序 | MMS=麦克马洪分数</div>
+            <div class="table-wrapper">
+                <table>
+                    <thead id="standings-thead">
+                        </thead>
+                    <tbody id="standings-tbody">
+                        <tr><td colspan="13" class="loading-cell">🔄 正在加载排名数据...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        // --- 配置区域 ---
+        const API_BASE_URL = 'https://yaoshen.pythonanywhere.com'; 
+        const TOURNAMENT_ID = 1; // 默认加载第1期比赛
+
+        // --- 指向你已有的API地址 ---
+        const apiUrl = `${API_BASE_URL}/api/tournament/${TOURNAMENT_ID}/final_standings/`;
+
+        // --- DOM 元素获取 ---
+        const titleEl = document.getElementById('tournament-title');
+        const subtitleEl = document.getElementById('tournament-subtitle');
+        const statsContainerEl = document.getElementById('stats-cards-container');
+        const tableHeadEl = document.getElementById('standings-thead');
+        const tableBodyEl = document.getElementById('standings-tbody');
+
+        // --- 主函数：加载并渲染数据 ---
+        async function loadAndRenderStandings() {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error(`网络错误: ${response.status}`);
+                const data = await response.json();
+                if (!data.tournament_info || !data.standings) throw new Error("API返回的数据格式不正确。");
+                
+                renderHeaderAndStats(data.tournament_info);
+                renderTable(data.standings, data.tournament_info.total_rounds);
+
+            } catch (error) {
+                console.error('加载排名失败:', error);
+                if (titleEl) titleEl.textContent = '❌ 加载失败';
+                if (tableBodyEl) tableBodyEl.innerHTML = `<tr><td colspan="13" class="error-cell">⚠️ 加载排名数据失败: ${error.message}</td></tr>`;
+            }
+        }
+
+        // --- 辅助渲染函数 ---
+        function renderHeaderAndStats(info) {
+            titleEl.textContent = `🏆 ${info.name}`;
+            subtitleEl.textContent = `最终排名榜 - 共进行 ${info.total_rounds} 轮比赛`;
+            statsContainerEl.innerHTML = `
+                <div class="stats-card"><h3>📊 参赛人数</h3><div class="value">${info.participant_count}</div></div>
+                <div class="stats-card"><h3>🎯 完成轮数</h3><div class="value">${info.total_rounds}</div></div>
+                <div class="stats-card"><h3>🥇 冠军</h3><div class="value">${info.winner_name || 'N/A'} ${info.winner_rank || ''}</div></div>
+                <div class="stats-card"><h3>⭐ 全胜</h3><div class="value">${info.undefeated_count}人</div></div>
+            `;
+        }
+
+        function renderTable(standings, totalRounds) {
+            // ▼▼▼【核心修改】▼▼▼
+            // 将“标准级别”修改为“报名级别”
+            const headers = ['序号', '排名', '姓名', '报名级别', '地区', '胜局数'];
+            // ▲▲▲ 修改结束 ▲▲▲
+            
+            let headHTML = '<tr>';
+            headers.forEach((h, i) => headHTML += `<th onclick="sortTable(${i})">${h}</th>`);
+            
+            for (let i = 1; i <= totalRounds; i++) {
+                headHTML += `<th onclick="sortTable(${headers.length + i - 1})">第${i}轮</th>`;
+            }
+            
+            const finalHeaders = ['MMS', 'SOS', 'SOSOS'];
+            const totalColumns = headers.length + totalRounds + finalHeaders.length;
+            finalHeaders.forEach((h, i) => headHTML += `<th onclick="sortTable(${headers.length + totalRounds + i})">${h}</th>`);
+            
+            headHTML += '</tr>';
+            tableHeadEl.innerHTML = headHTML;
+            
+            if (!standings || standings.length === 0) {
+                tableBodyEl.innerHTML = `<tr><td colspan="${totalColumns}" class="loading-cell">本赛事尚无排名数据。</td></tr>`;
+                return;
+            }
+
+            let bodyHTML = '';
+            standings.forEach((player, index) => {
+                const roundResultsHTML = player.round_results_list?.map(result => {
+                    const displayResult = result.includes('+') ? `<b>${result}</b>` : result;
+                    return `<td style="font-family: monospace; text-align: center;">${displayResult}</td>`;
+                }).join('') || '';
+
+                bodyHTML += `
+                    <tr class="${index % 2 === 0 ? 'impair' : 'pair'}">
+                        <td class="rank-cell" style="text-align: center;">${player.competition_num || index + 1}</td>
+                        <td class="rank-cell" style="text-align: center;">${player.display_rank || ''}</td>
+                        <td class="name-cell">${player.player_name || '未知选手'}</td>
+                        <td class="level-cell">${player.tournament_rank || ''}</td>
+                        <td style="text-align: center;">${player.city || ''}</td>
+                        <td class="wins-cell">${player.wins_upto_round ?? 'N/A'}</td>
+                        ${roundResultsHTML}
+                        <td style="font-weight: bold; text-align: center;">${player.total_score ?? 'N/A'}</td>
+                        <td style="text-align: center;">${player.sos ?? 'N/A'}</td>
+                        <td style="text-align: center;">${player.sosos ?? 'N/A'}</td>
+                    </tr>
+                `;
+            });
+            tableBodyEl.innerHTML = bodyHTML;
+        }
+        
+        loadAndRenderStandings();
+
+    })();
+
+    // --- 表格排序功能 (无需修改) ---
+    function sortTable(columnIndex) {
+        const table = document.querySelector('table');
+        if (!table) return;
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        
+        const currentDirection = table.getAttribute('data-sort-direction') === 'desc' ? 'asc' : 'desc';
+        table.setAttribute('data-sort-direction', currentDirection);
+        
+        rows.sort((a, b) => {
+            const aText = a.children[columnIndex]?.textContent.trim() || '';
+            const bText = b.children[columnIndex]?.textContent.trim() || '';
+            const aNum = parseFloat(aText);
+            const bNum = parseFloat(bText);
+            
+            let comparison = 0;
+            if (!isNaN(aNum) && !isNaN(bNum)) {
+                comparison = aNum - bNum;
+            } else {
+                comparison = aText.localeCompare(bText, 'zh-CN', { numeric: true });
+            }
+            return currentDirection === 'asc' ? comparison : -comparison;
+        });
+        
+        tbody.innerHTML = '';
+        rows.forEach(row => tbody.appendChild(row));
+        
+        const headers = table.querySelectorAll('thead th');
+        headers.forEach(header => header.classList.remove('sorted-asc', 'sorted-desc'));
+        headers[columnIndex].classList.add(currentDirection === 'asc' ? 'sorted-asc' : 'sorted-desc');
+
+        tbody.querySelectorAll('tr').forEach((row, index) => {
+            row.className = index % 2 === 0 ? 'impair' : 'pair';
+        });
+    }
+    </script>
+</body>
+</html>
