@@ -107,7 +107,7 @@
 
             const finalHeaders = ['MMS', 'SOS', 'SOSOS'];
             const totalColumns = headers.length + display_rounds_until + finalHeaders.length;
-            finalHeaders.forEach((h, i) => headHTML += `<th onclick="sortTable(${headers.length + totalRounds + i})">${h}</th>`);
+            finalHeaders.forEach((h, i) => headHTML += `<th onclick="sortTable(${headers.length + display_rounds_until + i})">${h}</th>`);
             
             headHTML += '</tr>';
             tableHeadEl.innerHTML = headHTML;
