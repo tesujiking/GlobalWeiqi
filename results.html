@@ -170,6 +170,18 @@
             `;
             return div;
         }
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const tournamentId = params.get('tournament');
+
+            if (tournamentId) {
+                const standaloneParams = {};
+                for (const [key, value] of params.entries()) {
+                    standaloneParams[key] = value;
+                }
+                loadResults(standaloneParams);
+            }
+        });
     </script>
 </body>
 </html>
