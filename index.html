@@ -192,32 +192,32 @@
             </div>
         `;
 
-    const heroButtons = mainContent.querySelectorAll('[data-page]');
-    heroButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault(); // 阻止链接的默认跳转
-            const page = e.currentTarget.getAttribute('data-page');
-    
-            if (page === 'register') {
-                loadPage('register.html');
-            } else if (page === 'standings') { // <-- 修正条件
-                // 正确地从按钮的 href 属性中获取页面地址和参数
-                const pageUrl = e.currentTarget.getAttribute('href'); // 获取 "standings.html?id=3"
-                const urlParts = pageUrl.split('?');
-                const fileName = urlParts[0];
-                const paramsString = urlParts[1];
-                let params = {};
-                if (paramsString) {
-                    const urlParams = new URLSearchParams(paramsString);
-                    for (const [key, value] of urlParams.entries()) {
-                        params[key] = value;
-                    }
-                }
-                // 调用 loadPage 加载内容
-                loadPage(fileName, params);
-            }
-        });
-    });
+          const heroButtons = mainContent.querySelectorAll('[data-page]');
+          heroButtons.forEach(button => {
+              button.addEventListener('click', (e) => {
+                  e.preventDefault(); // 阻止链接的默认跳转
+                  const page = e.currentTarget.getAttribute('data-page');
+          
+                  if (page === 'register') {
+                      loadPage('register.html');
+                  } else if (page === 'standings') { // <-- 修正条件
+                      // 正确地从按钮的 href 属性中获取页面地址和参数
+                      const pageUrl = e.currentTarget.getAttribute('href'); // 获取 "standings.html?id=3"
+                      const urlParts = pageUrl.split('?');
+                      const fileName = urlParts[0];
+                      const paramsString = urlParts[1];
+                      let params = {};
+                      if (paramsString) {
+                          const urlParams = new URLSearchParams(paramsString);
+                          for (const [key, value] of urlParams.entries()) {
+                              params[key] = value;
+                          }
+                      }
+                      // 调用 loadPage 加载内容
+                      loadPage(fileName, params);
+                  }
+              });
+          });
       
     function loadPage(pageUrl, params = {}) {
         console.log('加载页面:', pageUrl, '参数:', params);
