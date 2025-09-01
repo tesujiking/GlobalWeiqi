@@ -258,7 +258,14 @@
                 const doc = parser.parseFromString(html, 'text/html');
                 const contentToInject = doc.querySelector('.main-content');
                 mainContent.innerHTML = contentToInject ? contentToInject.innerHTML : doc.body.innerHTML;
-                
+               
+                // ▼▼▼ 把这句话加在这里 ▼▼▼
+                // 检查要加载的页面是不是 results.html，如果是，就调用它的专属加载函数
+                if (pageUrl.includes('results.html')) {
+                    loadResults(params);
+                }
+                // ▲▲▲ 添加结束 ▲▲▲
+              
                 const scripts = doc.querySelectorAll('script');
                 scripts.forEach(script => {
                     const newScript = document.createElement('script');

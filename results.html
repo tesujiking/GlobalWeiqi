@@ -55,26 +55,59 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // ... (fetch逻辑无变化) ...
-            const params = new URLSearchParams(window.location.search);
-            const tournamentId = params.get('tournament');
-            const roundNumber = params.get('round');
+        // 不再自动执行，而是定义一个可以被外部调用的函数
+        function loadResults(params) {
+            // 这里的 params 就是主脚本“喂”进来的参数对象，例如 { tournament: '1', round: '1' }
+            const tournamentId = params.tournament;
+            const roundNumber = params.round;
+
+            // 获取页面元素 (这部分不变)
+            const loadingDiv = document.getElementById('loading');
+            const errorDiv = document.getElementById('error');
             const list = document.getElementById('pairings-list');
-            if (!tournamentId || !roundNumber) { /* ... */ return; }
+            const tournamentNameH1 = document.getElementById('tournament-name');
+            const roundInfoH2 = document.getElementById('round-info');
+            
+            // 清理旧内容和错误信息
+            list.innerHTML = '';
+            errorDiv.style.display = 'none';
+            loadingDiv.style.display = 'block';
+            tournamentNameH1.textContent = '比赛名称加载中...';
+            roundInfoH2.textContent = '轮次信息加载中...';
+            
+            if (!tournamentId || !roundNumber) {
+                loadingDiv.style.display = 'none';
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = '错误：加载时未提供 tournament 和 round 参数。';
+                return;
+            }
+
             const apiUrl = `https://yaoshen.pythonanywhere.com/api/tournament/${tournamentId}/round/${roundNumber}/results/`;
+
             fetch(apiUrl)
                 .then(response => response.ok ? response.json() : Promise.reject(response))
                 .then(data => {
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('tournament-name').textContent = data.tournament_info.name;
-                    document.getElementById('round-info').textContent = data.round_info.name;
+                    loadingDiv.style.display = 'none';
+                    tournamentNameH1.textContent = data.tournament_info.name;
+                    roundInfoH2.textContent = data.round_info.name;
+
                     if (data.pairings && data.pairings.length > 0) {
-                        data.pairings.forEach(p => list.appendChild(createPairingCard(p)));
-                    } else { /* ... */ }
+                        data.pairings.forEach(p => {
+                            const card = createPairingCard(p);
+                            list.appendChild(card);
+                        });
+                    } else {
+                        errorDiv.style.display = 'block';
+                        errorDiv.textContent = '该轮次没有对阵信息。';
+                    }
                 })
-                .catch(err => { /* ... */ });
-        });
+                .catch(err => {
+                    loadingDiv.style.display = 'none';
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = `加载数据失败。请检查后台API是否正常或联系管理员。`;
+                    console.error('Fetch error:', err);
+                 });
+        }
 
         function createPairingCard(pairing) {
             const div = document.createElement('div');
