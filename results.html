@@ -171,15 +171,23 @@
             return div;
         }
         document.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
-            const tournamentId = params.get('tournament');
+            // 检查当前页面的URL地址栏 (用于独立打开模式)
+            let paramsFromUrl = new URLSearchParams(window.location.search);
+            let tournamentId = paramsFromUrl.get('tournament');
 
             if (tournamentId) {
+                // 模式一：独立运行
                 const standaloneParams = {};
-                for (const [key, value] of params.entries()) {
+                for (const [key, value] of paramsFromUrl.entries()) {
                     standaloneParams[key] = value;
                 }
                 loadResults(standaloneParams);
+
+            } else if (window.currentPageParams) { // <--- 【核心修改】检查您一直使用的那个“纸条”
+                // 模式二：嵌入运行
+                loadResults(window.currentPageParams);
+                // 看完纸条后可以考虑删掉，但根据您代码的写法，不删也可以，因为它每次都会被新的覆盖
+                // delete window.currentPageParams; 
             }
         });
     </script>
