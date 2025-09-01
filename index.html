@@ -152,16 +152,18 @@
     window.currentPageParams = {};
 
     function showHomePage() {
-        // ... 您原有的 showHomePage 函数保持不变 ...
+        // 这部分是用来获取主内容区域的
         const mainContent = document.getElementById('main-content');
+        
+        // 这部分是核心，用来生成主页的HTML内容，之前可能被误删了
         mainContent.innerHTML = `
             <div class="hero-section">
                 <div class="hero-content">
                     <h1 class="hero-title">全球围棋超级联赛</h1>
                     <p class="hero-subtitle">全名参与，高手云集，新手友好，真正涨棋的全球围棋超级联赛</p>
                     <div class="hero-buttons">
-                        <a href="#" class="btn btn-primary" data-page="register"><span class="icon" style="margin-right: 5px;">📝</span>马上报名</a>
-                        <a href="standings.html?id=3" class="btn btn-secondary" data-page="standings"><span class="icon" style="margin-right: 5px;">🔥</span>最新赛况</a>
+                        <a href="#" class="btn btn-primary" data-page="register">马上报名</a>
+                        <a href="standings.html?id=3" class="btn btn-secondary" data-page="standings">🔥最新赛况</a>
                     </div>
                 </div>
             </div>
@@ -191,33 +193,35 @@
                 </div>
             </div>
         `;
-
-          const heroButtons = mainContent.querySelectorAll('[data-page]');
-          heroButtons.forEach(button => {
-              button.addEventListener('click', (e) => {
-                  e.preventDefault(); // 阻止链接的默认跳转
-                  const page = e.currentTarget.getAttribute('data-page');
-          
-                  if (page === 'register') {
-                      loadPage('register.html');
-                  } else if (page === 'standings') { // <-- 修正条件
-                      // 正确地从按钮的 href 属性中获取页面地址和参数
-                      const pageUrl = e.currentTarget.getAttribute('href'); // 获取 "standings.html?id=3"
-                      const urlParts = pageUrl.split('?');
-                      const fileName = urlParts[0];
-                      const paramsString = urlParts[1];
-                      let params = {};
-                      if (paramsString) {
-                          const urlParams = new URLSearchParams(paramsString);
-                          for (const [key, value] of urlParams.entries()) {
-                              params[key] = value;
-                          }
-                      }
-                      // 调用 loadPage 加载内容
-                      loadPage(fileName, params);
-                  }
-              });
-          });
+    
+        // 这部分是我们修正过的，为新生成的按钮添加正确的点击事件
+        const heroButtons = mainContent.querySelectorAll('[data-page]');
+        heroButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault(); // 阻止链接的默认跳转
+                const page = e.currentTarget.getAttribute('data-page');
+    
+                if (page === 'register') {
+                    loadPage('register.html');
+                } else if (page === 'standings') { // 修正后的条件
+                    // 从按钮的 href 属性中获取页面地址和参数
+                    const pageUrl = e.currentTarget.getAttribute('href');
+                    const urlParts = pageUrl.split('?');
+                    const fileName = urlParts[0];
+                    const paramsString = urlParts[1];
+                    let params = {};
+                    if (paramsString) {
+                        const urlParams = new URLSearchParams(paramsString);
+                        for (const [key, value] of urlParams.entries()) {
+                            params[key] = value;
+                        }
+                    }
+                    // 调用 loadPage 加载内容
+                    loadPage(fileName, params);
+                }
+            });
+        });
+    }
       
     function loadPage(pageUrl, params = {}) {
         console.log('加载页面:', pageUrl, '参数:', params);
