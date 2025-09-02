@@ -170,26 +170,25 @@
             `;
             return div;
         }
-        document.addEventListener('DOMContentLoaded', () => {
-            // 检查当前页面的URL地址栏 (用于独立打开模式)
-            let paramsFromUrl = new URLSearchParams(window.location.search);
-            let tournamentId = paramsFromUrl.get('tournament');
+            // ▼▼▼【核心修改】▼▼▼
+        // 不再等待 DOMContentLoaded 事件，而是直接运行逻辑
+        // 因为这段脚本是在 index.html 加载完内容后才被执行的，此时 DOM 已经准备好了
+        
+        // 检查URL (独立模式)
+        let paramsFromUrl = new URLSearchParams(window.location.search);
+        let tournamentId = paramsFromUrl.get('tournament');
 
-            if (tournamentId) {
-                // 模式一：独立运行
-                const standaloneParams = {};
-                for (const [key, value] of paramsFromUrl.entries()) {
-                    standaloneParams[key] = value;
-                }
-                loadResults(standaloneParams);
-
-            } else if (window.currentPageParams) { // <--- 【核心修改】检查您一直使用的那个“纸条”
-                // 模式二：嵌入运行
-                loadResults(window.currentPageParams);
-                // 看完纸条后可以考虑删掉，但根据您代码的写法，不删也可以，因为它每次都会被新的覆盖
-                // delete window.currentPageParams; 
+        if (tournamentId) {
+            const standaloneParams = {};
+            for (const [key, value] of paramsFromUrl.entries()) {
+                standaloneParams[key] = value;
             }
-        });
+            loadResults(standaloneParams);
+        } else if (window.currentPageParams) { // 检查 "纸条" (嵌入模式)
+            loadResults(window.currentPageParams);
+            delete window.currentPageParams; 
+        }
+        // ▲▲▲【修改结束】▲▲▲        
     </script>
 </body>
 </html>
