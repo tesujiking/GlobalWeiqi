@@ -914,6 +914,7 @@ td b {
 }
 
 .results-page .pairing-item.pending {
-    background-color: #f2f2f2;  /* 浅灰色背景 */
+    background-color: #bfbfbf;   /* 冷灰，显眼 */
+    border: 1px dashed #666;     /* 虚线边框，更容易识别 */
 }
 /* ===== RESULTS.HTML 页面专属样式 (已隔离) 结束 ===== */
