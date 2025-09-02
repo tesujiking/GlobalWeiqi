@@ -2,7 +2,50 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>比赛结果</title>
+    <style>
+        /* 页面专属样式 */
+        body { font-family: sans-serif; background-color: #f4f4f9; color: #333; margin: 0; padding: 0; }
+        .main-content { padding: 20px; } /* 为独立打开时增加边距 */
+        .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1, h2 { text-align: center; }
+        h1 { margin-bottom: 5px; color: #1a237e;}
+        h2 { margin-top: 0; margin-bottom: 30px; color: #555;}
+        .pairings-list { list-style-type: none; padding: 0; }
+        .pairing-item { display: flex; flex-direction: column; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; padding: 15px 20px; overflow: hidden; }
+        .pairing-content { display: flex; align-items: flex-start; width: 100%; margin-bottom: 5px; }
+        .player-display { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            position: relative; 
+            padding: 0 10px; 
+        }
+        .avatar {
+            width: 100px; height: 100px; border-radius: 50%; background-color: #4a5568; color: white;
+            margin-bottom: 8px; border: 3px solid #ccc; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; font-weight: bold; padding: 5px; box-sizing: border-box; font-size: 1.8em;
+        }
+        .avatar .name-line { line-height: 1.2; }
+        .player-region, .player-rating-info { font-size: 0.9em; color: #777; line-height: 1.5; }
+        .result-display { flex-shrink: 0; margin: 0 20px; text-align: center; padding-top: 15px; }
+        .round-title { font-size: 1.2em; font-weight: bold; color: #333; }
+        .handicap-info { font-size: 1em; color: #4a7ac9; font-weight: bold; margin-top: 4px; }
+        .final-result { margin-top: 8px; font-size: 1.6em; font-weight: bold; color: #d32f2f; }
+        .result-detail { font-size: 0.9em; color: #777; margin-top: 4px; height: 1.2em; }
+        .prob-title { font-size: 0.8em; color: #888; text-align: center; margin: 5px 0 5px 0; }
+        .win-prob-bar { display: flex; height: 32px; width: 100%; border-radius: 6px; overflow: hidden; font-size: 1em; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        .prob-white { background-color: #4a7ac9; display: flex; align-items: center; justify-content: center; }
+        .prob-black { background-color: #c94a4a; display: flex; align-items: center; justify-content: center; }
+        .player-color-indicator {
+            width: 30px; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center;
+            font-size: 1em; font-weight: bold; position: absolute; top: 35px;
+        }
+        .player-color-indicator.white { background-color: #fff; color: #000; border: 1px solid #333; left: -5px; }
+        .player-color-indicator.black { background-color: #333; color: #fff; border: 1px solid #333; right: -5px; }
+    </style>
 </head>
 <body>
     <div class="main-content">
@@ -14,5 +57,133 @@
             <div id="pairings-list" class="pairings-list"></div>
         </div>
     </div>
+
+    <script>
+        // 核心加载函数，负责获取数据和渲染页面
+        function loadResults(params) {
+            const tournamentId = params.tournament;
+            const roundNumber = params.round;
+
+            const loadingDiv = document.getElementById('loading');
+            const errorDiv = document.getElementById('error');
+            const list = document.getElementById('pairings-list');
+            const tournamentNameH1 = document.getElementById('tournament-name');
+            const roundInfoH2 = document.getElementById('round-info');
+            
+            list.innerHTML = '';
+            errorDiv.style.display = 'none';
+            loadingDiv.style.display = 'block';
+            tournamentNameH1.textContent = '比赛名称加载中...';
+            roundInfoH2.textContent = '轮次信息加载中...';
+            
+            if (!tournamentId || !roundNumber) {
+                loadingDiv.style.display = 'none';
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = '错误：加载时未提供 tournament 和 round 参数。';
+                return;
+            }
+
+            const apiUrl = `https://yaoshen.pythonanywhere.com/api/tournament/${tournamentId}/round/${roundNumber}/results/`;
+
+            fetch(apiUrl)
+                .then(response => response.ok ? response.json() : Promise.reject(response))
+                .then(data => {
+                    loadingDiv.style.display = 'none';
+                    tournamentNameH1.textContent = data.tournament_info.name;
+                    roundInfoH2.textContent = data.round_info.name;
+
+                    if (data.pairings && data.pairings.length > 0) {
+                        data.pairings.forEach(p => {
+                            const card = createPairingCard(p);
+                            list.appendChild(card);
+                        });
+                    } else {
+                        errorDiv.style.display = 'block';
+                        errorDiv.textContent = '该轮次没有对阵信息。';
+                    }
+                })
+                .catch(err => {
+                    loadingDiv.style.display = 'none';
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = `加载数据失败。请检查后台API是否正常或联系管理员。`;
+                    console.error('Fetch error:', err);
+                 });
+        }
+
+        // 核心卡片生成函数，负责将一条数据显示为一个卡片
+        function createPairingCard(pairing) {
+            const div = document.createElement('div');
+            div.className = `pairing-item`;
+            
+            let simpleResult = 'VS';
+            if (pairing.status === 'COMPLETED') {
+                if (pairing.result_display.includes('白胜')) simpleResult = '白胜';
+                else if (pairing.result_display.includes('黑胜')) simpleResult = '黑胜';
+                else simpleResult = '和棋';
+            }
+            
+            const whiteProb = (pairing.win_probability.white * 100).toFixed(1);
+            const blackProb = (pairing.win_probability.black * 100).toFixed(1);
+
+            const formatName = (player) => {
+                if (!player) return '';
+                const lastName = player.last_name || '';
+                const firstName = player.first_name || '';
+                if (lastName && firstName) return `<div class="name-line">${lastName}</div><div class="name-line">${firstName}</div>`;
+                return `<div class="name-line">${player.name}</div>`; 
+            };
+            
+            const formatHandicap = (h) => h > 0 ? `让${h}子` : '分先';
+            
+            const formatRating = (player) => {
+                const rank = player.rank || 'N/A';
+                const rating = player.rating ? player.rating.toFixed(2) : 'N/A';
+                return `${rank} (${rating})`;
+            };
+
+            div.innerHTML = `
+                <div class="pairing-content">
+                    <div class="player-display">
+                        <div class="player-color-indicator white">白</div>
+                        <div class="avatar">${formatName(pairing.white_player)}</div>
+                        <div class="player-region">${pairing.white_player.region || '&nbsp;'}</div>
+                        <div class="player-rating-info">${formatRating(pairing.white_player)}</div>
+                    </div>
+                    <div class="result-display">
+                        <div class="round-title">第 ${pairing.board_number} 台</div>
+                        <div class="handicap-info">${formatHandicap(pairing.handicap)}</div>
+                        ${pairing.status === 'COMPLETED' ? `<div class="final-result">${simpleResult}</div><div class="result-detail">${pairing.result_detail}</div>` : ''}
+                    </div>
+                    <div class="player-display">
+                        <div class="player-color-indicator black">黑</div>
+                        <div class="avatar">${formatName(pairing.black_player)}</div>
+                        <div class="player-region">${pairing.black_player.region || '&nbsp;'}</div>
+                        <div class="player-rating-info">${formatRating(pairing.black_player)}</div>
+                    </div>
+                </div>
+                <div class="prob-title">双方赛前预测胜率</div>
+                <div class="win-prob-bar">
+                    <div class="prob-white" style="width: ${whiteProb}%">${whiteProb}%</div>
+                    <div class="prob-black" style="width: ${blackProb}%">${blackProb}%</div>
+                </div>
+            `;
+            return div;
+        }
+
+        // 双模式运行逻辑
+        document.addEventListener('DOMContentLoaded', () => {
+            // 模式一：检查URL，用于独立打开
+            const paramsFromUrl = new URLSearchParams(window.location.search);
+            if (paramsFromUrl.has('tournament')) {
+                const standaloneParams = Object.fromEntries(paramsFromUrl.entries());
+                loadResults(standaloneParams);
+            } 
+            // 模式二：检查 "纸条"，用于index框架嵌入
+            else if (window.currentPageParams) {
+                loadResults(window.currentPageParams);
+                delete window.currentPageParams;
+            }
+        });
+    </script>
 </body>
 </html>
