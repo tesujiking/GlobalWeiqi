@@ -758,3 +758,159 @@ td b {
 .register-container .contact p {
   margin: 0.5em 0;
 }
+
+
+
+/* ===== RESULTS.HTML 页面专属样式 (已隔离) 开始 ===== */
+
+/* 只有当 main-content 有 results-page class时，以下样式才生效 */
+
+.results-page .main-content { 
+    padding: 20px; 
+}
+        
+.results-page .container { 
+    max-width: 360px; 
+    margin: auto; 
+    background: #fff; 
+    padding: 15px; 
+    border-radius: 8px; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+}
+        
+.results-page h1 { 
+    font-size: 1.5em; 
+    margin-bottom: 5px; 
+    color: #1a237e; 
+    text-align: center; 
+}
+.results-page h2 { 
+    font-size: 1.1em; 
+    margin-top: 0; 
+    margin-bottom: 20px; 
+    color: #555; 
+    text-align: center; 
+}
+.results-page .pairings-list { 
+    list-style-type: none; 
+    padding: 0; 
+}
+        
+.results-page .pairing-item { 
+    display: flex; 
+    flex-direction: column; 
+    border: 1px solid #ddd; 
+    border-radius: 8px; 
+    margin-bottom: 10px; 
+    padding: 8px 10px; 
+    overflow: hidden; 
+}
+.results-page .pairing-content { 
+    display: flex; 
+    align-items: flex-start; 
+    width: 100%; 
+    margin-bottom: 8px; 
+}
+.results-page .player-display { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    position: relative; 
+    padding: 0 3px; 
+}
+        
+.results-page .avatar {
+    width: 50px; height: 50px; border-radius: 50%; background-color: #4a5568; color: white;
+    margin-bottom: 5px; border: 2px solid #ccc; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; font-weight: bold; padding: 3px; box-sizing: border-box; font-size: 0.9em;
+    transition: all 0.3s ease;
+}
+.results-page .avatar .name-line { 
+    line-height: 1.1; 
+}
+        
+.results-page .player-region, .results-page .player-rating-info { 
+    font-size: 0.7em; 
+    color: #777; 
+    line-height: 1.4; 
+}
+        
+.results-page .result-display { 
+    flex-shrink: 0; 
+    margin: 0 10px; 
+    text-align: center; 
+    padding-top: 5px; 
+}
+.results-page .round-title { 
+    font-size: 0.8em; 
+    font-weight: bold; 
+    color: #333; 
+}
+.results-page .handicap-info { 
+    font-size: 0.7em; 
+    color: #4a7ac9; 
+    font-weight: bold; 
+    margin-top: 2px; 
+}
+.results-page .final-result { 
+    margin-top: 4px; 
+    font-size: 1em; 
+    font-weight: bold; 
+    color: #d32f2f; 
+}
+.results-page .result-detail { 
+    font-size: 0.7em; 
+    color: #777; 
+    margin-top: 2px; 
+    height: 1em; 
+}
+        
+.results-page .win-prob-bar { 
+    display: flex; 
+    height: 18px; 
+    width: 100%; 
+    border-radius: 4px; 
+    overflow: hidden; 
+    font-size: 0.7em; 
+    font-weight: bold; 
+    color: white; 
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.5); 
+    margin-top: 5px; 
+}
+.results-page .prob-white { 
+    background-color: #4a7ac9; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+}
+.results-page .prob-black { 
+    background-color: #c94a4a; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+}
+        
+.results-page .player-color-indicator {
+    width: 20px; height: 20px; border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    font-size: 0.7em; font-weight: bold; position: absolute; top: 0;
+}
+.results-page .player-color-indicator.white { 
+    background-color: #fff; 
+    color: #000; 
+    border: 1px solid #333; 
+    left: 10px; 
+}
+.results-page .player-color-indicator.black { 
+    background-color: #333; 
+    color: #fff; 
+    border: 1px solid #333; 
+    right: 10px; 
+}
+        
+.results-page .winner-highlight .avatar {
+    background-color: #c94a4a;
+    border-color: #a02020;
+}
+
+/* ===== RESULTS.HTML 页面专属样式 (已隔离) 结束 ===== */
