@@ -233,6 +233,7 @@
       
     // ▼▼▼ 这是我们最终版的 loadPage 函数 ▼▼▼
     function loadPage(pageUrl, params = {}) {
+        console.log("--- 探针B: loadPage函数已启动 ---", pageUrl, params); // <-- 探针B
         // 步骤1: 留下“纸条”
         window.currentPageParams = params;
         
@@ -247,10 +248,11 @@
                 const doc = parser.parseFromString(html, 'text/html');
                 const contentToInject = doc.querySelector('.main-content');
                 mainContent.innerHTML = contentToInject ? contentToInject.innerHTML : doc.body.innerHTML;
-               
+                console.log("--- 探针C: HTML内容已注入页面 ---"); // <-- 探针C
                 // 步骤3: 动态执行脚本
                 const scripts = doc.querySelectorAll('script');
                 scripts.forEach(script => {
+                    console.log("--- 探针D: 正在尝试执行子页面脚本 ---"); // <-- 探针D
                     const newScript = document.createElement('script');
                     newScript.textContent = script.textContent;
                     document.body.appendChild(newScript).parentNode.removeChild(newScript);
