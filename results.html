@@ -70,6 +70,11 @@
             const div = document.createElement('div');
             div.className = 'pairing-item';
             
+            // 如果对局未完成，额外加上 pending 样式
+            if (pairing.status !== 'COMPLETED') {
+                div.classList.add('pending');
+            }
+                        
             let simpleResult = 'VS', whiteIsWinner = false, blackIsWinner = false;
             if (pairing.status === 'COMPLETED') {
                 if (pairing.result_display.includes('白胜')) { simpleResult = '白胜'; whiteIsWinner = true; }
