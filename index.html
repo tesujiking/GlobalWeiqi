@@ -242,21 +242,34 @@
         
         fetch(pageUrl)
             .then(response => response.ok ? response.text() : Promise.reject(response))
-            .then(html => {
-                // 步骤2: 注入HTML
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const contentToInject = doc.querySelector('.main-content');
-                mainContent.innerHTML = contentToInject ? contentToInject.innerHTML : doc.body.innerHTML;
-                console.log("--- 探针C: HTML内容已注入页面 ---"); // <-- 探针C
-                // 步骤3: 动态执行脚本
-                const scripts = doc.querySelectorAll('script');
-                scripts.forEach(script => {
-                    console.log("--- 探针D: 正在尝试执行子页面脚本 ---"); // <-- 探针D
-                    const newScript = document.createElement('script');
-                    newScript.textContent = script.textContent;
-                    document.body.appendChild(newScript).parentNode.removeChild(newScript);
-                });
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const contentToInject = doc.querySelector('.main-content');
+
+                // ▼▼▼【修改点1: 添加页面专属class，以激活隔离的CSS】▼▼▼
+                // 在注入内容前，先恢复容器的默认class
+                mainContent.className = 'content-container'; 
+                // 如果是 results 页面，就额外添加 results-page 这个 class
+                if (pageUrl.includes('results.html')) {
+                    mainContent.classList.add('results-page');
+                }
+                // ▲▲▲【修改结束】▲▲▲
+
+                // 注入HTML内容
+                mainContent.innerHTML = contentToInject ? contentToInject.innerHTML : doc.body.innerHTML;
+               
+                // ▼▼▼【修改点2: 改用更稳定、直接的函数调用】▼▼▼
+                // 不再使用不稳定的 script.forEach 循环来重新执行脚本
+                if (pageUrl.includes('results.html')) {
+                    // 直接调用我们已经“搬家”到 index 主脚本里的 loadResults 函数
+                    loadResults(params);
+                }
+                // (未来其他页面，如 standings.html, 也可以在这里添加它们的加载函数)
+                // else if (pageUrl.includes('standings.html')) {
+                //     loadStandings(params); 
+                // }
+                // ▲▲▲【修改结束】▲▲▲
             })
             .catch(error => {
                 console.error('页面加载失败:', error);
