@@ -472,9 +472,9 @@
                     loadResults(params);
                 }
                 // (未来其他页面，如 standings.html, 也可以在这里添加它们的加载函数)
-                // else if (pageUrl.includes('standings.html')) {
-                //     loadStandings(params); 
-                // }
+                else if (pageUrl.includes('standings.html')) {
+                    loadStandings(params); 
+                }
                 // ▲▲▲【修改结束】▲▲▲
             })
             .catch(error => {
