@@ -176,17 +176,15 @@
             return div;
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const paramsFromUrl = new URLSearchParams(window.location.search);
-            if (paramsFromUrl.has('tournament')) {
-                const standaloneParams = Object.fromEntries(paramsFromUrl.entries());
-                loadResults(standaloneParams);
-            } 
-            else if (window.currentPageParams) {
-                loadResults(window.currentPageParams);
-                delete window.currentPageParams;
-            }
-        });
+        const paramsFromUrl = new URLSearchParams(window.location.search);
+        if (paramsFromUrl.has('tournament')) {
+            const standaloneParams = Object.fromEntries(paramsFromUrl.entries());
+            loadResults(standaloneParams);
+        } 
+        else if (window.currentPageParams) {
+            loadResults(window.currentPageParams);
+            delete window.currentPageParams;
+        }
     </script>
 </body>
 </html>
