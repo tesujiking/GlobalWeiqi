@@ -346,36 +346,26 @@
         });
     }
       
-    function loadPage(pageUrl, params = {}) {
-        console.log('加载页面:', pageUrl, '参数:', params);
-        // 在加载新页面内容之前，将参数存储到全局变量中
-        window.currentPageParams = params;
-        
-        const mainContent = document.getElementById('main-content');
-        
-        mainContent.innerHTML = `<div style="text-align: center; padding: 50px; color: #666;">...正在加载...</div>`;
 
-        if (pageUrl.includes('results.html')) {
-        loadResults(params);
-        }
-      
+    function loadPage(pageUrl, params = {}) {
+        const mainContent = document.getElementById('main-content');
+        mainContent.innerHTML = `<div style="text-align: center; padding: 50px; color: #666;">...正在加载...</div>`;
+        
+        // 步骤1: 获取HTML模板内容
         fetch(pageUrl)
-            .then(response => {
-                if (!response.ok) { throw new Error(`HTTP ${response.status}`); }
-                return response.text();
-            })
+            .then(response => response.ok ? response.text() : Promise.reject(response))
             .then(html => {
+                // 步骤2: 将HTML模板“搬上舞台”
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
                 const contentToInject = doc.querySelector('.main-content');
                 mainContent.innerHTML = contentToInject ? contentToInject.innerHTML : doc.body.innerHTML;
                
-                const scripts = doc.querySelectorAll('script');
-                scripts.forEach(script => {
-                    const newScript = document.createElement('script');
-                    newScript.textContent = script.textContent;
-                    document.body.appendChild(newScript).parentNode.removeChild(newScript);
-                });
+                // 步骤3: “搬”完之后，再“命令演员开始表演”
+                if (pageUrl.includes('results.html')) {
+                    loadResults(params); // 这是正确的时机
+                }
+                // (未来其他页面的调用逻辑也可以加在这里)
             })
             .catch(error => {
                 console.error('页面加载失败:', error);
