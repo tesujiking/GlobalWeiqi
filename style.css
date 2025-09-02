@@ -917,4 +917,10 @@ td b {
     background-color: #bfbfbf;   /* 冷灰，显眼 */
     border: 1px dashed #666;     /* 虚线边框，更容易识别 */
 }
+
+/* 已完成对局卡片：浅绿色背景 */
+.results-page .pairing-item.completed {
+  background-color: #e6f7e6;  /* 浅绿色，柔和 */
+  border: 1px solid #b2d8b2;
+}
 /* ===== RESULTS.HTML 页面专属样式 (已隔离) 结束 ===== */
