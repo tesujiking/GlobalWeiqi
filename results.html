@@ -148,9 +148,34 @@
             const whiteHighlightClass = whiteIsWinner ? 'winner-highlight' : (isDraw ? 'draw-highlight' : '');
             const blackHighlightClass = blackIsWinner ? 'winner-highlight' : (isDraw ? 'draw-highlight' : '');
 
+            // 将我们之前确认过的、正确的HTML结构模板放回到这里
             div.innerHTML = `
-                            `;
-            return div;
+                <div class="pairing-content">
+                    <div class="player-display ${whiteHighlightClass}">
+                        <div class="player-color-indicator white">白</div>
+                        <div class="avatar">${formatName(pairing.white_player)}</div>
+                        <div class="player-region">${pairing.white_player.region || '&nbsp;'}</div>
+                        <div class="player-rating-info">${formatRating(pairing.white_player)}</div>
+                    </div>
+                    <div class="result-display">
+                        <div class="round-title">第 ${pairing.board_number} 台</div>
+                        <div class="handicap-info">${formatHandicap(pairing.handicap)}</div>
+                        ${pairing.status === 'COMPLETED' ? `<div class="final-result">${simpleResult}</div><div class="result-detail">${pairing.result_detail}</div>` : ''}
+                    </div>
+                    <div class="player-display ${blackHighlightClass}">
+                        <div class="player-color-indicator black">黑</div>
+                        <div class="avatar">${formatName(pairing.black_player)}</div>
+                        <div class="player-region">${pairing.black_player.region || '&nbsp;'}</div>
+                        <div class="player-rating-info">${formatRating(pairing.black_player)}</div>
+                    </div>
+                </div>
+                <div class="prob-title">双方赛前预测胜率</div>
+                <div class="win-prob-bar">
+                    <div class="prob-white" style="width: ${whiteProb}%">${whiteProb}%</div>
+                    <div class="prob-black" style="width: ${blackProb}%">${blackProb}%</div>
+                </div>
+            `;
+            // ▲▲▲【修正结束】▲▲▲
         }
 
         // 步骤2: 添加“双模式”启动器
