@@ -166,6 +166,97 @@
     //  主脚本区：只包含 index.html 自己需要的函数
     // =================================================================
 
+  // === STANDINGS 支持（用于 index 框架内加载）===
+  function loadStandings(params = {}) {
+    const tournamentId = params.id || 1;
+  
+    const titleEl       = document.getElementById('tournament-title');
+    const subtitleEl    = document.getElementById('tournament-subtitle');
+    const statsEl       = document.getElementById('stats-cards-container');
+    const theadEl       = document.getElementById('standings-thead');
+    const tbodyEl       = document.getElementById('standings-tbody');
+  
+    if (!titleEl || !tbodyEl) {
+      console.warn('[standings] 容器未就绪，是否未正确注入 standings.html 的 .main-content 结构？');
+      return;
+    }
+  
+    const apiUrl = `${API_BASE_URL}/tournament/${tournamentId}/final_standings/`;
+  
+    fetch(apiUrl)
+      .then(r => r.ok ? r.json() : Promise.reject(r))
+      .then(data => {
+        if (!data.tournament_info || !data.standings) throw new Error("API返回格式不正确");
+        renderHeaderAndStats(data.tournament_info, titleEl, subtitleEl, statsEl);
+        renderStandingsTable(data.standings, data.tournament_info, theadEl, tbodyEl);
+      })
+      .catch(err => {
+        console.error('[standings] 加载失败:', err);
+        titleEl.textContent = '❌ 加载失败';
+        tbodyEl.innerHTML = `<tr><td colspan="13" class="error-cell">⚠️ 加载排名数据失败: ${err.message}</td></tr>`;
+      });
+  }
+  
+  function renderHeaderAndStats(info, titleEl, subtitleEl, statsEl) {
+    titleEl.textContent = `🏆 ${info.name}`;
+    subtitleEl.textContent = `排名截至第 ${info.display_rounds_until} 轮 - 共 ${info.total_rounds} 轮`;
+    statsEl.innerHTML = `
+      <div class="stats-card"><h3>📊 参赛人数</h3><div class="value">${info.participant_count}</div></div>
+      <div class="stats-card"><h3>🎯 已赛轮数</h3><div class="value">${info.display_rounds_until}</div></div>
+      <div class="stats-card"><h3>🥇 全球最强</h3><div class="value">${info.winner_name || 'N/A'} ${info.winner_rank || ''}</div></div>
+      <div class="stats-card"><h3>⭐ 全胜</h3><div class="value">${info.undefeated_count}人</div></div>
+    `;
+  }
+  
+  function renderStandingsTable(standings, tournament_info, theadEl, tbodyEl) {
+    const rounds = tournament_info.display_rounds_until;
+  
+    // 表头
+    let headHTML = '<tr>';
+    const headers = ['序号','排名','姓名','报名级别','地区','胜局数'];
+    headers.forEach((h,i)=> headHTML += `<th onclick="sortTable(${i})">${h}</th>`);
+    for (let i=1; i<=rounds; i++) headHTML += `<th onclick="sortTable(${headers.length+i-1})">第${i}轮</th>`;
+    const finalHeaders = ['MMS','SOS','SOSOS'];
+    finalHeaders.forEach((h,i)=> headHTML += `<th onclick="sortTable(${headers.length+rounds+i})">${h}</th>`);
+    headHTML += '</tr>';
+    theadEl.innerHTML = headHTML;
+  
+    // 表体
+    if (!standings || standings.length===0) {
+      tbodyEl.innerHTML = `<tr><td colspan="${headers.length+rounds+finalHeaders.length}" class="loading-cell">本赛事尚无排名数据。</td></tr>`;
+      return;
+    }
+  
+    let bodyHTML = '';
+    standings.forEach((player,index)=>{
+      const roundResultsHTML = (player.round_results_list||[]).map(result=>{
+        let resultClass='';
+        if (result.includes('+')) resultClass='result-win';
+        else if (result.includes('-')) resultClass='result-loss';
+        else if (result.includes('=')) resultClass='result-draw';
+        return `<td style="font-family: monospace; text-align: center;"><span class="${resultClass}">${result}</span></td>`;
+      }).join('');
+  
+      bodyHTML += `
+        <tr class="${index%2===0?'impair':'pair'}">
+          <td class="rank-cell" style="text-align:center;">${player.competition_num || index+1}</td>
+          <td class="rank-cell" style="text-align:center;">${player.display_rank || ''}</td>
+          <td class="name-cell">${player.player_name || '未知选手'}</td>
+          <td class="level-cell">${player.tournament_rank || ''}</td>
+          <td style="text-align:center;">${player.city || ''}</td>
+          <td class="wins-cell">${player.wins_upto_round ?? 'N/A'}</td>
+          ${roundResultsHTML}
+          <td style="font-weight:bold;text-align:center;">${player.total_score ?? 'N/A'}</td>
+          <td style="text-align:center;">${player.sos ?? 'N/A'}</td>
+          <td style="text-align:center;">${player.sosos ?? 'N/A'}</td>
+        </tr>
+      `;
+    });
+    tbodyEl.innerHTML = bodyHTML;
+  }
+
+
+    
   // === RESULTS 支持（用于 index 框架内加载）===
   function loadResults(params = {}) {
     const tournamentId = params.tournament;
@@ -381,9 +472,9 @@
                     loadResults(params);
                 }
                 // (未来其他页面，如 standings.html, 也可以在这里添加它们的加载函数)
-                // else if (pageUrl.includes('standings.html')) {
-                //     loadStandings(params); 
-                // }
+                else if (pageUrl.includes('standings.html')) {
+                    loadStandings(params); 
+                }
                 // ▲▲▲【修改结束】▲▲▲
             })
             .catch(error => {
