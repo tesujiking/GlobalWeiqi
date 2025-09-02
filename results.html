@@ -12,31 +12,49 @@
         h1 { margin-bottom: 5px; color: #1a237e;}
         h2 { margin-top: 0; margin-bottom: 30px; color: #555;}
         .pairings-list { list-style-type: none; padding: 0; }
-        .pairing-item { display: flex; flex-direction: column; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; padding: 15px 20px; overflow: hidden; }
-        .pairing-content { display: flex; align-items: flex-start; width: 100%; margin-bottom: 5px; }
-        .player-display { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; padding: 0 10px; }
+
+        /* 修改点3: 缩小卡片外边距和内边距 */
+        .pairing-item { display: flex; flex-direction: column; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; padding: 10px 15px; overflow: hidden; }
+        .pairing-content { display: flex; align-items: flex-start; width: 100%; margin-bottom: 8px; }
+        .player-display { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; padding: 0 5px; }
+        
+        /* 修改点3: 缩小头像尺寸和字体 */
         .avatar {
-            width: 100px; height: 100px; border-radius: 50%; background-color: #4a5568; color: white;
-            margin-bottom: 8px; border: 3px solid #ccc; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; font-weight: bold; padding: 5px; box-sizing: border-box; font-size: 1.8em;
+            width: 70px; height: 70px; border-radius: 50%; background-color: #4a5568; color: white;
+            margin-bottom: 8px; border: 2px solid #ccc; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; font-weight: bold; padding: 4px; box-sizing: border-box; font-size: 1.3em;
+            transition: all 0.3s ease;
         }
         .avatar .name-line { line-height: 1.2; }
-        .player-region, .player-rating-info { font-size: 0.9em; color: #777; line-height: 1.5; }
-        .result-display { flex-shrink: 0; margin: 0 20px; text-align: center; padding-top: 15px; }
-        .round-title { font-size: 1.2em; font-weight: bold; color: #333; }
-        .handicap-info { font-size: 1em; color: #4a7ac9; font-weight: bold; margin-top: 4px; }
-        .final-result { margin-top: 8px; font-size: 1.6em; font-weight: bold; color: #d32f2f; }
-        .result-detail { font-size: 0.9em; color: #777; margin-top: 4px; height: 1.2em; }
-        .prob-title { font-size: 0.8em; color: #888; text-align: center; margin: 5px 0 5px 0; }
-        .win-prob-bar { display: flex; height: 32px; width: 100%; border-radius: 6px; overflow: hidden; font-size: 1em; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+
+        /* 修改点3: 缩小字体和行高 */
+        .player-region, .player-rating-info { font-size: 0.8em; color: #777; line-height: 1.4; }
+
+        .result-display { flex-shrink: 0; margin: 0 15px; text-align: center; padding-top: 10px; }
+        .round-title { font-size: 1em; font-weight: bold; color: #333; }
+        .handicap-info { font-size: 0.9em; color: #4a7ac9; font-weight: bold; margin-top: 3px; }
+        .final-result { margin-top: 6px; font-size: 1.2em; font-weight: bold; color: #d32f2f; }
+        .result-detail { font-size: 0.8em; color: #777; margin-top: 3px; height: 1.1em; }
+        .prob-title { font-size: 0.7em; color: #888; text-align: center; margin: 5px 0 4px 0; }
+
+        /* 修改点3: 缩小胜率条高度 */
+        .win-prob-bar { display: flex; height: 24px; width: 100%; border-radius: 4px; overflow: hidden; font-size: 0.8em; font-weight: bold; color: white; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); }
         .prob-white { background-color: #4a7ac9; display: flex; align-items: center; justify-content: center; }
         .prob-black { background-color: #c94a4a; display: flex; align-items: center; justify-content: center; }
+        
+        /* 修改点2 & 3: 缩小黑白标识并修正其位置 */
         .player-color-indicator {
-            width: 30px; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center;
-            font-size: 1em; font-weight: bold; position: absolute; top: 35px;
+            width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.8em; font-weight: bold; position: absolute; top: 23px;
         }
-        .player-color-indicator.white { background-color: #fff; color: #000; border: 1px solid #333; left: -5px; }
-        .player-color-indicator.black { background-color: #333; color: #fff; border: 1px solid #333; right: -5px; }
+        .player-color-indicator.white { background-color: #fff; color: #000; border: 1px solid #333; left: 0px; }
+        .player-color-indicator.black { background-color: #333; color: #fff; border: 1px solid #333; right: 0px; }
+
+        /* 修改点1: 重新加入胜方高亮样式 */
+        .winner-highlight .avatar {
+            background-color: #c94a4a; /* 红色背景 */
+            border-color: #a02020; /* 深红色边框 */
+        }
     </style>
 </head>
 <body>
@@ -59,19 +77,22 @@
             const list = document.getElementById('pairings-list');
             const tournamentNameH1 = document.getElementById('tournament-name');
             const roundInfoH2 = document.getElementById('round-info');
-            
+
+            if (!loadingDiv || !list) { return; }
+
             list.innerHTML = '';
             errorDiv.style.display = 'none';
             loadingDiv.style.display = 'block';
             tournamentNameH1.textContent = '比赛名称加载中...';
             roundInfoH2.textContent = '轮次信息加载中...';
-            
+
             if (!tournamentId || !roundNumber) {
                 loadingDiv.style.display = 'none';
                 errorDiv.style.display = 'block';
                 errorDiv.textContent = '错误：加载时未提供 tournament 和 round 参数。';
                 return;
             }
+
             const apiUrl = `https://yaoshen.pythonanywhere.com/api/tournament/${tournamentId}/round/${roundNumber}/results/`;
             fetch(apiUrl)
                 .then(response => response.ok ? response.json() : Promise.reject(response))
@@ -80,10 +101,7 @@
                     tournamentNameH1.textContent = data.tournament_info.name;
                     roundInfoH2.textContent = data.round_info.name;
                     if (data.pairings && data.pairings.length > 0) {
-                        data.pairings.forEach(p => {
-                            const card = createPairingCard(p);
-                            list.appendChild(card);
-                        });
+                        data.pairings.forEach(p => list.appendChild(createPairingCard(p)));
                     } else {
                         errorDiv.style.display = 'block';
                         errorDiv.textContent = '该轮次没有对阵信息。';
@@ -101,11 +119,11 @@
             const div = document.createElement('div');
             div.className = `pairing-item`;
             
-            let simpleResult = 'VS';
+            let simpleResult = 'VS', whiteIsWinner = false, blackIsWinner = false;
             if (pairing.status === 'COMPLETED') {
-                if (pairing.result_display.includes('白胜')) simpleResult = '白胜';
-                else if (pairing.result_display.includes('黑胜')) simpleResult = '黑胜';
-                else simpleResult = '和棋';
+                if (pairing.result_display.includes('白胜')) { simpleResult = '白胜'; whiteIsWinner = true; }
+                else if (pairing.result_display.includes('黑胜')) { simpleResult = '黑胜'; blackIsWinner = true; }
+                else { simpleResult = '和棋'; }
             }
             
             const whiteProb = (pairing.win_probability.white * 100).toFixed(1);
@@ -115,7 +133,7 @@
                 const lastName = player.last_name || '';
                 const firstName = player.first_name || '';
                 if (lastName && firstName) return `<div class="name-line">${lastName}</div><div class="name-line">${firstName}</div>`;
-                return `<div class="name-line">${player.name}</div>`; 
+                return `<div class="name-line">${player.name}</div>`;
             };
             const formatHandicap = (h) => h > 0 ? `让${h}子` : '分先';
             const formatRating = (player) => {
@@ -124,11 +142,12 @@
                 return `${rank} (${rating})`;
             };
 
-            // ▼▼▼【核心修正】▼▼▼
-            // 将正确的HTML结构模板放回到这里
+            const whiteHighlightClass = whiteIsWinner ? 'winner-highlight' : '';
+            const blackHighlightClass = blackIsWinner ? 'winner-highlight' : '';
+
             div.innerHTML = `
                 <div class="pairing-content">
-                    <div class="player-display">
+                    <div class="player-display ${whiteHighlightClass}">
                         <div class="player-color-indicator white">白</div>
                         <div class="avatar">${formatName(pairing.white_player)}</div>
                         <div class="player-region">${pairing.white_player.region || '&nbsp;'}</div>
@@ -139,24 +158,21 @@
                         <div class="handicap-info">${formatHandicap(pairing.handicap)}</div>
                         ${pairing.status === 'COMPLETED' ? `<div class="final-result">${simpleResult}</div><div class="result-detail">${pairing.result_detail}</div>` : ''}
                     </div>
-                    <div class="player-display">
+                    <div class="player-display ${blackHighlightClass}">
                         <div class="player-color-indicator black">黑</div>
                         <div class="avatar">${formatName(pairing.black_player)}</div>
                         <div class="player-region">${pairing.black_player.region || '&nbsp;'}</div>
                         <div class="player-rating-info">${formatRating(pairing.black_player)}</div>
                     </div>
                 </div>
-                <div class="prob-title">双方赛前预测胜率</div>
                 <div class="win-prob-bar">
                     <div class="prob-white" style="width: ${whiteProb}%">${whiteProb}%</div>
                     <div class="prob-black" style="width: ${blackProb}%">${blackProb}%</div>
                 </div>
             `;
-            // ▲▲▲【修正结束】▲▲▲
             return div;
         }
 
-        // 双模式运行逻辑
         document.addEventListener('DOMContentLoaded', () => {
             const paramsFromUrl = new URLSearchParams(window.location.search);
             if (paramsFromUrl.has('tournament')) {
