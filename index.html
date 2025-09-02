@@ -67,23 +67,23 @@
                     第2轮结果
                   </a>
                   <a href="results.html?tournament=2&round=3" class="nav-link" data-page="results">
-                    <span class="icon">2️⃣</span>
+                    <span class="icon">3️⃣</span>
                     第3轮结果
                   </a>
                   <a href="results.html?tournament=2&round=4" class="nav-link" data-page="results">
-                    <span class="icon">2️⃣</span>
+                    <span class="icon">4️⃣</span>
                     第4轮结果
                   </a>
                   <a href="results.html?tournament=2&round=5" class="nav-link" data-page="results">
-                    <span class="icon">2️⃣</span>
+                    <span class="icon">5️⃣</span>
                     第5轮结果
                   </a>    
                   <a href="results.html?tournament=2&round=6" class="nav-link" data-page="results">
-                    <span class="icon">2️⃣</span>
+                    <span class="icon">6️⃣</span>
                     第6轮结果
                   </a> 
                   <a href="results.html?tournament=2&round=7" class="nav-link" data-page="results">
-                    <span class="icon">2️⃣</span>
+                    <span class="icon">7️⃣</span>
                     第7轮结果
                   </a>                   
                 </div>
@@ -107,15 +107,15 @@
                     第2轮结果
                   </a>
                   <a href="results.html?tournament=1&round=3" class="nav-link" data-page="results">
-                    <span class="icon">2️⃣</span>
+                    <span class="icon">3️⃣</span>
                     第3轮结果
                   </a>
                   <a href="results.html?tournament=1&round=4" class="nav-link" data-page="results">
-                    <span class="icon">2️⃣</span>
+                    <span class="icon">4️⃣</span>
                     第4轮结果
                   </a>
                   <a href="results.html?tournament=1&round=5" class="nav-link" data-page="results">
-                    <span class="icon">2️⃣</span>
+                    <span class="icon">5️⃣</span>
                     第5轮结果
                   </a>                  
                 </div>
@@ -370,10 +370,10 @@
   }
   
   function createPairingCard(pairing) {
-    const div = document.createElement('div');
-    const isCompleted = pairing.status === 'COMPLETED';
-    div.className = 'pairing-item' + (isCompleted ? '' : ' pending');
-  
+      const div = document.createElement('div');
+      const isCompleted = pairing.status === 'COMPLETED';
+      div.className = 'pairing-item' + (isCompleted ? ' completed' : '');
+    
     let simpleResult = 'VS', whiteIsWinner = false, blackIsWinner = false;
     if (isCompleted) {
       if ((pairing.result_display || '').includes('白胜')) { simpleResult = '白胜'; whiteIsWinner = true; }
