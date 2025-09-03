@@ -315,8 +315,130 @@
     tbodyEl.innerHTML = bodyHTML;
   }
 
-
-    
+  // === RATINGHISTORY 支持（用于 index 框架内加载）===
+  function loadRatingHistory(params = {}) {
+      let playerChartInstance = null;
+      const API_BASE_URL = 'https://yaoshen.pythonanywhere.com';
+  
+      // --- 辅助函数 ---
+      function calculateRankFromRating(rating) { /* ... 保留你原来的实现 ... */ }
+      function calculateAndDisplayStats(ratingData) { /* ... 保留你原来的实现 ... */ }
+  
+      // 绑定行点击事件（事件委托）
+      const playerListBody = document.getElementById('player-list-body');
+      if (playerListBody && !playerListBody.dataset.bound) {
+          playerListBody.addEventListener('click', function(event) {
+              const row = event.target.closest('.player-row');
+              if (row) {
+                  const playerId = row.dataset.playerId;
+                  const playerName = row.dataset.playerName;
+                  openHistoryModal(playerId, playerName);
+              }
+          });
+          playerListBody.dataset.bound = "true"; // 防止重复绑定
+      }
+  
+      // 打开弹窗逻辑
+      function openHistoryModal(playerId, playerName) {
+          const modal = document.getElementById('historyModal');
+          const modalPlayerName = document.getElementById('modalPlayerName');
+          const chartContainer = document.getElementById('chartContainer');
+          const tableContainer = document.getElementById('tableContainer');
+          const statsContainer = document.getElementById('statsContainer');
+          const closeModalBtn = document.getElementById('closeModal');
+  
+          modalPlayerName.textContent = `${playerName} 的历史记录`;
+          tableContainer.innerHTML = '<p class="loading-cell">🔄 正在加载对局历史...</p>';
+          statsContainer.innerHTML = '';
+          chartContainer.style.display = 'none';
+          modal.classList.add('show');
+  
+          fetch(`${API_BASE_URL}/players/${playerId}/match_history/`)
+              .then(response => response.json())
+              .then(data => {
+                  if (data.chart_data && data.chart_data.datasets[0].data) {
+                      calculateAndDisplayStats(data.chart_data.datasets[0].data);
+                  }
+                  if (data.chart_data && data.chart_data.datasets[0].data.length > 1) {
+                      chartContainer.style.display = 'block';
+                      const ctx = document.getElementById('playerRatingChart').getContext('2d');
+                      if (playerChartInstance) { playerChartInstance.destroy(); }
+                      const yValuesOnly = data.chart_data.datasets[0].data.map(item => item.y);
+                      const chartDisplayData = JSON.parse(JSON.stringify(data.chart_data));
+                      chartDisplayData.datasets[0].data = yValuesOnly;
+                      const dataMin = Math.min(...yValuesOnly);
+                      const dataMax = Math.max(...yValuesOnly);
+                      const padding = (dataMax - dataMin) * 0.1 || 5;
+                      playerChartInstance = new Chart(ctx, { type: 'line', data: chartDisplayData, options: { /* ... */ } });
+                  } else {
+                      chartContainer.style.display = 'none';
+                  }
+  
+                  if (data.matches && data.matches.length > 0) {
+                      let tableHtml = `<h4>📋 对局列表</h4><table>...`;
+                      data.matches.forEach(match => {
+                          let rankBeforeFormatted = 'N/A';
+                          if (match.player_rank_before !== null && match.player_rank_before !== undefined) {
+                              rankBeforeFormatted = parseFloat(match.player_rank_before).toFixed(2);
+                          }
+                          const resultClass = match.result === '胜' ? 'win-result' : 'lose-result';
+                          const playerDeltaClass = match.player_delta.startsWith('+') ? 'positive-delta' : 'negative-delta';
+                          const opponentDeltaClass = match.opponent_delta.startsWith('+') ? 'positive-delta' : 'negative-delta';
+                          tableHtml += `<tr><td>${match.match_date}</td><td>${match.tournament_name}</td><td style="text-align: center;">${match.round_number}</td><td style="text-align: center;">${rankBeforeFormatted}</td><td>${match.opponent_name}</td><td style="text-align: center;">${match.handicap}</td><td style="text-align: center;" class="${resultClass}">${match.result}</td><td style="text-align: center;" class="${playerDeltaClass}">${match.player_delta}</td><td style="text-align: center;" class="${opponentDeltaClass}">${match.opponent_delta}</td></tr>`;
+                      });
+                      tableHtml += `</tbody></table>`;
+                      tableContainer.innerHTML = tableHtml;
+                  } else {
+                      tableContainer.innerHTML = '<p class="loading-cell">📋 该选手尚无已完成的对局记录。</p>';
+                  }
+              })
+              .catch(error => {
+                  console.error('Error fetching match history:', error);
+                  tableContainer.innerHTML = '<p class="error-cell">⚠️ 加载数据失败，请稍后再试。</p>';
+              });
+  
+          const closeModal = () => modal.classList.remove('show');
+          closeModalBtn.onclick = closeModal;
+          modal.onclick = function(event) { if (event.target == modal) { closeModal(); }};
+      }
+  
+      // 加载选手列表
+      function loadPlayerList() {
+          fetch(`${API_BASE_URL}/api/players/`)
+              .then(response => {
+                  if (!response.ok) { throw new Error('网络响应错误'); }
+                  return response.json();
+              })
+              .then(data => {
+                  let tableRowsHtml = '';
+                  if (data.players && data.players.length > 0) {
+                      data.players.forEach((player, index) => {
+                          tableRowsHtml += `
+                              <tr class="player-row" data-player-id="${player.id}" data-player-name="${player.full_name}">
+                                  <td class="rank-cell">${index + 1}</td>
+                                  <td class="name-cell">${player.full_name}</td>
+                                  <td class="region-cell">${player.city || player.country || ''}</td>
+                                  <td class="rating-cell">${player.current_rating.toFixed(2)}</td>
+                                  <td class="rank-cell-display">${player.standard_rank}</td>
+                                  <td class="games-cell">${player.total_games_played}</td>
+                              </tr>
+                          `;
+                      });
+                  } else {
+                      tableRowsHtml = '<tr><td colspan="6" class="loading-cell">🏆 系统中尚无活跃选手。</td></tr>';
+                  }
+                  playerListBody.innerHTML = tableRowsHtml;
+              })
+              .catch(error => {
+                  console.error('加载选手列表失败:', error);
+                  playerListBody.innerHTML = '<tr><td colspan="6" class="error-cell">⚠️ 加载选手列表失败，请检查后端服务是否正常。</td></tr>';
+              });
+      }
+  
+      // --- 启动 ---
+      loadPlayerList();
+  }
+      
   // === RESULTS 支持（用于 index 框架内加载）===
   function loadResults(params = {}) {
     const tournamentId = params.tournament;
@@ -368,7 +490,7 @@
         console.error('[results] fetch error:', err);
       });
   }
-  
+
   function createPairingCard(pairing) {
       const div = document.createElement('div');
       const isCompleted = pairing.status === 'COMPLETED';
