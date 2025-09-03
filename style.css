@@ -877,3 +877,14 @@ td b {
   border: 1px solid #b2d8b2;
 }
 /* ===== RESULTS.HTML 页面专属样式 (已隔离) 结束 ===== */
+
+/* ===== RATINGHISTORY 页面表头专属样式修复 ===== */
+.table-container thead {
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    color: white !important;
+}
+
+.table-container thead th {
+    text-align: center !important;
+}
+/* ===== RATINGHISTORY 页面表头专属样式修复 结束 ===== */
