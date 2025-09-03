@@ -829,7 +829,7 @@ td b {
     font-weight: bold; 
     color: white; 
     text-shadow: 1px 1px 1px rgba(0,0,0,0.5); 
-    margin-top: 5px; 
+    margin-top: 0; 
 }
 .results-page .prob-white { 
     background-color: #4a7ac9; 
@@ -852,13 +852,13 @@ td b {
     background-color: #fff; 
     color: #000; 
     border: 1px solid #333; 
-    left: 10px; 
+    left: 0; 
 }
 .results-page .player-color-indicator.black { 
     background-color: #333; 
     color: #fff; 
     border: 1px solid #333; 
-    right: 10px; 
+    right: 0; 
 }
         
 .results-page .winner-highlight .avatar {
