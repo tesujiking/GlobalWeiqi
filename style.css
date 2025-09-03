@@ -891,10 +891,11 @@ td b {
 
 /* 为 standings.html 的统计卡片容器添加布局 */
 .stats-cards {
-    display: grid; /* 使用网格布局 */
-    grid-template-columns: repeat(4, 1fr); /* 创建四个宽度相等的列 */
-    gap: 20px; /* 设置卡片之间的间距 */
-    margin-bottom: 30px; /* 和下方的表格隔开一些距离 */
+    display: flex;             /* 改为 flex 布局 */
+    justify-content: center;   /* 这是实现水平居中的关键 */
+    flex-wrap: wrap;           /* 在小屏幕上，如果空间不够，允许卡片换行 */
+    gap: 20px;                 /* 设置卡片之间的间距 */
+    margin-bottom: 30px;       /* 和下方的表格隔开一些距离 */
 }
 
 /* 强制表格表头文字为白色，解决可读性问题 */
