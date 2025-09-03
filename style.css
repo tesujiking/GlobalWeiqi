@@ -588,53 +588,6 @@ tbody td {
   }
 }
 
-/* --- 从 standingsS1R5.html 合并过来的非冲突样式 --- */
-
-/* 主内容区域特定布局 */
-.main-content {
-    width: 100%;
-    margin: 0;
-    background: #ffffff; /* 确保内容区有白色背景 */
-    padding: 40px;
-}
-
-/* 统计信息卡片 */
-.stats-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-.stats-card {
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    border-left: 4px solid #667eea;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-}
-
-.stats-card h3 {
-    font-size: 14px;
-    color: #7f8c8d;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.stats-card .value {
-    font-size: 24px;
-    font-weight: 700;
-    color: #2c3e50;
-}
-
-/* standingsS1R5.html 表格特定样式 */
-.table-wrapper {
-    max-height: 600px;
-    overflow-y: auto;
-}
-
 /* 增强表头样式，使其适应更多内容 */
 thead th {
     white-space: nowrap;
@@ -876,7 +829,7 @@ td b {
     font-weight: bold; 
     color: white; 
     text-shadow: 1px 1px 1px rgba(0,0,0,0.5); 
-    margin-top: 5px; 
+    margin-top: 0; 
 }
 .results-page .prob-white { 
     background-color: #4a7ac9; 
@@ -899,13 +852,13 @@ td b {
     background-color: #fff; 
     color: #000; 
     border: 1px solid #333; 
-    left: 10px; 
+    left: 0; 
 }
 .results-page .player-color-indicator.black { 
     background-color: #333; 
     color: #fff; 
     border: 1px solid #333; 
-    right: 10px; 
+    right: 0; 
 }
         
 .results-page .winner-highlight .avatar {
