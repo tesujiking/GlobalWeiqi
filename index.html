@@ -535,6 +535,9 @@
                 else if (pageUrl.includes('standings.html')) {
                     loadStandings(params); 
                 }
+                else if (pageUrl.includes('ratinghistory.html')) {
+                    loadRatingHistory(params);
+                }
                 // ▲▲▲【修改结束】▲▲▲
             })
             .catch(error => {
