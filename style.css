@@ -902,3 +902,28 @@ td b {
 thead th {
     color: white !important;
 }
+
+.rank-table-section {
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.rank-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.rank-table th, .rank-table td {
+  border: 1px solid #ccc;
+  padding: 6px 8px;
+  text-align: center;
+}
+
+.rank-table th {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+}
