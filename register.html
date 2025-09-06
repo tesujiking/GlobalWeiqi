@@ -1,85 +1,123 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>报名参赛 - Global Weiqi Super League</title>
-  <style>
-    body {
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      background-color: #f9f9f9;
-      padding: 2em; /* 给予一些边距 */
-    }
-    .main-content {
-      max-width: 800px;
-      margin: auto;
-    }
-    h1 {
-      color: #333;
-      text-align: center;
-      margin-bottom: 1em;
-    }
-    .info {
-      background-color: #fff;
-      padding: 1.5em;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    .qrcode {
-      text-align: center;
-      margin: 2em 0;
-    }
-    .qrcode img {
-      max-width: 250px;
-      height: auto;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-    .highlight {
-      color: #c0392b;
-      font-weight: bold;
-    }
-    .contact {
-      margin-top: 2em;
-    }
-    .contact p {
-      margin: 0.5em 0;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <div class="main-content">
-    <h1>报名参赛</h1>
-
-    <div class="info">
-      <p>
-        所有能下完19路围棋的选手，认可<span class="highlight"
-          ><a href="info_and_rules.html" data-page="info_and_rules">比赛章程</a></span
-        >的，都欢迎报名参赛。
-      </p>
-
-      <h3>报名方法：</h3>
-      <p>只需告知以下信息：</p>
-      <ul>
-        <li>姓名</li>
-        <li>年龄</li>
-        <li>大致水平</li>
-        <li>所在地区</li>
-        <li>一个野狐账号</li>
-      </ul>
-
-      <div class="contact">
-        <h3>联系方式：</h3>
-        <p>微信联系：可扫码添加微信</p>
-        <div class="qrcode">
-          <img src="./images/wechatQRcode.jpg" alt="微信二维码" />
-        </div>
-        <p>微信号：yaoshen2082</p>
-        <p>电子邮件：<a href="mailto:yao.shen@me.com">yao.shen@me.com</a></p>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-logo">
+          <img src="./images/GlobalWeiqi.png" alt="Global Weiqi Logo">
+        </a>
       </div>
-    </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-title">比赛信息</div>
+          <div class="nav-item">
+            <a href="standings.html?id=3" class="nav-link">📊 实时排名</a>
+          </div>
+          <div class="nav-item">
+            <a href="results.html?tournament=3&round=1" class="nav-link">第1轮结果</a>
+          </div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">功能工具</div>
+          <div class="nav-item">
+            <a href="calculator.html" class="nav-link">📊 等级分计算器</a>
+          </div>
+          <div class="nav-item">
+            <a href="ratinghistory.html" class="nav-link">👥 会员名录</a>
+          </div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">用户中心</div>
+          <div class="nav-item">
+            <a href="login.html" class="nav-link">🔑 登录</a>
+          </div>
+          <div class="nav-item">
+            <a href="register.html" class="nav-link active">📝 注册</a>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main content -->
+    <main class="main-container" id="mainContainer">
+      <div class="top-bar">
+        <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+        <div class="user-status"></div>
+      </div>
+
+      <div class="content-area">
+        <div class="content-container register-container">
+          <h1>报名参赛</h1>
+
+          <div class="info">
+            <p>
+              所有能下完19路围棋的选手，认可
+              <span class="highlight">
+                <a href="info_and_rules.html">比赛章程</a>
+              </span>
+              的，都欢迎报名参赛。
+            </p>
+
+            <h3>报名方法：</h3>
+            <p>只需告知以下信息：</p>
+            <ul>
+              <li>姓名</li>
+              <li>年龄</li>
+              <li>大致水平</li>
+              <li>所在地区</li>
+              <li>一个野狐账号</li>
+            </ul>
+
+            <div class="contact">
+              <h3>联系方式：</h3>
+              <p>微信联系：可扫码添加微信</p>
+              <div class="qrcode">
+                <img src="./images/wechatQRcode.jpg" alt="微信二维码" />
+              </div>
+              <p>微信号：yaoshen2082</p>
+              <p>电子邮件：<a href="mailto:yao.shen@me.com">yao.shen@me.com</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
 
+  <script>
+    // Sidebar toggle 控制
+    document.addEventListener("DOMContentLoaded", () => {
+      const sidebar = document.getElementById("sidebar");
+      const sidebarToggle = document.getElementById("sidebarToggle");
+      const sidebarOverlay = document.getElementById("sidebarOverlay");
+      const mainContainer = document.getElementById("mainContainer");
+
+      function toggleSidebar() {
+        sidebar.classList.toggle("mobile-open");
+        sidebarOverlay.classList.toggle("active");
+        mainContainer.classList.toggle("sidebar-collapsed");
+      }
+      function closeSidebar() {
+        sidebar.classList.remove("mobile-open");
+        sidebarOverlay.classList.remove("active");
+        mainContainer.classList.remove("sidebar-collapsed");
+      }
+
+      sidebarToggle.addEventListener("click", toggleSidebar);
+      sidebarOverlay.addEventListener("click", closeSidebar);
+    });
+  </script>
 </body>
 </html>
