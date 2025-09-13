@@ -54,12 +54,18 @@
     <form id="pdfForm">
       <div class="grid">
         <!-- 12 个格子 -->
-        ${[...Array(12)].map((_,i)=>`
-          <div class="cell">
-            <input type="text" name="code" placeholder="题目编号 ${i+1}">
-            <img alt="预览">
-          </div>
-        `).join("")}
+        <div class="cell"><input type="text" name="code" placeholder="题目编号1"><img alt="预览"></div>
+        <div class="cell"><input type="text" name="code" placeholder="题目编号2"><img alt="预览"></div>
+        <div class="cell"><input type="text" name="code" placeholder="题目编号3"><img alt="预览"></div>
+        <div class="cell"><input type="text" name="code" placeholder="题目编号4"><img alt="预览"></div>
+        <div class="cell"><input type="text" name="code" placeholder="题目编号5"><img alt="预览"></div>
+        <div class="cell"><input type="text" name="code" placeholder="题目编号6"><img alt="预览"></div>
+        <div class="cell"><input type="text" name="code" placeholder="题目编号7"><img alt="预览"></div>
+        <div class="cell"><input type="text" name="code" placeholder="题目编号8"><img alt="预览"></div>
+        <div class="cell"><input type="text" name="code" placeholder="题目编号9"><img alt="预览"></div>
+        <div class="cell"><input type="text" name="code" placeholder="题目编号10"><img alt="预览"></div>
+        <div class="cell"><input type="text" name="code" placeholder="题目编号11"><img alt="预览"></div>
+        <div class="cell"><input type="text" name="code" placeholder="题目编号12"><img alt="预览"></div>
       </div>
       <button type="submit">生成 PDF</button>
     </form>
@@ -67,9 +73,9 @@
 
   <script>
     const API_BASE = "https://yaoshen.pythonanywhere.com"; // 后端地址
-    const IMG_BASE = API_BASE + "/static/img/problem/";    // 图片预览用
+    const IMG_BASE = API_BASE + "/static/img/problems/";    // 注意这里是 problems
 
-    // 预览逻辑：输入编号后显示图片
+    // 预览逻辑
     document.querySelectorAll("input[name='code']").forEach(input => {
       input.addEventListener("input", function() {
         const code = this.value.trim();
