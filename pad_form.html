@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>生成题目 PDF</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="main-content">
+    <h2>输入题目编号（最多12个）</h2>
+    <form id="pdfForm">
+      <div class="grid">
+        <!-- 12个格子 -->
+        <div class="cell"><input type="text" name="code" placeholder="题目编号1"><img></div>
+        <div class="cell"><input type="text" name="code" placeholder="题目编号2"><img></div>
+        <!-- … 一直到12个 -->
+      </div>
+      <button type="submit">生成 PDF</button>
+    </form>
+  </div>
+
+  <script>
+    const API_BASE = "https://yaoshen.pythonanywhere.com"; // 后端地址
+    const IMG_BASE = API_BASE + "/static/img/problem/";    // 预览用
+
+    // 预览逻辑
+    document.querySelectorAll("input[name='code']").forEach(input => {
+      input.addEventListener("input", function() {
+        const code = this.value.trim();
+        const img = this.nextElementSibling;
+        if (code) {
+          img.src = IMG_BASE + code + ".jpg";
+          img.style.display = "block";
+          img.onerror = () => { img.style.display = "none"; };
+        } else {
+          img.style.display = "none";
+        }
+      });
+    });
+
+    // 表单提交逻辑
+    document.getElementById("pdfForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const params = new URLSearchParams();
+      document.querySelectorAll("input[name='code']").forEach(input => {
+        if (input.value.trim() !== "") {
+          params.append("code", input.value.trim());
+        }
+      });
+      if (!params.toString()) {
+        alert("请至少输入一个编号");
+        return;
+      }
+      // 直接请求后端API，触发下载
+      window.location.href = `${API_BASE}/problems/pdf/?${params.toString()}`;
+    });
+  </script>
+</body>
+</html>
