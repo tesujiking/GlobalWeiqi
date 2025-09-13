@@ -77,7 +77,7 @@
 
     // 预览逻辑
     document.querySelectorAll("input[name='code']").forEach(input => {
-      input.addEventListener("input", function() {
+      input.addEventListener("blur", function() {
         const code = this.value.trim();
         const img = this.nextElementSibling;
         if (code) {
