@@ -4,16 +4,62 @@
   <meta charset="UTF-8">
   <title>生成题目 PDF</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: sans-serif; margin: 20px; background: linear-gradient(135deg,#667eea,#764ba2); color: #fff; }
+    h2 { margin-bottom: 20px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 900px;
+    }
+    .cell {
+      background: rgba(255,255,255,0.1);
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    input {
+      width: 90%;
+      padding: 6px;
+      font-size: 14px;
+      margin-bottom: 8px;
+      border: none;
+      border-radius: 4px;
+    }
+    img {
+      max-width: 100%;
+      max-height: 120px;
+      display: none;
+      border: 1px solid #ddd;
+      background: #fff;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background: #ffcc00;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #ffdd33;
+    }
+  </style>
 </head>
 <body>
   <div class="main-content">
-    <h2>输入题目编号（最多12个）</h2>
+    <h2>输入题目编号（最多12个），生成 PDF</h2>
     <form id="pdfForm">
       <div class="grid">
-        <!-- 12个格子 -->
-        <div class="cell"><input type="text" name="code" placeholder="题目编号1"><img></div>
-        <div class="cell"><input type="text" name="code" placeholder="题目编号2"><img></div>
-        <!-- … 一直到12个 -->
+        <!-- 12 个格子 -->
+        ${[...Array(12)].map((_,i)=>`
+          <div class="cell">
+            <input type="text" name="code" placeholder="题目编号 ${i+1}">
+            <img alt="预览">
+          </div>
+        `).join("")}
       </div>
       <button type="submit">生成 PDF</button>
     </form>
@@ -21,9 +67,9 @@
 
   <script>
     const API_BASE = "https://yaoshen.pythonanywhere.com"; // 后端地址
-    const IMG_BASE = API_BASE + "/static/img/problem/";    // 预览用
+    const IMG_BASE = API_BASE + "/static/img/problem/";    // 图片预览用
 
-    // 预览逻辑
+    // 预览逻辑：输入编号后显示图片
     document.querySelectorAll("input[name='code']").forEach(input => {
       input.addEventListener("input", function() {
         const code = this.value.trim();
@@ -48,11 +94,32 @@
         }
       });
       if (!params.toString()) {
-        alert("请至少输入一个编号");
+        alert("请至少输入一个编号！");
         return;
       }
-      // 直接请求后端API，触发下载
-      window.location.href = `${API_BASE}/problems/pdf/?${params.toString()}`;
+
+      // 请求后端 API，获取 PDF blob
+      fetch(`${API_BASE}/problems/pdf/?${params.toString()}`)
+        .then(response => {
+          if (!response.ok) throw new Error("生成失败");
+          const disposition = response.headers.get("Content-Disposition");
+          let filename = "problems.pdf";
+          if (disposition && disposition.includes("filename=")) {
+            filename = disposition.split("filename=")[1].replace(/"/g, "");
+          }
+          return response.blob().then(blob => ({ blob, filename }));
+        })
+        .then(({ blob, filename }) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(err => alert("❌ 生成 PDF 失败: " + err.message));
     });
   </script>
 </body>
