@@ -89,22 +89,33 @@
   </div>
 
   <script>
-    const API_BASE = "https://yaoshen.pythonanywhere.com";
-    const IMG_BASE = API_BASE + "/static/img/problems/";
-
-    // 自动补齐 5 位数
-    function padCode(code) {
-      return code.padStart(5, "0");
+    const API_BASE = "https://yaoshen.pythonanywhere.com"; // 后端地址
+    const IMG_BASE = API_BASE + "/static/img/problems/";    // 基础目录
+  
+    // 格式化编号，补齐 5 位
+    function padCode(raw) {
+      const num = parseInt(raw, 10);
+      if (isNaN(num)) return null;
+      return num.toString().padStart(5, "0");  // e.g. 310 → 00310
     }
-
-    // 预览逻辑
+  
+    // 计算子目录路径
+    function getImgUrl(raw) {
+      const padded = padCode(raw);
+      if (!padded) return null;
+      const num = parseInt(padded, 10);
+      const folder = String(Math.floor(num / 1000)).padStart(4, "0");
+      return `${IMG_BASE}${folder}/${padded}.jpg`;
+    }
+  
+    // 输入框预览逻辑
     document.querySelectorAll("input[name='code']").forEach(input => {
       input.addEventListener("blur", function() {
-        let code = this.value.trim();
+        const raw = this.value.trim();
         const img = this.nextElementSibling;
-        if (code) {
-          const padded = padCode(code);
-          img.src = IMG_BASE + padded + ".jpg";
+        const url = getImgUrl(raw);
+        if (url) {
+          img.src = url;
           img.style.display = "block";
           img.onerror = () => { img.style.display = "none"; };
         } else {
@@ -112,27 +123,25 @@
         }
       });
     });
-
+  
     // 表单提交逻辑
     document.getElementById("pdfForm").addEventListener("submit", function(e) {
       e.preventDefault();
       const params = new URLSearchParams();
-
       document.querySelectorAll("input[name='code']").forEach(input => {
-        if (input.value.trim() !== "") {
-          const padded = padCode(input.value.trim());
-          params.append("code", padded);
+        const raw = input.value.trim();
+        const padded = padCode(raw);
+        if (padded) {
+          params.append("code", padded);  // 查文件用（补齐后）
+          params.append("raw", raw);      // 显示用（原始输入）
         }
       });
-
-      const paper = document.querySelector("input[name='paper']:checked").value;
-      params.append("paper", paper);
-
       if (!params.toString()) {
         alert("请至少输入一个编号！");
         return;
       }
-
+  
+      // 请求后端 API，获取 PDF blob
       fetch(`${API_BASE}/problems/pdf/?${params.toString()}`)
         .then(response => {
           if (!response.ok) throw new Error("生成失败");
