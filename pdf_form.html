@@ -46,6 +46,13 @@
     button:hover {
       background: #ffdd33;
     }
+    paper-size {
+    margin-top: 20px;
+    text-align: left;   /* 左对齐 */
+    }
+    paper-size label {
+      margin-right: 20px; /* 两个按钮之间留点空隙 */
+    }
   </style>
 </head>
 <body>
@@ -68,9 +75,9 @@
         <div class="cell"><input type="text" name="code" placeholder="题目编号12"><img alt="预览"></div>
       </div>
       <button type="submit">生成 PDF</button>
-      <div>
-          <label><input type="radio" name="size" value="A4" checked> A4</label>
-          <label><input type="radio" name="size" value="Letter"> Letter</label>
+      <div class="paper-size">
+        <label><input type="radio" name="size" value="A4" checked> A4</label>
+        <label><input type="radio" name="size" value="Letter"> Letter</label>
       </div>
     </form>
   </div>
