@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>生成题目 PDF</title>
+  <h1>本工具仅供贝弈围棋机构老师使用</h1>
+  <p style="color:red; font-size:14px;">
+    ⚠️ 请勿外传，仅限内部使用
+  </p>
   <style>
     body {
       font-family: sans-serif;
@@ -52,11 +56,11 @@
     button:hover {
       background: #ffdd33;
     }
-    .paper-size {
+    paper-size {
       margin-top: 30px;
       text-align: left;
     }
-    .paper-size label {
+    paper-size label {
       margin-right: 20px;
     }
   </style>
@@ -80,7 +84,6 @@
         <div class="cell"><input type="text" name="code" placeholder="题目编号12"><img alt="预览"></div>
       </div>
       <button type="submit">生成 PDF</button>
-
       <div class="paper-size">
         <label><input type="radio" name="paper" value="A4" checked> A4</label>
         <label><input type="radio" name="paper" value="Letter"> Letter</label>
