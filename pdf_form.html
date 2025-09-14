@@ -52,10 +52,6 @@
   <div class="main-content">
     <h2>输入题目编号（最多12个），生成 PDF</h2>
     <form id="pdfForm">
-        <div>
-          <label><input type="radio" name="size" value="A4" checked> A4</label>
-          <label><input type="radio" name="size" value="Letter"> Letter</label>
-        </div>
       <div class="grid">
         <!-- 12 个格子 -->
         <div class="cell"><input type="text" name="code" placeholder="题目编号1"><img alt="预览"></div>
@@ -72,6 +68,10 @@
         <div class="cell"><input type="text" name="code" placeholder="题目编号12"><img alt="预览"></div>
       </div>
       <button type="submit">生成 PDF</button>
+      <div>
+          <label><input type="radio" name="size" value="A4" checked> A4</label>
+          <label><input type="radio" name="size" value="Letter"> Letter</label>
+      </div>
     </form>
   </div>
 
