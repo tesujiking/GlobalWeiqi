@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>生成题目 PDF</title>
-  <h1>本工具仅供贝弈围棋机构老师使用</h1>
-  <p style="color:red; font-size:14px;">
+  <h2>本工具仅供贝弈围棋机构老师使用</h2>
+  <p style="color:white; font-size:14px;">
     ⚠️ 请勿外传，仅限内部使用
   </p>
   <style>
@@ -56,12 +56,18 @@
     button:hover {
       background: #ffdd33;
     }
-    paper-size {
-      margin-top: 30px;
-      text-align: left;
+    .paper-size {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;              /* 两个按钮间隔 */
+      align-items: center;
+      font-size: 16px;
+      color: #fff;            /* 字体白色 */
     }
-    paper-size label {
-      margin-right: 20px;
+    
+    .paper-size input[type="radio"] {
+      margin-right: 6px;      /* 按钮和文字之间留点距离 */
+      transform: scale(1.2);  /* 按钮稍微放大 */
     }
   </style>
 </head>
@@ -85,8 +91,14 @@
       </div>
       <button type="submit">生成 PDF</button>
       <div class="paper-size">
-        <label><input type="radio" name="paper" value="A4" checked> A4</label>
-        <label><input type="radio" name="paper" value="Letter"> Letter</label>
+        <label>
+          <input type="radio" name="size" value="A4" checked>
+          A4
+        </label>
+        <label>
+          <input type="radio" name="size" value="Letter">
+          Letter
+        </label>
       </div>
     </form>
   </div>
