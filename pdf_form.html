@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>生成题目 PDF</title>
-  <link rel="stylesheet" href="style.css">
   <style>
     body { font-family: sans-serif; margin: 20px; background: linear-gradient(135deg,#667eea,#764ba2); color: #fff; }
     h2 { margin-bottom: 20px; }
@@ -43,9 +42,9 @@
       background: #ffcc00;
       cursor: pointer;
     }
-    button:hover {
-      background: #ffdd33;
-    }
+    button:hover { background: #ffdd33; }
+    .paper-size { margin-top: 20px; text-align: left; }
+    .paper-size label { margin-right: 20px; }
   </style>
 </head>
 <body>
@@ -54,87 +53,87 @@
     <form id="pdfForm">
       <div class="grid">
         <!-- 12 个格子 -->
-        <div class="cell"><input type="text" name="code" placeholder="题目编号1"><img alt="预览"></div>
-        <div class="cell"><input type="text" name="code" placeholder="题目编号2"><img alt="预览"></div>
-        <div class="cell"><input type="text" name="code" placeholder="题目编号3"><img alt="预览"></div>
-        <div class="cell"><input type="text" name="code" placeholder="题目编号4"><img alt="预览"></div>
-        <div class="cell"><input type="text" name="code" placeholder="题目编号5"><img alt="预览"></div>
-        <div class="cell"><input type="text" name="code" placeholder="题目编号6"><img alt="预览"></div>
-        <div class="cell"><input type="text" name="code" placeholder="题目编号7"><img alt="预览"></div>
-        <div class="cell"><input type="text" name="code" placeholder="题目编号8"><img alt="预览"></div>
-        <div class="cell"><input type="text" name="code" placeholder="题目编号9"><img alt="预览"></div>
-        <div class="cell"><input type="text" name="code" placeholder="题目编号10"><img alt="预览"></div>
-        <div class="cell"><input type="text" name="code" placeholder="题目编号11"><img alt="预览"></div>
-        <div class="cell"><input type="text" name="code" placeholder="题目编号12"><img alt="预览"></div>
+        ${[...Array(12)].map((_,i)=>`
+          <div class="cell">
+            <input type="text" name="code" placeholder="题目编号${i+1}">
+            <img alt="预览">
+          </div>
+        `).join("")}
       </div>
+
+      <div class="paper-size">
+        <label><input type="radio" name="size" value="A4" checked> A4</label>
+        <label><input type="radio" name="size" value="Letter"> Letter</label>
+      </div>
+
       <button type="submit">生成 PDF</button>
-      <div>
-          <label><input type="radio" name="size" value="A4" checked> A4</label>
-          <label><input type="radio" name="size" value="Letter"> Letter</label>
-      </div>
     </form>
   </div>
 
-<script>
-  const API_BASE = "https://yaoshen.pythonanywhere.com";
-  const IMG_BASE = API_BASE + "/static/img/problems/";
+  <script>
+    const API_BASE = "https://yaoshen.pythonanywhere.com";
+    const IMG_BASE = API_BASE + "/static/img/problems/";
 
-  // 图片预览逻辑
-  document.querySelectorAll("input[name='code']").forEach(input => {
-    input.addEventListener("blur", function() {
-      const code = this.value.trim();
-      const img = this.nextElementSibling;
-      if (code) {
-        img.src = IMG_BASE + code + ".jpg";
-        img.style.display = "block";
-        img.onerror = () => { img.style.display = "none"; };
-      } else {
-        img.style.display = "none";
-      }
-    });
-  });
-
-  // 表单提交逻辑
-  document.getElementById("pdfForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    const params = new URLSearchParams();
+    // 图片预览逻辑
     document.querySelectorAll("input[name='code']").forEach(input => {
-      if (input.value.trim() !== "") {
-        params.append("code", input.value.trim());
-      }
+      input.addEventListener("blur", function() {
+        let rawCode = this.value.trim();
+        const img = this.nextElementSibling;
+        if (rawCode) {
+          // 去掉前导零，再补齐 5 位
+          const normalized = String(parseInt(rawCode, 10));
+          const padded = normalized.padStart(5, "0");
+
+          img.src = IMG_BASE + padded + ".jpg";
+          img.style.display = "block";
+          img.onerror = () => { img.style.display = "none"; };
+
+          this.dataset.padded = padded;  // 文件调用用
+          this.dataset.raw = normalized; // 显示用
+        } else {
+          img.style.display = "none";
+          this.dataset.padded = "";
+          this.dataset.raw = "";
+        }
+      });
     });
 
-    // 纸张大小
-    const size = document.querySelector("input[name='size']:checked").value;
-    params.append("size", size);
-
-    if (!params.toString()) {
-      alert("请至少输入一个编号！");
-      return;
-    }
-
-    fetch(`${API_BASE}/problems/pdf/?${params.toString()}`)
-      .then(response => {
-        if (!response.ok) throw new Error("生成失败");
-        const disposition = response.headers.get("Content-Disposition");
-        let filename = "problems.pdf";
-        if (disposition && disposition.includes("filename=")) {
-          filename = disposition.split("filename=")[1].replace(/"/g, "");
+    // 表单提交逻辑
+    document.getElementById("pdfForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const params = new URLSearchParams();
+      document.querySelectorAll("input[name='code']").forEach(input => {
+        if (input.value.trim() !== "") {
+          params.append("code", input.dataset.padded || input.value.trim().padStart(5,"0"));
+          params.append("raw", input.dataset.raw || input.value.trim());
         }
-        return response.blob().then(blob => ({ blob, filename }));
-      })
-      .then(({ blob, filename }) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
-      })
-      .catch(err => alert("❌ 生成 PDF 失败: " + err.message));
-  });
-</script>
+      });
+
+      const size = document.querySelector("input[name='size']:checked").value;
+      params.append("size", size);
+
+      fetch(`${API_BASE}/problems/pdf/?${params.toString()}`)
+        .then(response => {
+          if (!response.ok) throw new Error("生成失败");
+          const disposition = response.headers.get("Content-Disposition");
+          let filename = "problems.pdf";
+          if (disposition && disposition.includes("filename=")) {
+            filename = disposition.split("filename=")[1].replace(/"/g, "");
+          }
+          return response.blob().then(blob => ({ blob, filename }));
+        })
+        .then(({ blob, filename }) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(err => alert("❌ 生成 PDF 失败: " + err.message));
+    });
+  </script>
 </body>
 </html>
