@@ -52,6 +52,10 @@
   <div class="main-content">
     <h2>输入题目编号（最多12个），生成 PDF</h2>
     <form id="pdfForm">
+        <div>
+          <label><input type="radio" name="size" value="A4" checked> A4</label>
+          <label><input type="radio" name="size" value="Letter"> Letter</label>
+        </div>
       <div class="grid">
         <!-- 12 个格子 -->
         <div class="cell"><input type="text" name="code" placeholder="题目编号1"><img alt="预览"></div>
@@ -71,62 +75,66 @@
     </form>
   </div>
 
-  <script>
-    const API_BASE = "https://yaoshen.pythonanywhere.com"; // 后端地址
-    const IMG_BASE = API_BASE + "/static/img/problems/";    // 注意这里是 problems
+<script>
+  const API_BASE = "https://yaoshen.pythonanywhere.com";
+  const IMG_BASE = API_BASE + "/static/img/problems/";
 
-    // 预览逻辑
-    document.querySelectorAll("input[name='code']").forEach(input => {
-      input.addEventListener("blur", function() {
-        const code = this.value.trim();
-        const img = this.nextElementSibling;
-        if (code) {
-          img.src = IMG_BASE + code + ".jpg";
-          img.style.display = "block";
-          img.onerror = () => { img.style.display = "none"; };
-        } else {
-          img.style.display = "none";
-        }
-      });
-    });
-
-    // 表单提交逻辑
-    document.getElementById("pdfForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const params = new URLSearchParams();
-      document.querySelectorAll("input[name='code']").forEach(input => {
-        if (input.value.trim() !== "") {
-          params.append("code", input.value.trim());
-        }
-      });
-      if (!params.toString()) {
-        alert("请至少输入一个编号！");
-        return;
+  // 图片预览逻辑
+  document.querySelectorAll("input[name='code']").forEach(input => {
+    input.addEventListener("blur", function() {
+      const code = this.value.trim();
+      const img = this.nextElementSibling;
+      if (code) {
+        img.src = IMG_BASE + code + ".jpg";
+        img.style.display = "block";
+        img.onerror = () => { img.style.display = "none"; };
+      } else {
+        img.style.display = "none";
       }
-
-      // 请求后端 API，获取 PDF blob
-      fetch(`${API_BASE}/problems/pdf/?${params.toString()}`)
-        .then(response => {
-          if (!response.ok) throw new Error("生成失败");
-          const disposition = response.headers.get("Content-Disposition");
-          let filename = "problems.pdf";
-          if (disposition && disposition.includes("filename=")) {
-            filename = disposition.split("filename=")[1].replace(/"/g, "");
-          }
-          return response.blob().then(blob => ({ blob, filename }));
-        })
-        .then(({ blob, filename }) => {
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = filename;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          window.URL.revokeObjectURL(url);
-        })
-        .catch(err => alert("❌ 生成 PDF 失败: " + err.message));
     });
-  </script>
+  });
+
+  // 表单提交逻辑
+  document.getElementById("pdfForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    document.querySelectorAll("input[name='code']").forEach(input => {
+      if (input.value.trim() !== "") {
+        params.append("code", input.value.trim());
+      }
+    });
+
+    // 纸张大小
+    const size = document.querySelector("input[name='size']:checked").value;
+    params.append("size", size);
+
+    if (!params.toString()) {
+      alert("请至少输入一个编号！");
+      return;
+    }
+
+    fetch(`${API_BASE}/problems/pdf/?${params.toString()}`)
+      .then(response => {
+        if (!response.ok) throw new Error("生成失败");
+        const disposition = response.headers.get("Content-Disposition");
+        let filename = "problems.pdf";
+        if (disposition && disposition.includes("filename=")) {
+          filename = disposition.split("filename=")[1].replace(/"/g, "");
+        }
+        return response.blob().then(blob => ({ blob, filename }));
+      })
+      .then(({ blob, filename }) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(err => alert("❌ 生成 PDF 失败: " + err.message));
+  });
+</script>
 </body>
 </html>
