@@ -71,13 +71,18 @@
     }
     .paper-size {
       display: flex;
-      gap: 30px;        /* 两个选项之间的间隔 */
-      align-items: center;
+      gap: 50px;                 /* 两个选项的间隔 */
+      align-items: center;       /* 整体垂直居中 */
       font-size: 16px;
       color: #fff;
     }
+    .paper-size label {
+      display: flex;
+      align-items: center;       /* 让单个 label 内的文字和按钮居中 */
+      gap: 8px;                  /* 按钮和文字之间的间距 */
+      cursor: pointer;
+    }
     .paper-size input[type="radio"] {
-      margin-right: 6px;
       transform: scale(1.2);
     }
   </style>
