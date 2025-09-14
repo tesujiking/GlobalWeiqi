@@ -56,18 +56,29 @@
     button:hover {
       background: #ffdd33;
     }
-    .paper-size {
+    .paper-size-box {
       margin-top: 20px;
+      padding: 15px;
+      border: 2px solid #fff;        /* 白色边框 */
+      border-radius: 8px;            /* 圆角 */
+      max-width: 350px;              /* 控制宽度 */
+      background: rgba(255, 255, 255, 0.1); /* 半透明背景 */
+    }
+    .paper-size-tip {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      color: #ffcc00;   /* 提示语用亮黄色，醒目 */
+    }
+    .paper-size {
       display: flex;
-      gap: 20px;              /* 两个按钮间隔 */
+      gap: 30px;        /* 两个选项之间的间隔 */
       align-items: center;
       font-size: 16px;
-      color: #fff;            /* 字体白色 */
+      color: #fff;
     }
-    
     .paper-size input[type="radio"] {
-      margin-right: 6px;      /* 按钮和文字之间留点距离 */
-      transform: scale(1.2);  /* 按钮稍微放大 */
+      margin-right: 6px;
+      transform: scale(1.2);
     }
   </style>
 </head>
@@ -90,15 +101,18 @@
         <div class="cell"><input type="text" name="code" placeholder="题目编号12"><img alt="预览"></div>
       </div>
       <button type="submit">生成 PDF</button>
-      <div class="paper-size">
-        <label>
-          <input type="radio" name="size" value="A4" checked>
-          A4
-        </label>
-        <label>
-          <input type="radio" name="size" value="Letter">
-          Letter
-        </label>
+      <div class="paper-size-box">
+        <p class="paper-size-tip">请选择纸张页面大小（中国选 A4；北美选 Letter）</p>
+        <div class="paper-size">
+          <label>
+            <input type="radio" name="size" value="A4" checked>
+            A4
+          </label>
+          <label>
+            <input type="radio" name="size" value="Letter">
+            Letter
+          </label>
+        </div>
       </div>
     </form>
   </div>
