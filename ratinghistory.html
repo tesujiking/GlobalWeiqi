@@ -106,7 +106,7 @@
             chartContainer.style.display = 'none';
             modal.classList.add('show');
 
-            fetch(`${API_BASE_URL}/api/v1/players/${playerId}/match_history/`)
+            fetch(`${API_BASE_URL}/players/${playerId}/match_history/`)
                 .then(response => response.json())
                 .then(data => {
                     // ... 此处所有获取数据并填充模态框的逻辑，都保持不变 ...
@@ -157,7 +157,7 @@
         // 步骤3：修改 loadPlayerList，让它不再调用 attachClickListeners
         function loadPlayerList() {
             const playerListBody = document.getElementById('player-list-body');
-            fetch(`${API_BASE_URL}/api/v1/players/`)
+            fetch(`${API_BASE_URL}/players/`)
                 .then(response => {
                     if (!response.ok) { throw new Error('网络响应错误'); }
                     return response.json();
