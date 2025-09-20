@@ -29,6 +29,7 @@
                             <th>🌍 地区</th>
                             <th style="text-align: center;">🎯 当前等级分</th>
                             <th style="text-align: center;">🏆 标准段位</th>
+                            <th style="text-align: center;">🦊 野狐段位</th>
                             <th style="text-align: center;">⚔️ 总对局数</th>
                         </tr>
                     </thead>
@@ -173,6 +174,7 @@
                                     <td class="region-cell">${player.city || player.country || ''}</td>
                                     <td class="rating-cell">${player.current_rating.toFixed(2)}</td>
                                     <td class="rank-cell-display">${player.standard_rank}</td>
+                                    <td class="rank-cell-display">${player.yehu_rank}</td>
                                     <td class="games-cell">${player.total_games_played}</td>
                                 </tr>
                             `;
